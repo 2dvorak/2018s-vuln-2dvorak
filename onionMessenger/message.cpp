@@ -5,12 +5,12 @@
 using namespace std;
 using namespace newmsg;
 
-message::message(){}
+Message::Message(){}
 
-message::~message(){}
+Message::~Message(){}
 
-string message::parseToJson(){}
+string Message::parseToJson(){}
 
-void message::sendMessage(){}
+void Message::sendMessage(){}
 
-void message::showMessage(){}
+void Message::showMessage(){}

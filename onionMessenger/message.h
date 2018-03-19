@@ -1,14 +1,14 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <iostream>
+#include "common.h"
 using namespace std;
 
 namespace newmsg{
-    class message{
+    class Message{
     public:
-        message();
-        virtual ~message();
+        Message();
+        virtual ~Message();
         string parseToJson();
         void sendMessage();
         void showMessage();
