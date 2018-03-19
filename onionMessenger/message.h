@@ -8,6 +8,7 @@ namespace newmsg{
     public:
         Message();
         virtual ~Message();
+        // Socket Client
         void SendMessage();
         void RecvMessage();
     private:

@@ -15,7 +15,7 @@ namespace newkey{
         void SearchMap(string githubID);
         void AddMap(string githubID);
         void DelMap(string githubID);
-        // GetKey, PutKey for request or response
+        // GetKey, PutKey Socket
         void GetKey();
         void PutKey();
     private:
