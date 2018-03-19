@@ -9,6 +9,6 @@ Newproto::Newproto(){}
 
 Newproto::~Newproto(){}
 
-void Newproto::hello(){}
+void Newproto::Hello(){}
 
-void Newproto::goodBye(){}
+void Newproto::GoodBye(){}

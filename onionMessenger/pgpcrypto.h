@@ -9,8 +9,8 @@ namespace newcrypto{
     public:
         Pgpcrypto();
         virtual ~Pgpcrypto();
-        string enc();
-        string dec();
+        string Enc();
+        string Dec();
     private:
     };
 }

@@ -8,8 +8,8 @@ namespace newpro{
     public:
         Newproto();
         virtual ~Newproto();
-        void hello();
-        void goodBye();
+        void Hello();
+        void GoodBye();
     private:
     };
 }

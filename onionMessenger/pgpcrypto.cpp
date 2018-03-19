@@ -9,6 +9,6 @@ Pgpcrypto::Pgpcrypto(){}
 
 Pgpcrypto::~Pgpcrypto(){}
 
-string Pgpcrypto::enc(){}
+string Pgpcrypto::Enc(){}
 
-string Pgpcrypto::dec(){}
+string Pgpcrypto::Dec(){}
