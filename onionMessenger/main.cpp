@@ -2,6 +2,7 @@
 #include "message.h"
 #include "newproto.h"
 #include "pgpcrypto.h"
+#include "keymanager.h"
 
 using namespace std;
 using namespace newmsg;
@@ -18,8 +19,10 @@ int main(int argc, char *argv[])
     else{
         cout << "Enter passphrase: ";
         cin >> test;
+
+        cout << argv[1] << endl;
+        cout << test << endl;
     }
-    cout << argv[2] << endl;
-    cout << test << endl;
+
     return 0;
 }
