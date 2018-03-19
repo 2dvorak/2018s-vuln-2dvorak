@@ -8,11 +8,13 @@ SOURCES += main.cpp \
     pgpcrypto.cpp \
     keymanager.cpp \
     messenger.cpp \
-    common.cpp
+    common.cpp \
+    sockserver.cpp
 
 HEADERS += \
     message.h \
     pgpcrypto.h \
     common.h \
     keymanager.h \
-    messenger.h
+    messenger.h \
+    sockserver.h
