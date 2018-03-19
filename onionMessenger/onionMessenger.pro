@@ -5,9 +5,13 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     message.cpp \
-    pgpcrypto.cpp
+    pgpcrypto.cpp \
+    newproto.cpp \
+    keymanager.cpp
 
 HEADERS += \
     message.h \
     pgpcrypto.h \
-    common.h
+    common.h \
+    newproto.h \
+    keymanager.h
