@@ -5,6 +5,8 @@
 #include <thread>
 #include <unordered_map>
 #include <queue>
+#include <mutex>
+
 using namespace std;
 
 // Usage & Print stderr
