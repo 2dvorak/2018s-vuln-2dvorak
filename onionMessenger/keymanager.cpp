@@ -2,7 +2,7 @@
 #include "common.h"
 #include "keymanager.h"
 
-using namespace newkey;
+namespace newkey{
 
 Keymanager::Keymanager(string githubID, string passPhrase)
 {
@@ -24,3 +24,5 @@ void Keymanager::DelMap(string githubID){}
 void Keymanager::GetKey(){}
 
 void Keymanager::PutKey(){}
+
+}

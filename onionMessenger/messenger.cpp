@@ -4,7 +4,8 @@
 #include "keymanager.h"
 
 using namespace newkey;
-using namespace newmsger;
+
+namespace newmsger{
 
 Messenger::Messenger(string githubID, string passPhrase)
 {
@@ -17,3 +18,5 @@ Messenger::Messenger(string githubID, string passPhrase)
 Messenger::~Messenger(){}
 
 void Messenger::Loop(){}
+
+}
