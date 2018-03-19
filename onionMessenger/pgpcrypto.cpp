@@ -5,10 +5,10 @@
 using namespace std;
 using namespace newcrypto;
 
-pgpcrypto::pgpcrypto(){}
+Pgpcrypto::Pgpcrypto(){}
 
-pgpcrypto::~pgpcrypto(){}
+Pgpcrypto::~Pgpcrypto(){}
 
-string pgpcrypto::enc(){}
+string Pgpcrypto::enc(){}
 
-string pgpcrypto::dec(){}
+string Pgpcrypto::dec(){}

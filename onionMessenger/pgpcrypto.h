@@ -1,14 +1,14 @@
 #ifndef PGPCRYPTO_H
 #define PGPCRYPTO_H
 
-#include <iostream>
+#include "common.h"
 using namespace std;
 
 namespace newcrypto{
-    class pgpcrypto{
+    class Pgpcrypto{
     public:
-        pgpcrypto();
-        virtual ~pgpcrypto();
+        Pgpcrypto();
+        virtual ~Pgpcrypto();
         string enc();
         string dec();
     private:
