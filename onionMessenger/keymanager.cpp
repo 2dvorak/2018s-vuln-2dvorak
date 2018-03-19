@@ -13,7 +13,7 @@ namespace newkey{
 
     Keymanager::~Keymanager(){}
 
-    bool Keymanager::Validation(){}
+    bool Keymanager::Validation(){return 0;}
 
     void Keymanager::SearchMap(string githubID){}
 
