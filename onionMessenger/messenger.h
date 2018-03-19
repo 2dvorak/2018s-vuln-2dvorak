@@ -11,10 +11,9 @@ namespace newmsger{
     public:
         Messenger(string passPhrase);
         virtual ~Messenger();
-        Keymanager *km;
         void Loop();
     private:
-
+        Keymanager *km;
     };
 }
 
