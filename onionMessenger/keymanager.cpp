@@ -7,7 +7,7 @@ using namespace newkey;
 Keymanager::Keymanager(string pP)
 {
     this->passPhrase = pP;
-    this->nodeInfo = new unordered_map<string, string>;
+    this->nodeMap = new unordered_map<string, string>;
 }
 
 Keymanager::~Keymanager(){}

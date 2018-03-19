@@ -12,7 +12,7 @@ namespace newkey{
         bool Validation();
     private:
         // <githubID, IP>
-        unordered_map<string, string>* nodeInfo;
+        unordered_map<string, string>* nodeMap;
         unordered_map<string ,string>::iterator nodeIter;
         string passPhrase;
     };
