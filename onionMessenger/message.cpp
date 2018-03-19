@@ -9,8 +9,8 @@ Message::Message(){}
 
 Message::~Message(){}
 
-string Message::parseToJson(){}
+string Message::ParseToJson(){}
 
-void Message::sendMessage(){}
+void Message::SendMessage(){}
 
-void Message::showMessage(){}
+void Message::ShowMessage(){}

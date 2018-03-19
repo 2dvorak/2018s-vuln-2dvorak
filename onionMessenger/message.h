@@ -9,9 +9,9 @@ namespace newmsg{
     public:
         Message();
         virtual ~Message();
-        string parseToJson();
-        void sendMessage();
-        void showMessage();
+        string ParseToJson();
+        void SendMessage();
+        void ShowMessage();
     private:
         string title;
         string to;
