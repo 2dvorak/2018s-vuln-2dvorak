@@ -4,12 +4,12 @@
 
 namespace newcrypto{
 
-Pgpcrypto::Pgpcrypto(){}
+    Pgpcrypto::Pgpcrypto(){}
 
-Pgpcrypto::~Pgpcrypto(){}
+    Pgpcrypto::~Pgpcrypto(){}
 
-string Pgpcrypto::Enc(){}
+    string Pgpcrypto::Enc(){}
 
-string Pgpcrypto::Dec(){}
+    string Pgpcrypto::Dec(){}
 
 }

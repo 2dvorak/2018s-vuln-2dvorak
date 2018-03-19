@@ -7,16 +7,16 @@ using namespace newkey;
 
 namespace newmsger{
 
-Messenger::Messenger(string githubID, string passPhrase)
-{
-    this->km = new Keymanager(githubID, passPhrase);
-    if(km->Validation() == 1)
-        CheckPW();
-        exit(1);
-}
+    Messenger::Messenger(string githubID, string passPhrase)
+    {
+        this->km = new Keymanager(githubID, passPhrase);
+        if(km->Validation() == 1)
+            CheckPW();
+            exit(1);
+    }
 
-Messenger::~Messenger(){}
+    Messenger::~Messenger(){}
 
-void Messenger::Loop(){}
+    void Messenger::Loop(){}
 
 }

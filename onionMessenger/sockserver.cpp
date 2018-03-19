@@ -4,12 +4,12 @@
 
 namespace socksv{
 
-Sockserver::Sockserver(){}
+    Sockserver::Sockserver(){}
 
-Sockserver::~Sockserver(){}
+    Sockserver::~Sockserver(){}
 
-std::thread Sockserver::KeyServer(){}
+    std::thread Sockserver::KeyServer(){}
 
-std::thread Sockserver::MessageServer(){}
+    std::thread Sockserver::MessageServer(){}
 
 }

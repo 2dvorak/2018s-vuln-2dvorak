@@ -4,12 +4,12 @@
 
 namespace newmsg{
 
-Message::Message(){}
+    Message::Message(){}
 
-Message::~Message(){}
+    Message::~Message(){}
 
-void Message::SendMessage(){}
+    void Message::SendMessage(){}
 
-void Message::RecvMessage(){}
+    void Message::RecvMessage(){}
 
 }
