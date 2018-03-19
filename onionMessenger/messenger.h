@@ -9,7 +9,7 @@ using namespace newkey;
 namespace newmsger{
     class Messenger{
     public:
-        Messenger(string passPhrase);
+        Messenger(string githubID, string passPhrase);
         virtual ~Messenger();
         void Loop();
     private:

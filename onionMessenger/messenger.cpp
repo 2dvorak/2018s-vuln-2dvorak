@@ -6,10 +6,11 @@
 using namespace newkey;
 using namespace newmsger;
 
-Messenger::Messenger(string passPhrase)
+Messenger::Messenger(string githubID, string passPhrase)
 {
-    this->km = new Keymanager(passPhrase);
+    this->km = new Keymanager(githubID, passPhrase);
     if(km->Validation() == 1)
+        CheckPW();
         exit(1);
 }
 
