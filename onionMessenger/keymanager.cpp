@@ -4,14 +4,23 @@
 
 using namespace newkey;
 
-Keymanager::Keymanager(string pP)
+Keymanager::Keymanager(string githubID, string passPhrase)
 {
-    this->passPhrase = pP;
-    this->nodeMap = new unordered_map<string, string>;
+    this->passPhrase = passPhrase;
+    this->githubID = githubID;
+    this->nodeMap = new unordered_map<string, Nodeinfo*>;
 }
 
 Keymanager::~Keymanager(){}
 
 bool Keymanager::Validation(){}
 
+void Keymanager::SearchMap(string githubID){}
 
+void Keymanager::AddMap(string githubID){}
+
+void Keymanager::DelMap(string githubID){}
+
+void Keymanager::GetKey(){}
+
+void Keymanager::PutKey(){}
