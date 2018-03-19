@@ -15,22 +15,24 @@ namespace newkey{
         void SearchMap(string githubID);
         void AddMap(string githubID);
         void DelMap(string githubID);
+        // GetKey, PutKey for request or response
         void GetKey();
         void PutKey();
     private:
         // <githubID, *nodeInfo>
         unordered_map<string, Nodeinfo*>* nodeMap;
         unordered_map<string, Nodeinfo*>::iterator nodeIter;
+        // This client's github ID and passphrase
         string githubID;
         string passPhrase;
     };
 
     class Nodeinfo{
     private:
+        // Node info IP & Pubkey
         string IP;
         string pubkey;
     };
 }
-
 
 #endif // KEYMANAGER_H
