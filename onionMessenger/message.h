@@ -8,15 +8,11 @@ namespace newmsg{
     public:
         Message();
         virtual ~Message();
-        string ParseToJson();
         void SendMessage();
-        void ShowMessage();
+        void RecvMessage();
     private:
-        string title;
-        string to;
-        string from;
-        string contents;
-        // string attachment;
+        // We have to make rules(Protocol)
+        // +a // string attachment;
     };
 }
 

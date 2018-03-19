@@ -1,8 +1,6 @@
 
+#incldue "common.h"
 #include "message.h"
-#include <iostream>
-
-using namespace std;
 using namespace newmsg;
 
 Message::Message(){}
@@ -13,4 +11,4 @@ string Message::ParseToJson(){}
 
 void Message::SendMessage(){}
 
-void Message::ShowMessage(){}
+void Message::RecvMessage(){}
