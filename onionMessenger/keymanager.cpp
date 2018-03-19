@@ -4,8 +4,14 @@
 
 using namespace newkey;
 
-Keymanager::Keymanager(){}
+Keymanager::Keymanager(string pP)
+{
+    this->passPhrase = pP;
+    this->nodeInfo = new unordered_map<string, string>;
+}
 
 Keymanager::~Keymanager(){}
+
+bool Keymanager::Validation(){}
 
 
