@@ -2,7 +2,6 @@
 #define KEYMANAGER_H
 
 #include "common.h"
-using namespace std;
 
 namespace newkey{
     class Keymanager{

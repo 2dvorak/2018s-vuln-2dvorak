@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     pgpcrypto.cpp \
     newproto.cpp \
     keymanager.cpp \
-    messenger.cpp
+    messenger.cpp \
+    common.cpp
 
 HEADERS += \
     message.h \

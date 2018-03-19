@@ -2,7 +2,6 @@
 #include "pgpcrypto.h"
 #include "common.h"
 
-using namespace std;
 using namespace newcrypto;
 
 Pgpcrypto::Pgpcrypto(){}

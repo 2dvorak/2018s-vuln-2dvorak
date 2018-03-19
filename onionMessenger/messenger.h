@@ -4,7 +4,6 @@
 #include "common.h"
 #include "keymanager.h"
 
-using namespace std;
 using namespace newkey;
 
 namespace newmsger{

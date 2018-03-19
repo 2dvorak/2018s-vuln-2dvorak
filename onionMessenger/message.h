@@ -2,7 +2,6 @@
 #define MESSAGE_H
 
 #include "common.h"
-using namespace std;
 
 namespace newmsg{
     class Message{
