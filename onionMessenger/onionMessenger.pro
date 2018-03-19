@@ -4,7 +4,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    message.cpp
+    message.cpp \
+    pgpcrypto.cpp
 
 HEADERS += \
-    message.h
+    message.h \
+    pgpcrypto.h \
+    common.h
