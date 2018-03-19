@@ -2,7 +2,9 @@
 #define COMMON_H
 
 #include <iostream>
+#include <thread>
 #include <unordered_map>
+#include <queue>
 using namespace std;
 
 // Usage & Print stderr
