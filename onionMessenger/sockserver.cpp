@@ -23,6 +23,7 @@ namespace socksv{
          printf("Here is the message: %s\n",buffer);
 
          close(newSockFd);
+         return 0;
     }
 
     int createSocket() {
