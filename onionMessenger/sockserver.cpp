@@ -14,21 +14,23 @@ namespace socksv{
 
     int recvKey(int sockFd, int portNum) {
          char buffer[256];
-         bzero(buffer,256);
-         n = read(newSockFd,buffer,255);
+         int n;
+         memset(buffer, 256, 0);
+         n = read(sockFd,buffer,255);
          if (n < 0) {
-             error("ERROR reading from socket");
+             //error("ERROR reading from socket");
              return -1;
          }
          printf("Here is the message: %s\n",buffer);
 
-         close(newSockFd);
+         close(sockFd);
+
          return 0;
     }
 
     int createSocket() {
         int sockFd, newSockFd, portNum;
-        socklent_t clientLen;
+        socklen_t clientLen;
         char buffer[256];
         struct sockaddr_in servAddr, cliAddr;
         int n;
@@ -45,7 +47,7 @@ namespace socksv{
         }
 
         // clear address structure
-        bzero((char*) &servAddr, sizeof(servAddr));
+        memset((char*) &servAddr, sizeof(servAddr), 0);
 
         // !!!!!!!!!!!!!!!!!!!!! which protocol??
         servAddr.sin_family = AF_INET;
@@ -62,35 +64,40 @@ namespace socksv{
         // bind(int fd, struct sockaddr *local_addr, socklen_t addr_length)
         // bind socket to current IP address on portNum
         if (bind(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-            error("ERROR on binding");
+            //error("ERROR on binding");
             return -1;
         }
 
         // listen() function put all new connections into backlog queue until accept()
         // !!!!!!!!!!!!!!!! SOMAXCONN ok?
-        listen(sockfd, SOMAXCONN);
+        listen(sockFd, SOMAXCONN);
 
         // ? what for..?
-        cliLen = sizeof(cliAddr);
+        clientLen = sizeof(cliAddr);
 
         // accept(int s, struct sockaddr *addr, socklen_t *addrlen);
         // accept() function will write the connecting client's info
         // into address structure then returns a new socket file descriptor
         // for the accepted connection.
         while(1) {
-            newSockFd = accept(sockFd, (struct sockaddr *) &cliAddr, &cliLen);
+            char clientIp[INET_ADDRSTRLEN];
+            newSockFd = accept(sockFd, (struct sockaddr *) &cliAddr, &clientLen);
             if (newSockFd < 0) {
-                error("ERROR on accept");
+                //error("ERROR on accept");
                 return -1;
             }
-            printf("server: got connection from %s port %d\n", inet_ntoa(cliAddr.sin_addr), ntohs(cliAddr.sin_port));
+            if(inet_ntop(AF_INET, &(cliAddr.sin_addr), clientIp, INET_ADDRSTRLEN) == NULL ) {
+                //perror("ERROR on inet_ntop");
+                return -1;
+            }
+            printf("server: got connection from %s port %d\n", clientIp, ntohs(cliAddr.sin_port));
             std::thread recvKeyThread(recvKey, newSockFd, portNum);
         }
 
         // send 13 byte to new socket
         //send(newSockFd, "Hello, world!\n", 13, 0);
 
-        bzero(buffer,256);
+        memset(buffer,256,0);
 
         close(sockFd);
         return 0;
