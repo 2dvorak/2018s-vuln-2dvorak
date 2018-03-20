@@ -17,6 +17,26 @@ namespace newmsger{
 
     Messenger::~Messenger(){}
 
-    void Messenger::Loop(){}
+    void recvKey(void) {
+
+    }
+
+    void recvMessage(void) {
+
+    }
+
+    void Messenger::Loop(){
+        // create 3 threads
+        // 1. recv new node info / node exit notification
+        // 2. recv messages
+        // 3. handle user input / print output to screen
+        // 3rd thread will be handled in anohter module
+
+        // 1st thread
+        std::thread keyThread();
+
+        // 2nd thread
+        std::thread messageThread();
+    }
 
 }
