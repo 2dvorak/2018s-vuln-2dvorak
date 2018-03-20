@@ -2,9 +2,9 @@
 #include "common.h"
 #include "sockserver.h"
 
-#include <string>
+#include <cstring>
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <arpa/inet.h>
 
 namespace socksv{
 
