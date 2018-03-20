@@ -13,19 +13,16 @@ namespace socksv{
     Sockserver::~Sockserver(){}
 
     int recvKey(int sockFd, int portNum) {
-         char buffer[256];
-         int n;
-         memset(buffer, 256, 0);
-         n = read(sockFd,buffer,255);
-         if (n < 0) {
-             //error("ERROR reading from socket");
-             return -1;
-         }
-         printf("Here is the message: %s\n",buffer);
+        char buffer[256];
+        int n;
+        memset(buffer, 256, 0);
+        while( (n = read(sockFd,buffer,255) ) >= o) {
+            printf("Here is the message: %s\n",buffer);
+        }
 
-         close(sockFd);
+        close(sockFd);
 
-         return 0;
+        return 0;
     }
 
     int createSocket() {
