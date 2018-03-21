@@ -2,6 +2,7 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
+LIBS += -lpthread
 
 SOURCES += main.cpp \
     message.cpp \
@@ -9,7 +10,7 @@ SOURCES += main.cpp \
     keymanager.cpp \
     messenger.cpp \
     common.cpp \
-    sockserver.cpp
+    sockthread.cpp
 
 HEADERS += \
     message.h \
@@ -17,4 +18,4 @@ HEADERS += \
     common.h \
     keymanager.h \
     messenger.h \
-    sockserver.h
+    sockthread.h

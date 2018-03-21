@@ -4,12 +4,23 @@
 
 namespace newmsg{
 
-    Message::Message(){}
+    Message::Message(){
+
+    }
+
+    Message::Message(string msg) {
+        this->msg = msg;
+    }
 
     Message::~Message(){}
 
-    void Message::SendMessage(){}
+    void Message::SendMessage(){
+        qSendMsg.push(this->msg);
+    }
 
-    void Message::RecvMessage(){}
+    void Message::RecvMessage(){
+        this->msg = qRecvMsg.front();
+        qRecvMsg.pop();
+    }
 
 }

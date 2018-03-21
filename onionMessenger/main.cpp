@@ -3,7 +3,8 @@
 using namespace newmsger;
 
 queue<string>qkey;
-queue<string>qmsg;
+queue<string>qSendMsg;
+queue<string>qRecvMsg;
 
 int main(int argc, char *argv[])
 {
