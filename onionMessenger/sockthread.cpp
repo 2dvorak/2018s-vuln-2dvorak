@@ -124,19 +124,20 @@ namespace sockth{
         // get recv ip addr
         // getIp();
 
+        int n;
         struct sockaddr_in servAddr;
         char msg[18] = "Message from :   ";
 
         memset((char *) &servAddr, sizeof(servAddr), 0);
         servAddr.sin_family = AF_INET;
         inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr);
-        serv_addr.sin_port = htons(portNum);
+        servAddr.sin_port = htons(portNum);
         if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             perror("ERROR connecting");
             return -1;
         }
-        msg[15] = '0' + index / 10;
-        msg[16] = '0' + index % 10;
+        msg[15] = '0' + (sockFd % 100) / 10;
+        msg[16] = '0' + sockFd % 10;
         n = write(sockFd, msg, strlen(msg));
         if( n < 0 ) {
             perror("ERROR writing msg to socket\n");
@@ -162,7 +163,7 @@ namespace sockth{
                 return -1;
             }
 
-            new std::thread(sendMessage, sockFd);
+            new std::thread(sendMessage, sockFd, portNum);
         }
     }
 
