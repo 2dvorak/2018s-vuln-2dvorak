@@ -4,6 +4,7 @@
 #include "keymanager.h"
 
 using namespace newkey;
+using namespace socksv;
 
 namespace newmsger{
 
@@ -17,14 +18,6 @@ namespace newmsger{
 
     Messenger::~Messenger(){}
 
-    void recvKey(void) {
-
-    }
-
-    void recvMessage(void) {
-
-    }
-
     void Messenger::Loop(){
         // create 3 threads
         // 1. recv new node info / node exit notification
@@ -32,11 +25,12 @@ namespace newmsger{
         // 3. handle user input / print output to screen
         // 3rd thread will be handled in anohter module
 
-        // 1st thread
-        std::thread keyThread();
+        Sockserver *socksv = new Sockserver();
+        std::thread socketThread = socksv->MessageServer();
 
-        // 2nd thread
-        std::thread messageThread();
+        // for now, no additional executions are left so we should
+        // wait for the thread to return
+        socketThread.join();
     }
 
 }
