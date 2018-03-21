@@ -1,17 +1,19 @@
-#ifndef SOCKSERVER_H
-#define SOCKSERVER_H
+#ifndef SOCKTHREAD_H
+#define SOCKTHREAD_H
 
 #include "common.h"
 
-namespace socksv{
-    class Sockserver{
+namespace sockth{
+    class Sockthread{
     public:
-        Sockserver();
-        virtual ~Sockserver();
-        std::thread KeyServer();
-        std::thread MessageServer();
+        Sockthread();
+        virtual ~Sockthread();
+        std::thread recvMessageThread();
+        //std::thread recvKeyThread();
+        std::thread sendMessageThread();
+        //std::thread sendKeyThread();
     private:
     };
 }
 
-#endif // SOCKSERVER_H
+#endif // SOCKTHREAD_H
