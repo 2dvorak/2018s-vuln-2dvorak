@@ -109,7 +109,6 @@ namespace sockth{
                 perror("ERROR on inet_ntop");
                 return -1;
             }
-            printf("server: got connection from %s port %d\n", clientIp, ntohs(cliAddr.sin_port));
             new std::thread(recvKey, newSockFd, portNum);
         }
 
@@ -119,13 +118,18 @@ namespace sockth{
         return 0;
     }
 
+    int createSendSocket() {
+        
+    }
+    
     std::thread Sockthread::recvMessageThread(){
         std::thread t(createRecvSocket);
         return t;
     }
 
     std::thread Sockthread::sendMessageThread(){
-    
+        std::thread t(createSendSocket);
+        return t;
     }
 
 }
