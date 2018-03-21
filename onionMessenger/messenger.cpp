@@ -2,6 +2,7 @@
 #include "common.h"
 #include "messenger.h"
 #include "keymanager.h"
+#include "sockthread.h"
 
 using namespace newkey;
 using namespace sockth;
@@ -26,11 +27,13 @@ namespace newmsger{
         // 3rd thread will be handled in anohter module
 
         Sockthread *sockth = new Sockthread();
-        std::thread socketThread = sockth->MessageServer();
+        std::thread recvThread = sockth->recvMessageThread();
+        std::thread sendThread = sockth->sendMessageThread();
 
         // for now, no additional executions are left so we should
         // wait for the thread to return
-        socketThread.join();
+        recvThread.join();
+        sendThread.join();
     }
 
 }
