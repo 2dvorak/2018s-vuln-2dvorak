@@ -114,7 +114,7 @@ namespace socksv{
                 return -1;
             }
             printf("server: got connection from %s port %d\n", clientIp, ntohs(cliAddr.sin_port));
-            std::thread recvKeyThread(recvKey, newSockFd, portNum);
+            new std::thread(recvKey, newSockFd, portNum);
         }
 
         memset(buffer,256,0);
