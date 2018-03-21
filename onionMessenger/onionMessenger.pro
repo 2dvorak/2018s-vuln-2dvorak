@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     keymanager.cpp \
     messenger.cpp \
     common.cpp \
-    sockthread.cpp
+    sockthread.cpp \
+    onionui.cpp
 
 HEADERS += \
     message.h \
@@ -20,4 +21,5 @@ HEADERS += \
     common.h \
     keymanager.h \
     messenger.h \
-    sockthread.h
+    sockthread.h \
+    onionui.h
