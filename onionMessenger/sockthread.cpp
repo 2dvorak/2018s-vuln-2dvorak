@@ -39,7 +39,9 @@ namespace sockth{
             perror("[KEY thread] Error reading socket\n");
             return -1;
         }
-        printf("[KEY thread] %s\n",buffer);
+        //printf("[KEY thread] %s\n",buffer);
+        string msgStr(buffer);
+        qRecvMsg.push(msgStr);
 
         close(sockFd);
 
@@ -126,7 +128,10 @@ namespace sockth{
 
         int n;
         struct sockaddr_in servAddr;
-        char msg[18] = "Message from :   ";
+        //char msg[18] = "Message from :   ";
+        string msgStr = qSendMsg.front();
+        const char* msg = msgStr.c_str();
+        qSendMsg.pop();
 
         memset((char *) &servAddr, sizeof(servAddr), 0);
         servAddr.sin_family = AF_INET;
@@ -136,8 +141,8 @@ namespace sockth{
             perror("ERROR connecting");
             return -1;
         }
-        msg[15] = '0' + (sockFd % 100) / 10;
-        msg[16] = '0' + sockFd % 10;
+        //msg[15] = '0' + (sockFd % 100) / 10;
+        //msg[16] = '0' + sockFd % 10;
         n = write(sockFd, msg, strlen(msg));
         if( n < 0 ) {
             perror("ERROR writing msg to socket\n");

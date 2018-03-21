@@ -25,8 +25,7 @@ namespace newmsger{
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
                 qRecvMsg.pop();
-                printf(str);
-                printf("\n");
+                cout << str << "\n";
             }
         }
     }
