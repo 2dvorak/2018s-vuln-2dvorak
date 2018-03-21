@@ -6,10 +6,15 @@ Onion Messenger - Team3 HER
 
 
 # Installation
-
+```sh
+# ./AutoDocker.sh
+```
 
 # Usages
-
+```sh
+# ./startMessenger.sh
+# ./onionMessenger
+```
 
 # Examples
 
