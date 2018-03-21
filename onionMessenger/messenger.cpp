@@ -23,7 +23,8 @@ namespace newmsger{
     void uiRecvThread() {
         while(1) {
             if(qRecvMsg.empty() == 0) {
-                srt = qRecvMsg.front();
+                str = qRecvMsg.front();
+                qRecvMsg.pop();
                 printf(str);
                 printf("\n");
             }
@@ -34,7 +35,7 @@ namespace newmsger{
         string str;
         printf("\n>");
         while(1) {
-            scanf_s("%s",str);
+            scanf("%s",str);
             if(str.compare("/exit") == 0) {
                 break;
             }
