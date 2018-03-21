@@ -4,7 +4,7 @@
 #include "keymanager.h"
 
 using namespace newkey;
-using namespace socksv;
+using namespace sockth;
 
 namespace newmsger{
 
@@ -25,8 +25,8 @@ namespace newmsger{
         // 3. handle user input / print output to screen
         // 3rd thread will be handled in anohter module
 
-        Sockserver *socksv = new Sockserver();
-        std::thread socketThread = socksv->MessageServer();
+        Sockthread *sockth = new Sockthread();
+        std::thread socketThread = sockth->MessageServer();
 
         // for now, no additional executions are left so we should
         // wait for the thread to return
