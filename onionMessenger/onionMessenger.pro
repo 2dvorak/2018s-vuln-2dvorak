@@ -9,7 +9,7 @@ SOURCES += main.cpp \
     keymanager.cpp \
     messenger.cpp \
     common.cpp \
-    sockserver.cpp
+    sockthread.cpp
 
 HEADERS += \
     message.h \
@@ -17,4 +17,4 @@ HEADERS += \
     common.h \
     keymanager.h \
     messenger.h \
-    sockserver.h
+    sockthread.h
