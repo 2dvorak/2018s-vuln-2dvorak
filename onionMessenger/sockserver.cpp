@@ -16,9 +16,12 @@ namespace socksv{
         char buffer[256];
         int n;
         memset(buffer, 256, 0);
-        while( (n = read(sockFd,buffer,255) ) >= o) {
-            printf("Here is the message: %s\n",buffer);
+        n = read(sockFd,buffer,255);
+        if(n < 0) {
+            perror("Error reading socket\n");
+            return -1;
         }
+        printf("[KEY thread] %s\n",buffer);
 
         close(sockFd);
 
@@ -39,11 +42,11 @@ namespace socksv{
         // socket(int domain, int type, int protocol)
         sockFd = socket(AF_INET, SOCK_STREAM, 0);
         if(sockFd < 0) {
-            // error("Error Opening Socket");
+            perror("Error Opening Socket");
             return -1;
         }
 
-        // clear address structure
+        // clear address structure(needed?)
         memset((char*) &servAddr, sizeof(servAddr), 0);
 
         // !!!!!!!!!!!!!!!!!!!!! which protocol??
@@ -61,13 +64,9 @@ namespace socksv{
         // bind(int fd, struct sockaddr *local_addr, socklen_t addr_length)
         // bind socket to current IP address on portNum
         if (bind(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-            //error("ERROR on binding");
+            perror("ERROR on binding");
             return -1;
         }
-
-        // listen() function put all new connections into backlog queue until accept()
-        // !!!!!!!!!!!!!!!! SOMAXCONN ok?
-        listen(sockFd, SOMAXCONN);
 
         // ? what for..?
         clientLen = sizeof(cliAddr);
@@ -78,21 +77,23 @@ namespace socksv{
         // for the accepted connection.
         while(1) {
             char clientIp[INET_ADDRSTRLEN];
+
+            // listen() function put all new connections into backlog queue until accept()
+            // !!!!!!!!!!!!!!!! SOMAXCONN ok?
+            listen(sockFd, SOMAXCONN);
+
             newSockFd = accept(sockFd, (struct sockaddr *) &cliAddr, &clientLen);
             if (newSockFd < 0) {
-                //error("ERROR on accept");
+                perror("ERROR on accept");
                 return -1;
             }
             if(inet_ntop(AF_INET, &(cliAddr.sin_addr), clientIp, INET_ADDRSTRLEN) == NULL ) {
-                //perror("ERROR on inet_ntop");
+                perror("ERROR on inet_ntop");
                 return -1;
             }
             printf("server: got connection from %s port %d\n", clientIp, ntohs(cliAddr.sin_port));
             std::thread recvKeyThread(recvKey, newSockFd, portNum);
         }
-
-        // send 13 byte to new socket
-        //send(newSockFd, "Hello, world!\n", 13, 0);
 
         memset(buffer,256,0);
 
