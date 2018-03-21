@@ -7,6 +7,7 @@ namespace newmsg{
     class Message{
     public:
         Message();
+        Message(string);
         virtual ~Message();
         // Socket Client
         void SendMessage();
