@@ -18,7 +18,8 @@ using namespace std;
 
 // global queues
 extern queue<string> qkey;
-extern queue<string> qmsg;
+extern queue<string> qSendMsg;
+extern queue<string> qRecvMsg;
 
 // Usage & Print stderr
 void UsageMessenger();
