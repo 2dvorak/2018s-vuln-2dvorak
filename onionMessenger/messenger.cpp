@@ -20,6 +20,28 @@ namespace newmsger{
 
     Messenger::~Messenger(){}
 
+    void uiRecvThread() {
+        while(1) {
+            if(qRecvMsg.empty() == 0) {
+                srt = qRecvMsg.front();
+                printf(str);
+                printf("\n");
+            }
+        }
+    }
+
+    void uiSendThread() {
+        string str;
+        printf("\n>");
+        while(1) {
+            scanf_s("%s",str);
+            if(str.compare("/exit") == 0) {
+                break;
+            }
+            qSendMsg.push(str);
+        }
+    }
+
     void Messenger::Loop(){
         // create 3 threads
         // 1. recv new node info / node exit notification
@@ -33,9 +55,14 @@ namespace newmsger{
         sleep(1);
         std::thread sendThread = sockth->sendMessageThread();
 
+        std::thread uiSend(uiSendThread);
+        std::thread uiRecv(uiRecvThread);
+
         // for now, no additional executions are left so we should
         // wait for the thread to return
-        //recvThread.join();
+        uiSend.join();
+        uiRecv.join();
+        recvThread.join();
         sendThread.join();
     }
 
