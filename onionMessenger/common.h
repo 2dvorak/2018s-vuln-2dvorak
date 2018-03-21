@@ -16,6 +16,10 @@
 
 using namespace std;
 
+// global queues
+extern queue<string> qkey;
+extern queue<string> qmsg;
+
 // Usage & Print stderr
 void UsageMessenger();
 void CheckPW();
