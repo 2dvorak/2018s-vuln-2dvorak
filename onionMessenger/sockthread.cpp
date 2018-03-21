@@ -1,18 +1,14 @@
 
 #include "common.h"
-#include "sockserver.h"
+#include "sockthread.h"
 
-#include <cstring>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+namespace sockth{
 
-namespace socksv{
-
-    Sockserver::Sockserver(){
-        printf("Sockserver constructed\n");
+    Sockthread::Sockthread(){
+        printf("Sockthread constructed\n");
     }
 
-    Sockserver::~Sockserver(){}
+    Sockthread::~Sockthread(){}
 
     int recvMessage(int sockFd, int portNum) {
         char buffer[256];
@@ -50,7 +46,7 @@ namespace socksv{
         return 0;
     }
 
-    int createSocket() {
+    int createRecvSocket() {
         int sockFd, newSockFd, portNum;
         socklen_t clientLen;
         char buffer[256];
@@ -123,14 +119,13 @@ namespace socksv{
         return 0;
     }
 
-    std::thread Sockserver::KeyServer(){
-        std::thread t(createSocket);
+    std::thread Sockthread::recvMessageThread(){
+        std::thread t(createRecvSocket);
         return t;
     }
 
-    std::thread Sockserver::MessageServer(){
-        std::thread t(createSocket);
-        return t;
+    std::thread Sockthread::sendMessageThread(){
+    
     }
 
 }
