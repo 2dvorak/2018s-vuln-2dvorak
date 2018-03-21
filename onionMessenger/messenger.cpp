@@ -23,7 +23,7 @@ namespace newmsger{
     void uiRecvThread() {
         while(1) {
             if(qRecvMsg.empty() == 0) {
-                str = qRecvMsg.front();
+                string str = qRecvMsg.front();
                 qRecvMsg.pop();
                 printf(str);
                 printf("\n");
