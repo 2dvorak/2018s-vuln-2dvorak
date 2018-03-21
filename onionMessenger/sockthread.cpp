@@ -120,7 +120,7 @@ namespace sockth{
         return 0;
     }
 
-    int sendMessage(int sockFd, int portNum) {
+    int sendMessage(int sockFd, int portNum, string msgStr) {
         // get message from buffer
         // getMesg();
         // get recv ip addr
@@ -129,9 +129,9 @@ namespace sockth{
         int n;
         struct sockaddr_in servAddr;
         //char msg[18] = "Message from :   ";
-        string msgStr(qSendMsg.front());
+        //string msgStr(qSendMsg.front());
         const char* msg = msgStr.c_str();
-        qSendMsg.pop();
+        //qSendMsg.pop();
 
         memset((char *) &servAddr, sizeof(servAddr), 0);
         servAddr.sin_family = AF_INET;
@@ -168,9 +168,11 @@ namespace sockth{
                 return -1;
             }
 
-            //new std::thread(sendMessage, sockFd, portNum);
-            std::thread t(sendMessage, sockFd, portNum);
-            t.join();
+            string msg(qSendMsg.front());
+            qSendMsg.pop();
+            new std::thread(sendMessage, sockFd, portNum, msg);
+            //std::thread t(sendMessage, sockFd, portNum);
+            //t.join();
 
             //sleep(1);
         }
