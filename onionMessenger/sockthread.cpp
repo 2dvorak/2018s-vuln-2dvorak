@@ -4,14 +4,13 @@
 
 namespace sockth{
 
-    Sockthread::Sockthread(){
-        printf("Sockthread constructed\n");
-    }
+    Sockthread::Sockthread(){}
 
     Sockthread::~Sockthread(){}
 
     int Sockthread::recvMessage(int sockFd) {
         char buffer[256];
+        string buf;
         int n;
         memset(buffer, '\x00', 256);
         n = read(sockFd,buffer,255);
@@ -45,13 +44,10 @@ namespace sockth{
     }
 
     int Sockthread::createRecvSocket() {
-        int sockFd, newSockFd, portNum;
+        int sockFd, newSockFd;
         socklen_t clientLen;
         char buffer[256];
         struct sockaddr_in servAddr, cliAddr;
-
-        // !!!!!!!!!!!!!!!!temporary port num
-        portNum = 9987;
 
         // create socket
         // socket(int domain, int type, int protocol)
@@ -68,7 +64,7 @@ namespace sockth{
         servAddr.sin_family = AF_INET;
 
         // !!!!!!!!!!!!!!!!!!!!! port number to what?
-        servAddr.sin_port = htons(portNum);
+        servAddr.sin_port = htons(9987); // port number
 
         // !!!!!!!!!!!!!!!!!!!!! INADDR_ANY safe?
         // should be INADDR_ANY but how about checking if that
@@ -115,7 +111,7 @@ namespace sockth{
         return 0;
     }
 
-    int Sockthread::sendMessage(int sockFd, int portNum, string msgStr) {
+    int Sockthread::sendMessage(int sockFd, string msgStr) {
         // get message from buffer
         // getMesg();
         // get recv ip addr
@@ -131,7 +127,7 @@ namespace sockth{
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
         inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr);
-        servAddr.sin_port = htons(portNum);
+        servAddr.sin_port = htons(9987); // port number
         if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             perror("ERROR connecting");
             return -1;
@@ -153,9 +149,7 @@ namespace sockth{
             while(qSendMsg.empty() == 1) ;
 
             // make socket
-            int sockFd, portNum;
-
-            portNum = 9987;
+            int sockFd;
 
             sockFd = socket(AF_INET, SOCK_STREAM, 0);
             if (sockFd < 0) {
@@ -165,7 +159,7 @@ namespace sockth{
 
             string msg(qSendMsg.front());
             qSendMsg.pop();
-            new std::thread(Sockthread::sendMessage, sockFd, portNum, msg);
+            new std::thread(Sockthread::sendMessage, sockFd, msg);
             //std::thread t(sendMessage, sockFd, portNum);
             //t.join();
 

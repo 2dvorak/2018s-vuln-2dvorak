@@ -11,7 +11,7 @@ namespace sockth{
         std::thread recvMessageThread();
         std::thread sendMessageThread();
         static int createSendSocket();
-        static int sendMessage(int sockFd, int portNum, string msgStr);
+        static int sendMessage(int sockFd, string msgStr);
         static int createRecvSocket();
         static int recvKey(int sockFd);
         int recvMessage(int sockFd);
