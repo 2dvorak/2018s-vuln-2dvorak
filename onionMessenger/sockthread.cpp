@@ -129,7 +129,7 @@ namespace sockth{
         int n;
         struct sockaddr_in servAddr;
         //char msg[18] = "Message from :   ";
-        string msgStr = qSendMsg.front();
+        string msgStr(qSendMsg.front());
         const char* msg = msgStr.c_str();
         qSendMsg.pop();
 
@@ -155,9 +155,7 @@ namespace sockth{
     int createSendSocket() {
         while(1) {
             // check msg queue
-            if(qSendMsg.empty() == 1) {
-                continue;
-            }
+            while(qSendMsg.empty() == 1) ;
 
             // make socket
             int sockFd, portNum, n;
@@ -170,7 +168,9 @@ namespace sockth{
                 return -1;
             }
 
-            new std::thread(sendMessage, sockFd, portNum);
+            //new std::thread(sendMessage, sockFd, portNum);
+            std::thread t(sendMessage, sockFd, portNum);
+            t.join();
 
             //sleep(1);
         }

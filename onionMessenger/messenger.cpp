@@ -31,14 +31,33 @@ namespace newmsger{
     }
 
     void uiSendThread() {
-        string str;
-        printf("\n>");
+        //string str;
         while(1) {
-            scanf("%s",str);
+            string str;
+            printf("\n>");
+            scanf("%s",&str[0]);
             if(str.compare("/exit") == 0) {
                 break;
             }
             qSendMsg.push(str);
+        }
+    }
+
+    void uiDummyThread() {
+        while(1) {
+            string str;
+            printf(">");
+            //scanf("%s",&str[0]);
+            getline(cin, str);
+            if(str.compare("/exit") == 0) {
+                break;
+            }
+            qSendMsg.push(str);
+            //sleep(1);
+            while(qRecvMsg.empty() == 1);
+            string str2(qRecvMsg.front());
+            qRecvMsg.pop();
+            cout << str2 << endl;
         }
     }
 
@@ -55,13 +74,14 @@ namespace newmsger{
         sleep(1);
         std::thread sendThread = sockth->sendMessageThread();
 
-        std::thread uiSend(uiSendThread);
-        std::thread uiRecv(uiRecvThread);
+        //new std::thread(uiRecvThread);
+        //new std::thread(uiSendThread);
+        std::thread dumThread(uiDummyThread);
 
         // for now, no additional executions are left so we should
         // wait for the thread to return
-        uiSend.join();
-        uiRecv.join();
+        //uiSend.join();
+        //uiRecv.join();
         recvThread.join();
         sendThread.join();
     }
