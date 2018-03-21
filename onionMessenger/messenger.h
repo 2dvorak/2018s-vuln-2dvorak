@@ -12,7 +12,6 @@ namespace newmsger{
         Messenger(string githubID, string passPhrase);
         virtual ~Messenger();
         void Loop();
-        string msg;
     private:
         Keymanager *km;
     };

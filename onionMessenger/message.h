@@ -12,6 +12,7 @@ namespace newmsg{
         // Socket Client
         void SendMessage();
         void RecvMessage();
+        string msg;
     private:
         // We have to make rules(Protocol)
         // +a // string attachment;
