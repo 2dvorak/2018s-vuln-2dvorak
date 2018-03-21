@@ -24,8 +24,8 @@ namespace newmsger{
         while(1) {
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
-                qRecvMsg.pop();
                 cout << str << "\n";
+                qRecvMsg.pop();
             }
         }
     }
@@ -35,7 +35,7 @@ namespace newmsger{
         while(1) {
             string str;
             printf("\n>");
-            scanf("%s",&str[0]);
+            getline(cin, str);
             if(str.compare("/exit") == 0) {
                 break;
             }
@@ -74,9 +74,9 @@ namespace newmsger{
         sleep(1);
         std::thread sendThread = sockth->sendMessageThread();
 
-        //new std::thread(uiRecvThread);
-        //new std::thread(uiSendThread);
-        std::thread dumThread(uiDummyThread);
+        new std::thread(uiRecvThread);
+        new std::thread(uiSendThread);
+        //std::thread dumThread(uiDummyThread);
 
         // for now, no additional executions are left so we should
         // wait for the thread to return
