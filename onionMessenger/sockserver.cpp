@@ -124,9 +124,13 @@ namespace socksv{
     }
 
     std::thread Sockserver::KeyServer(){
-
+        std::thread t(createSocket);
+        return t;
     }
 
-    std::thread Sockserver::MessageServer(){}
+    std::thread Sockserver::MessageServer(){
+        std::thread t(createSocket);
+        return t;
+    }
 
 }
