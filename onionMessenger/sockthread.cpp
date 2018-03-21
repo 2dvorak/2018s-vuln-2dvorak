@@ -155,7 +155,9 @@ namespace sockth{
     int createSendSocket() {
         while(1) {
             // check msg queue
-            // isMsgInQueue();
+            if(qSendMsg.empty() == 1) {
+                continue;
+            }
 
             // make socket
             int sockFd, portNum, n;
@@ -170,7 +172,7 @@ namespace sockth{
 
             new std::thread(sendMessage, sockFd, portNum);
 
-            sleep(1);
+            //sleep(1);
         }
     }
 
