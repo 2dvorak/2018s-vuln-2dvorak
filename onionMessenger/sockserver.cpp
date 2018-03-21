@@ -8,9 +8,19 @@
 
 namespace socksv{
 
-    Sockserver::Sockserver(){}
+    Sockserver::Sockserver(){
+        printf("Sockserver constructed\n");
+    }
 
     Sockserver::~Sockserver(){}
+
+    int recvMessage(int sockFd, int portNum) {
+
+    }
+
+    int createMessageSocket() {
+        // maybe use one socket for both key and msg
+    }
 
     int recvKey(int sockFd, int portNum) {
         char buffer[256];
