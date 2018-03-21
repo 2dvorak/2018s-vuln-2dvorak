@@ -118,10 +118,54 @@ namespace sockth{
         return 0;
     }
 
-    int createSendSocket() {
-        
+    int sendMessage(int sockFd, int portNum) {
+        // get message from buffer
+        // getMesg();
+        // get recv ip addr
+        // getIp();
+
+        struct sockaddr_in servAddr;
+        char msg[18] = "Message from :   ";
+
+        memset((char *) &servAddr, sizeof(servAddr), 0);
+        servAddr.sin_family = AF_INET;
+        inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr);
+        serv_addr.sin_port = htons(portNum);
+        if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
+            perror("ERROR connecting");
+            return -1;
+        }
+        msg[15] = '0' + index / 10;
+        msg[16] = '0' + index % 10;
+        n = write(sockFd, msg, strlen(msg));
+        if( n < 0 ) {
+            perror("ERROR writing msg to socket\n");
+            return -1;
+        }
+        close(sockFd);
+        return 0;
     }
-    
+
+    int createSendSocket() {
+        while(1) {
+            // check msg queue
+            // isMsgInQueue();
+
+            // make socket
+            int sockFd, portNum, n;
+
+            portNum = 9987;
+
+            sockFd = socket(AF_INET, SOCK_STREAM, 0);
+            if (sockFd < 0) {
+                perror("ERROR opening socket");
+                return -1;
+            }
+
+            new std::thread(sendMessage, sockFd);
+        }
+    }
+
     std::thread Sockthread::recvMessageThread(){
         std::thread t(createRecvSocket);
         return t;
