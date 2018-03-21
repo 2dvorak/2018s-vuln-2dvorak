@@ -164,6 +164,8 @@ namespace sockth{
             }
 
             new std::thread(sendMessage, sockFd, portNum);
+
+            sleep(1);
         }
     }
 

@@ -29,11 +29,13 @@ namespace newmsger{
 
         Sockthread *sockth = new Sockthread();
         std::thread recvThread = sockth->recvMessageThread();
+        // wait for recvThread to be created. let's not send before recv
+        sleep(1);
         std::thread sendThread = sockth->sendMessageThread();
 
         // for now, no additional executions are left so we should
         // wait for the thread to return
-        recvThread.join();
+        //recvThread.join();
         sendThread.join();
     }
 
