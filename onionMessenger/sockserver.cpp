@@ -15,7 +15,19 @@ namespace socksv{
     Sockserver::~Sockserver(){}
 
     int recvMessage(int sockFd, int portNum) {
+        char buffer[256];
+        int n;
+        memset(buffer, 256, 0);
+        n = read(sockFd,buffer,255);
+        if(n < 0) {
+            perror("[MSG thread] Error reading socket\n");
+            return -1;
+        }
+        printf("[MSG thread] %s\n",buffer);
 
+        close(sockFd);
+
+        return 0;
     }
 
     int createMessageSocket() {
@@ -28,7 +40,7 @@ namespace socksv{
         memset(buffer, 256, 0);
         n = read(sockFd,buffer,255);
         if(n < 0) {
-            perror("Error reading socket\n");
+            perror("[KEY thread] Error reading socket\n");
             return -1;
         }
         printf("[KEY thread] %s\n",buffer);
