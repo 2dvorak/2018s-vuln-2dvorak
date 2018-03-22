@@ -9,6 +9,8 @@ namespace oniui{
         OnionUI();
         virtual ~OnionUI();
         static void MainUI();
+        static void UISendThread();
+        static void UIRecvThread();
         void ShowLogo();
         void ShowMenu();
     private:

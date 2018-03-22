@@ -6,7 +6,6 @@
 using namespace newmsg;
 
 namespace oniui{
-
     OnionUI::OnionUI(){}
     OnionUI::~OnionUI(){}
 
@@ -18,11 +17,7 @@ namespace oniui{
 ╚██████╔╝██║ ╚████║██║╚██████╔╝██║ ╚████║██║ ╚═╝ ██║███████╗███████║███████║███████╗██║ ╚████║╚██████╔╝███████╗██║  ██║\n\
  ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝";
 
-    static char *onionmemu = (char *)"\
-            \n1. List\
-            \n2. Talk\
-            \n3. Exit\
-            \n> ";
+    static char *onionmemu = (char *)"\\n1. List\n2. Talk\n3. Exit\n> ";
 
     void OnionUI::MainUI(){
         OnionUI *ui = new OnionUI();
@@ -36,9 +31,13 @@ namespace oniui{
                 if(qRecvMsg.empty() == 0) {
                     string str = qRecvMsg.front();
                     cout << (new Message(str))->getContent() << "\n";
-                    qRecvMsg.pop();}
-            break;
+                    qRecvMsg.pop();
+                }
+                break;
             case 2:
+                std::thread *t1 = new std::thread(OnionUI::UIRecvThread);
+                std::thread *t2 = new std::thread(OnionUI::UISendThread);
+                t1->join();
             break;
             case 3:
                 exit(1);
@@ -46,6 +45,33 @@ namespace oniui{
             default:
             continue;
             }
+        }
+    }
+
+    void OnionUI::UIRecvThread() {
+        while(1) {
+            if(qRecvMsg.empty() == 0) {
+                string str = (new Message(qRecvMsg.front()))->getContent();
+                if(str.compare("/exit") == 0) {
+                    break;
+                }
+                cout << str << "\n";
+                qRecvMsg.pop();
+            }
+        }
+    }
+
+    void OnionUI::UISendThread() {
+        //string str;
+        while(1) {
+            string str;
+            printf(">");
+            getline(cin, str);
+            if(str.compare("/exit") == 0) {
+                qSendMsg.push("{\"id\":1,\"bullian\":true,\"IP\":\"192.168.0.1\",\"content\":\"/exit\"}");
+                break;
+            }
+            qSendMsg.push(str);
         }
     }
 
