@@ -8,22 +8,6 @@ namespace sockth{
 
     Sockthread::~Sockthread(){}
 
-    int Sockthread::recvMessage(int sockFd) {
-        char buffer[256];
-        int n;
-        memset(buffer, '\x00', 256);
-        n = read(sockFd,buffer,255);
-        if(n < 0) {
-            perror("[MSG thread] Error reading socket\n");
-            return -1;
-        }
-        printf("[MSG thread] %s\n",buffer);
-
-        close(sockFd);
-
-        return 0;
-    }
-
     int Sockthread::recvKey(int sockFd) {
         char buffer[256];
         int n;
