@@ -18,4 +18,5 @@ HEADERS += \
     common.h \
     keymanager.h \
     messenger.h \
-    sockthread.h
+    sockthread.h \
+    json.hpp
