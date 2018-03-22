@@ -54,7 +54,6 @@ namespace newmsg{
 
     void Message::setID(int id) {
         this->id = id;
-        return 0;
     }
 
     void Message::setBullian(bool bullian) {
@@ -77,7 +76,7 @@ namespace newmsg{
     }
 
     void Message::SendMessage(){
-        qSendMsg.push(this->json.dump());
+        qSendMsg.push(this->jason.dump());
     }
 
     void Message::RecvMessage(){
