@@ -14,7 +14,6 @@ namespace sockth{
         static int sendMessage(int sockFd, string msgStr);
         static int createRecvSocket();
         static int recvKey(int sockFd);
-        int recvMessage(int sockFd);
     private:
     };
 }

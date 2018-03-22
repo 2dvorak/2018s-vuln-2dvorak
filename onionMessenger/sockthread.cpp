@@ -10,7 +10,6 @@ namespace sockth{
 
     int Sockthread::recvMessage(int sockFd) {
         char buffer[256];
-        string buf;
         int n;
         memset(buffer, '\x00', 256);
         n = read(sockFd,buffer,255);
