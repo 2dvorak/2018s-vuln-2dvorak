@@ -11,8 +11,7 @@ using namespace oniui;
 
 namespace newmsger{
 
-    Messenger::Messenger(string githubID, string passPhrase)
-    {
+    Messenger::Messenger(string githubID, string passPhrase){
         this->km = new Keymanager(githubID, passPhrase);
         if(km->Validation() == 1) {
             CheckPW();
@@ -22,12 +21,11 @@ namespace newmsger{
 
     Messenger::~Messenger(){}
 
-    void Messenger::Loop(){
+    void Messenger::Main(){
         // create 3 threads
         // 1. recv new node info / node exit notification
         // 2. recv messages
         // 3. handle user input / print output to screen
-        // 3rd thread will be handled in anohter module
 
         sockth = new Sockthread();
         std::thread recvThread = sockth->recvMessageThread();
@@ -35,15 +33,11 @@ namespace newmsger{
         sleep(1);
         std::thread sendThread = sockth->sendMessageThread();
 
-//        new std::thread(OnionUI::MainUI);
         new std::thread(OnionUI::MainUI);
 
         // for now, no additional executions are left so we should
         // wait for the thread to return
-        //uiSend.join();
-        //uiRecv.join();
         recvThread.join();
         sendThread.join();
     }
-
 }

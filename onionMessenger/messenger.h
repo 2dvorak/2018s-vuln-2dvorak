@@ -15,7 +15,7 @@ namespace newmsger{
     public:
         Messenger(string githubID, string passPhrase);
         virtual ~Messenger();
-        void Loop();
+        void Main();
     private:
         Keymanager *km;
         Sockthread *sockth;

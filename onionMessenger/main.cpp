@@ -13,6 +13,6 @@ int main(int argc, char *argv[])
     }
     else{
         Messenger *msger = new Messenger(argv[1], argv[2]);
-        msger->Loop();
+        msger->Main();
     }
 }
