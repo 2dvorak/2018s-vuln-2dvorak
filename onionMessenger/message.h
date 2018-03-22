@@ -9,6 +9,7 @@ namespace newmsg{
         Message();
         Message(int, bool, string, string);
         Message(json);
+        Message(string);
         virtual ~Message();
         // Socket Client
         void SendMessage();

@@ -30,6 +30,14 @@ namespace newmsg{
         this->content = jason["content"];
     }
 
+    Message::Message(string jsonStr) {
+        this->jason = json::parse(jsonStr);
+        this->id = this->jason["id"];
+        this->bullian = this->jason["bullian"];
+        this->IP = this->jason["IP"];
+        this->content = this->jason["content"];
+    }
+
     Message::~Message(){}
 
     int Message::getID() {
