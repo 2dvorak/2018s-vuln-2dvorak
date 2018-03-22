@@ -17,7 +17,7 @@ namespace oniui{
 ╚██████╔╝██║ ╚████║██║╚██████╔╝██║ ╚████║██║ ╚═╝ ██║███████╗███████║███████║███████╗██║ ╚████║╚██████╔╝███████╗██║  ██║\n\
  ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝";
 
-    static char *onionmemu = (char *)"\\n1. List\n2. Talk\n3. Exit\n> ";
+    static char *onionmemu = (char *)"\n1. List\n2. Talk\n3. Exit\n> ";
 
     void OnionUI::MainUI(){
         OnionUI *ui = new OnionUI();
@@ -43,6 +43,7 @@ namespace oniui{
                 std::thread t1(OnionUI::UIRecvThread);
                 std::thread t2(OnionUI::UISendThread);
                 t1.join();
+                if(t2.joinable()) t2.join();
             }
             break;
             case 3:
@@ -79,7 +80,8 @@ namespace oniui{
                 qSendMsg.push("{\"id\":1,\"bullian\":true,\"IP\":\"192.168.0.1\",\"content\":\"/exit\"}");
                 break;
             }
-            qSendMsg.push(str);
+            Message *msg = new Message(0,true,"192.168.0.1",str);
+            qSendMsg.push(msg->getJason().dump());
         }
     }
 
