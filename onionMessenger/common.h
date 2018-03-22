@@ -14,6 +14,8 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 
+#include "json.hpp"
+
 using namespace std;
 
 // global queues
