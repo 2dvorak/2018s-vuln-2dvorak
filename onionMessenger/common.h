@@ -16,7 +16,13 @@
 
 #include "json.hpp"
 
+// message id macros
+#define TYPE_KEY	0
+#define TYPE_MSG	1
+#define TYPE_QUERY	2
+
 using namespace std;
+using json = nlohmann::json;
 
 // global queues
 extern queue<string> qkey;
