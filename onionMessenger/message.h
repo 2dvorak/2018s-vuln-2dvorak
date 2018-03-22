@@ -18,11 +18,11 @@ namespace newmsg{
         string getIP();
         string getContent();
         json getJason();
-        int setID(int);
-        int setBullian(bool);
-        int setIP(string);
-        int setContent(string);
-        int setJason(json);
+        void setID(int);
+        void setBullian(bool);
+        void setIP(string);
+        void setContent(string);
+        void setJason(json);
     private:
         // We have to make rules(Protocol)
         // +a // string attachment;
