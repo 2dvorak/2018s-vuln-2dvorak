@@ -11,8 +11,8 @@ namespace newmsg{
     Message::Message(int id, bool bullian, string IP, string content) {
         this->id = id;
         this->bullian = bullian;
-        this->IP = IP;
-        this->content = content;
+        this->IP = string(IP);
+        this->content = string(content);
         this->jason["id"] = id;
         this->jason["bullian"] = bullian;
         this->jason["IP"] = IP;
@@ -26,8 +26,8 @@ namespace newmsg{
         this->jason["content"] = jason["content"];
         this->id = jason["id"];
         this->bullian = jason["bullian"];
-        this->IP = jason["IP"];
-        this->content = jason["content"];
+        this->IP = string(jason["IP"]);
+        this->content = string(jason["content"]);
     }
 
     Message::Message(string jsonStr) {
