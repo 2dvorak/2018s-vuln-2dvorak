@@ -25,22 +25,30 @@ namespace oniui{
         int value = 0;
         while(1){
             ui->ShowMenu();
+            // let's check if input is integer..
+            // someCheckFunction();
             cin >> value;
             switch(value){
             case 1:
+            {
                 if(qRecvMsg.empty() == 0) {
                     string str = qRecvMsg.front();
                     cout << (new Message(str))->getContent() << "\n";
                     qRecvMsg.pop();
                 }
-                break;
+            }
+            break;
             case 2:
-                std::thread *t1 = new std::thread(OnionUI::UIRecvThread);
-                std::thread *t2 = new std::thread(OnionUI::UISendThread);
-                t1->join();
+            {
+                std::thread t1(OnionUI::UIRecvThread);
+                std::thread t2(OnionUI::UISendThread);
+                t1.join();
+            }
             break;
             case 3:
+            {
                 exit(1);
+            }
             break;
             default:
             continue;
