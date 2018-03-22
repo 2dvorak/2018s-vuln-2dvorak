@@ -7,15 +7,30 @@ namespace newmsg{
     class Message{
     public:
         Message();
-        Message(string);
+        Message(int, bool, string, string);
+        Message(json);
         virtual ~Message();
         // Socket Client
         void SendMessage();
         void RecvMessage();
-        string msg;
+        int getID();
+        bool getBullian();
+        string getIP();
+        string getContent();
+        json getJason();
+        void setID(int);
+        void setBullian(bool);
+        void setIP(string);
+        void setContent(string);
+        void setJason(json);
     private:
         // We have to make rules(Protocol)
         // +a // string attachment;
+        int id;
+        bool bullian;
+        string IP;
+        string content;
+        json jason;
     };
 }
 

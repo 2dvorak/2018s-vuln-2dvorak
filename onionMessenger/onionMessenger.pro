@@ -22,4 +22,5 @@ HEADERS += \
     keymanager.h \
     messenger.h \
     sockthread.h \
+    json.hpp \
     onionui.h
