@@ -4,36 +4,14 @@
 
 namespace sockth{
 
-    Sockthread::Sockthread(){
-        printf("Sockthread constructed\n");
-    }
+    Sockthread::Sockthread(){}
 
     Sockthread::~Sockthread(){}
 
-    int recvMessage(int sockFd, int portNum) {
+    int Sockthread::recvKey(int sockFd) {
         char buffer[256];
         int n;
-        memset(buffer, 256, 0);
-        n = read(sockFd,buffer,255);
-        if(n < 0) {
-            perror("[MSG thread] Error reading socket\n");
-            return -1;
-        }
-        printf("[MSG thread] %s\n",buffer);
-
-        close(sockFd);
-
-        return 0;
-    }
-
-    int createMessageSocket() {
-        // maybe use one socket for both key and msg
-    }
-
-    int recvKey(int sockFd, int portNum) {
-        char buffer[256];
-        int n;
-        memset(buffer, 256, 0);
+        memset(buffer, '\x00', 256);
         n = read(sockFd,buffer,255);
         if(n < 0) {
             perror("[KEY thread] Error reading socket\n");
@@ -48,15 +26,11 @@ namespace sockth{
         return 0;
     }
 
-    int createRecvSocket() {
-        int sockFd, newSockFd, portNum;
+    int Sockthread::createRecvSocket() {
+        int sockFd, newSockFd;
         socklen_t clientLen;
         char buffer[256];
         struct sockaddr_in servAddr, cliAddr;
-        int n;
-
-        // !!!!!!!!!!!!!!!!temporary port num
-        portNum = 9987;
 
         // create socket
         // socket(int domain, int type, int protocol)
@@ -67,13 +41,13 @@ namespace sockth{
         }
 
         // clear address structure(needed?)
-        memset((char*) &servAddr, sizeof(servAddr), 0);
+        memset((char*) &servAddr, '\x00', sizeof(servAddr));
 
         // !!!!!!!!!!!!!!!!!!!!! which protocol??
         servAddr.sin_family = AF_INET;
 
         // !!!!!!!!!!!!!!!!!!!!! port number to what?
-        servAddr.sin_port = htons(portNum);
+        servAddr.sin_port = htons(9987); // port number
 
         // !!!!!!!!!!!!!!!!!!!!! INADDR_ANY safe?
         // should be INADDR_ANY but how about checking if that
@@ -111,16 +85,16 @@ namespace sockth{
                 perror("ERROR on inet_ntop");
                 return -1;
             }
-            new std::thread(recvKey, newSockFd, portNum);
+            new std::thread(Sockthread::recvKey, newSockFd);
         }
 
-        memset(buffer,256,0);
+        memset(buffer, '\x00', 256);
 
         close(sockFd);
         return 0;
     }
 
-    int sendMessage(int sockFd, int portNum, string msgStr) {
+    int Sockthread::sendMessage(int sockFd, string msgStr) {
         // get message from buffer
         // getMesg();
         // get recv ip addr
@@ -133,10 +107,10 @@ namespace sockth{
         const char* msg = msgStr.c_str();
         //qSendMsg.pop();
 
-        memset((char *) &servAddr, sizeof(servAddr), 0);
+        memset((char *) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
         inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr);
-        servAddr.sin_port = htons(portNum);
+        servAddr.sin_port = htons(9987); // port number
         if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             perror("ERROR connecting");
             return -1;
@@ -152,15 +126,13 @@ namespace sockth{
         return 0;
     }
 
-    int createSendSocket() {
+    int Sockthread::createSendSocket() {
         while(1) {
             // check msg queue
             while(qSendMsg.empty() == 1) ;
 
             // make socket
-            int sockFd, portNum, n;
-
-            portNum = 9987;
+            int sockFd;
 
             sockFd = socket(AF_INET, SOCK_STREAM, 0);
             if (sockFd < 0) {
@@ -170,7 +142,7 @@ namespace sockth{
 
             string msg(qSendMsg.front());
             qSendMsg.pop();
-            new std::thread(sendMessage, sockFd, portNum, msg);
+            new std::thread(Sockthread::sendMessage, sockFd, msg);
             //std::thread t(sendMessage, sockFd, portNum);
             //t.join();
 
@@ -179,12 +151,12 @@ namespace sockth{
     }
 
     std::thread Sockthread::recvMessageThread(){
-        std::thread t(createRecvSocket);
+        std::thread t(Sockthread::createRecvSocket);
         return t;
     }
 
     std::thread Sockthread::sendMessageThread(){
-        std::thread t(createSendSocket);
+        std::thread t(Sockthread::createSendSocket);
         return t;
     }
 
