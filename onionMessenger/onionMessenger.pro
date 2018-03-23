@@ -3,6 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 LIBS += -lpthread
+LIBS += -lncurses
 OBJECTS_DIR = .obj
 MOC_DIR = .MOC
 

@@ -33,11 +33,10 @@ namespace newmsger{
         sleep(1);
         std::thread sendThread = sockth->sendMessageThread();
 
-        new std::thread(OnionUI::MainUI);
-
+        std::thread *main = new std::thread(OnionUI::MainUI);
         // for now, no additional executions are left so we should
         // wait for the thread to return
-        recvThread.join();
-        sendThread.join();
+        main->join();
+        // start to clean up threads..
     }
 }
