@@ -7,10 +7,11 @@ namespace newmsg{
     Message::Message(){}
 
     // KEY
-    Message::Message(string id, string loginStatus, string ip, string githubID, string pubkey){
+    Message::Message(string id, string loginStatus, string recvip, string githubID, string pubkey){
         this->jason["id"] = id;
         this->jason["bullian"] = loginStatus;
-        this->jason["ip"] = ip;
+        this->jason["recvip"] = recvip;
+        this->jason["sendip"] = MyIP;
         this->jason["githubID"] = githubID;
         this->jason["pubkey"] = pubkey;
     }
@@ -18,11 +19,11 @@ namespace newmsg{
     Message::~Message(){}
 
     void Message::setIP(string ip) {
-        this->jason["ip"] = ip;
+        this->jason["recvip"] = ip;
     }
 
     string Message::getIP(){
-        return this->jason.at("ip").get<std::string>();
+        return this->jason.at("recvip").get<std::string>();
     }
 
     void Message::setBullian(string bullian) {
@@ -32,7 +33,7 @@ namespace newmsg{
     void Message::setJason(json) {
         this->jason["id"] = jason["id"];
         this->jason["bullian"] = jason["bullian"];
-        this->jason["ip"] = jason["ip"];
+        this->jason["recvip"] = jason["ip"];
         this->jason["content"] = jason["content"];
     }
 

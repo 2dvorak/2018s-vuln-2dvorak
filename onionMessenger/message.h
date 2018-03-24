@@ -11,7 +11,7 @@ namespace newmsg{
     public:
         Message();
         // for key
-        Message(string id, string loginStatus, string IP, string githubID, string pubkey);
+        Message(string id, string loginStatus, string recvip, string githubID, string pubkey);
         virtual ~Message();
         // Socket Client
         void SendMessage();
