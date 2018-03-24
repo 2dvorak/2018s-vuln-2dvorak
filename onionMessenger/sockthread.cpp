@@ -8,6 +8,35 @@ namespace sockth{
 
     Sockthread::~Sockthread(){}
 
+    int Sockthread::SendAll(int sockFd, string msgStr) {
+        // get message from buffer
+        // getMesg();
+        // get recv ip addr
+        // getIp();
+
+        int n;
+        json tmp;
+        struct sockaddr_in servAddr;
+        const char* msg = msgStr.c_str();
+        tmp = json::parse(msgStr);
+
+        memset((char *) &servAddr, '\x00', sizeof(servAddr));
+        servAddr.sin_family = AF_INET;
+        inet_pton(AF_INET, tmp["ip"].dump().c_str(), &servAddr.sin_addr);
+        servAddr.sin_port = htons(9987); // port number
+        if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
+            perror("ERROR connecting");
+            return -1;
+        }
+        n = write(sockFd, msg, strlen(msg));
+        if( n < 0 ) {
+            perror("ERROR writing msg to socket\n");
+            return -1;
+        }
+        close(sockFd);
+        return 0;
+    }
+
     int Sockthread::RecvAll(int sockFd) {
         char buffer[256];
         int n;
@@ -85,33 +114,6 @@ namespace sockth{
 
         memset(buffer, '\x00', 256);
 
-        close(sockFd);
-        return 0;
-    }
-
-    int Sockthread::SendAll(int sockFd, string msgStr) {
-        // get message from buffer
-        // getMesg();
-        // get recv ip addr
-        // getIp();
-
-        int n;
-        struct sockaddr_in servAddr;
-        const char* msg = msgStr.c_str();
-
-        memset((char *) &servAddr, '\x00', sizeof(servAddr));
-        servAddr.sin_family = AF_INET;
-        inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr);
-        servAddr.sin_port = htons(9987); // port number
-        if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-            perror("ERROR connecting");
-            return -1;
-        }
-        n = write(sockFd, msg, strlen(msg));
-        if( n < 0 ) {
-            perror("ERROR writing msg to socket\n");
-            return -1;
-        }
         close(sockFd);
         return 0;
     }
