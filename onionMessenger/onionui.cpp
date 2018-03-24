@@ -36,7 +36,16 @@ namespace oniui{
             break;
             case '2':
             {
+
                 WINDOW *listWin, *chatWin;
+
+                cout << "=====================================" << endl;
+                cout << "Who do you want to talk to?" << endl;
+                g_km->ShowList();
+                cout << "githubID> ";
+                string githubID;
+                cin >> githubID; // validation check routine ++++
+
                 int maxX = 0, maxY = 0;
                 int listX = 0, listY = 0;
                 int highlight = 1;
@@ -50,6 +59,7 @@ namespace oniui{
                 noecho();
                 cbreak();
                 getmaxyx(stdscr, maxY, maxX);
+
                 listX = (maxX - 30) / 2;
                 listY = (maxY - 10) / 2;
                 listWin = newwin(10, 30, listY, listX);
@@ -135,17 +145,22 @@ namespace oniui{
                     keypad(chatWin, true);
                     noecho();
                     wrefresh(chatWin);
-                    std::thread t1(OnionUI::UIRecvThread, chatWin, maxY, maxX);
-                    std::thread t2(OnionUI::UISendThread, chatWin, maxY, maxX);
+                  
+                    std::thread t1(OnionUI::UIRecvThread, chatWin, githubID, maxY, maxX);
+                    std::thread t2(OnionUI::UISendThread, chatWin, githubID, maxY, maxX);
                     t1.join();
                     if(t2.joinable()) t2.join();
                 }
+
                 endwin();
                 //ui->ShowMenu();
             }
             break;
             case '3':
             {
+                g_km->SendKeyDie();
+                cout << "Good Bye!" <<endl;
+                sleep(3);
                 exit(1);
             }
             break;
@@ -155,24 +170,35 @@ namespace oniui{
         }
     }
 
-    void OnionUI::UIRecvThread(WINDOW* win, int maxY, int maxX) {
-        while(1) {
+
+    void OnionUI::UIRecvThread(WINDOW* win, string githubID, int maxY, int maxX) {
+        Message *msg = new Message();
+        while(1){
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
-                if(str.compare("/exit") == 0) {
-                    break;
+                json tmp;
+                tmp = json::parse(str);
+                string tmp_content = tmp.at("content").get<std::string>();
+                string tmp_ip = tmp.at("sendip").get<std::string>();
+                string tmp_githubID = g_km->FindgithubID(tmp_ip);
+                if(tmp_githubID.compare(githubID) == 0){
+                    msgList.push_back("You: " + tmp_content + "\n");
+                    clear();
+                    mvprintw(0, 0, onionlogo);
+                    mvprintw(maxY - 1, 0, ">");
+                    refresh();
+                    qRecvMsg.pop();
                 }
-                msgList.push_back("You: " + str + "\n");
-                clear();
-                mvprintw(0, 0, onionlogo);
-                mvprintw(maxY - 1, 0, ">");
-                refresh();
-                qRecvMsg.pop();
+                else{
+                    continue;
+                }
             }
         }
     }
 
-    void OnionUI::UISendThread(WINDOW *win, int maxY, int maxX) {
+
+    void OnionUI::UISendThread(WINDOW *win, string githubID, int maxY, int maxX) {
+        Message *msg = new Message();
         string str = "";
         //keypad(win, true);
         mvwprintw(win, 0, 0, "Her");
@@ -229,6 +255,22 @@ namespace oniui{
                     wprintw(win, msgList.at(i).c_str());
                 }
             }
+
+            move(maxY - 1, 1);
+            getstr(&str[0]);
+            string str2(str.c_str());
+            if(str2.compare(0, 5, "/exit", 0, 5) == 0) {
+                //endwin();
+                break;
+            }
+            screen.append("Me: " + str2 + "\n");
+            clear();
+            mvprintw(0, 0, screen.c_str());
+            refresh();
+            string tmp_ip = g_km->Findip(githubID);
+            msg->SetMessage(githubID, tmp_ip, str2);
+            msg->SendMessage();
+
         }
     }
 

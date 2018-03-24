@@ -12,8 +12,10 @@ namespace oniui{
         OnionUI();
         virtual ~OnionUI();
         static void MainUI();
-        static void UISendThread(WINDOW*,int ,int);
-        static void UIRecvThread(WINDOW*,int ,int);
+
+        static void UISendThread(WINDOW*, string, int ,int);
+        static void UIRecvThread(WINDOW*, string, int ,int);
+
         void Init();
         void ShowLogo();
         void ShowMenu();

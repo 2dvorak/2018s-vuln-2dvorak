@@ -23,6 +23,8 @@ namespace newkey{
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
+        string Findip(string githubID);
+        string FindgithubID(string ip);
         bool IsExist(string githubID);
         void ShowList();
 
@@ -31,6 +33,7 @@ namespace newkey{
         void RecvKeyDie(string jsonStr);
         void SendKeyAlive();
         void SendKeyDie();
+        void SendKey(string ip);
     private:
         // This client's github ID and passphrase
         string githubID;
