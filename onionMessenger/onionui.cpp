@@ -38,7 +38,7 @@ namespace oniui{
             {
 
                 WINDOW *listWin, *chatWin;
-
+                string githubID;
                 /*cout << "=====================================" << endl;
                 cout << "Who do you want to talk to?" << endl;
                 g_km->ShowList();
@@ -51,7 +51,7 @@ namespace oniui{
                 int highlight = 1;
                 int choice = 0;
                 int c;
-                int listLen = nodeMap->size() + 2;
+                int listLen = nodeMap->size() + 1;
                 msgList.clear();
                 initscr();
                 //raw();
@@ -68,24 +68,25 @@ namespace oniui{
                 refresh();
 
                 while(1) {
-                    int x, y, i = 1;
+                    int x, y, i = 0;
                     x = 2;
                     y = 2;
                     box(listWin, 0, 0);
-                    if(highlight == i) {
+                    /*if(highlight == i) {
                         wattron(listWin, A_REVERSE);
                         mvwprintw(listWin, y, x, "%s", "Me");
                         wattroff(listWin, A_REVERSE);
                     } else {
                         mvwprintw(listWin, y, x, "%s", "Me");
                     }
-                    ++y;
+                    ++y;*/
                     for(nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++)
                     {
                         i++;
                         if(highlight == i + 1) /* High light the present choice */
                         {	wattron(listWin, A_REVERSE);
                             mvwprintw(listWin, y, x, "%s", nodeIter->first);
+                            githubID = nodeIter->first;
                             wattroff(listWin, A_REVERSE);
                         }
                         else
@@ -101,7 +102,7 @@ namespace oniui{
                         mvwprintw(listWin, y, x, "%s", "Exit");
                     }
                     ++y;
-                    wmove(listWin, maxY, maxX);
+                    wmove(listWin, y, 1);
                     wrefresh(listWin);
                     if(choice != 0) break;
                     c = wgetch(listWin);
