@@ -2,6 +2,9 @@
 #define ONIONUI_H
 
 #include "common.h"
+#include "message.h"
+
+using namespace newmsg;
 
 namespace oniui{
     class OnionUI{
@@ -15,6 +18,7 @@ namespace oniui{
         void ShowLogo();
         void ShowMenu();
     private:
+        Message *msg;
     };
 }
 
