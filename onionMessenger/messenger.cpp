@@ -19,7 +19,7 @@ namespace newmsger{
     }
 
     Messenger::~Messenger(){
-        // this->km->SendKeyDie();
+         this->km->SendKeyDie();
     }
 
     void Messenger::Main(){
