@@ -31,6 +31,7 @@ namespace newkey{
         void RecvKeyDie(string jsonStr);
         void SendKeyAlive();
         void SendKeyDie();
+        void SendKey(string ip);
     private:
         // This client's github ID and passphrase
         string githubID;

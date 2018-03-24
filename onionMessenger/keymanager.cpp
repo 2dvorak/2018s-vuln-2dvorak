@@ -12,7 +12,7 @@ namespace newkey{
         this->passPhrase = passPhrase;
         this->githubID = githubID;
         nodeMap = new unordered_map<string, Nodeinfo*>;
-        this->myJSON = new Message("1", "1", MyIP, this->githubID, "string pubkey");
+        this->myJSON = new Message("0", "1", MyIP, this->githubID, "string pubkey");
     }
 
     Keymanager::~Keymanager(){}
@@ -67,6 +67,8 @@ namespace newkey{
             string tmp_pubkey = tmp.at("pubkey").get<std::string>();
             tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
             AddMap(tmp_githubID, tmpInfo);
+//            this->SendKeyAlive();
+//            this->myJSON->CheckMessage();
         }
     }
 
@@ -76,6 +78,12 @@ namespace newkey{
         string tmp_githubID = tmp.at("githubID").get<std::string>();
         if(IsExist(tmp_githubID) == true)
             DelMap(tmp_githubID);
+    }
+
+    void Keymanager::SendKey(string ip){
+        this->myJSON->setBullian("1");
+        this->myJSON->setIP(ip);
+        this->myJSON->SendKey();
     }
 
     // init
