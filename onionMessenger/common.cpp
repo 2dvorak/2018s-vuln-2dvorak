@@ -8,6 +8,7 @@ queue<string>qSendMsg;
 queue<string>qRecvMsg;
 mutex r_mutex;
 mutex s_mutex;
+mutex k_mutex;
 string MyIP;
 newkey::Keymanager *g_km;
 

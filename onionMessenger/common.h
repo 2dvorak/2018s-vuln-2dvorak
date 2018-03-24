@@ -36,6 +36,7 @@ extern queue<string> qRecvMsg;
 extern string MyIP;
 extern mutex s_mutex;
 extern mutex r_mutex;
+extern mutex k_mutex;
 extern newkey::Keymanager *g_km;
 
 // Usage & Print stderr
