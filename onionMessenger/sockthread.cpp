@@ -47,8 +47,9 @@ namespace sockth{
             return -1;
         }
         string msgStr(buffer);
+        g_mutex.lock();
         qRecvMsg.push(msgStr);
-
+        g_mutex.unlock();
         close(sockFd);
 
         return 0;
@@ -129,9 +130,10 @@ namespace sockth{
                 perror("ERROR opening socket");
                 return -1;
             }
-
+            g_mutex.lock();
             string msg(qSendMsg.front());
             qSendMsg.pop();
+            g_mutex.unlock();
             new std::thread(Sockthread::SendAll, sockFd, msg);
         }
     }

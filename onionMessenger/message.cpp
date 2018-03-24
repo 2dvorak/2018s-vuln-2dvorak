@@ -95,9 +95,10 @@ namespace newmsg{
     }
 
     void Message::RecvMessage(){
+        g_mutex.lock();
         string str(qRecvMsg.front());
         qRecvMsg.pop();
-
+        g_mutex.unlock();
         this->jason = json::parse(str);
         this->id = this->jason["id"];
         this->bullian = this->jason["bullian"];
