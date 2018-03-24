@@ -53,6 +53,8 @@ namespace oniui{
             case '3':
             {
                 g_km->SendKeyDie();
+                cout << "Good Bye!" <<endl;
+                sleep(3);
                 exit(1);
             }
             break;
