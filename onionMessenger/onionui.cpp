@@ -207,7 +207,7 @@ namespace oniui{
                 string tmp_ip = tmp.at("sendip").get<std::string>();
                 string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
-                    msgList.push_back("You: " + tmp_content + "\n");
+                    msgList.push_back(githubID + ": " + tmp_content + "\n");
                     clear();
                     mvprintw(0, 0, onionlogo);
                     mvprintw(maxY - 1, 0, ">");
