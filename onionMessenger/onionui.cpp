@@ -235,10 +235,9 @@ namespace oniui{
                 msgList.push_back("Me: " + str + "\n");
                 curY = msgList.size() + 1;
                 k_mutex.unlock();
-                //Message *msg = new Message("1","true","127.0.0.1",str);
-                //s_mutex.lock();
-                //qSendMsg.push(str);
-                //s_mutex.unlock();
+                string tmp_ip = g_km->Findip(githubID);
+                msg->SetMessage(githubID, tmp_ip, str2);
+                msg->SendMessage();
                 str = "";
             }
             wclear(win);
@@ -256,20 +255,6 @@ namespace oniui{
                 }
             }
 
-            move(maxY - 1, 1);
-            getstr(&str[0]);
-            string str2(str.c_str());
-            if(str2.compare(0, 5, "/exit", 0, 5) == 0) {
-                //endwin();
-                break;
-            }
-            screen.append("Me: " + str2 + "\n");
-            clear();
-            mvprintw(0, 0, screen.c_str());
-            refresh();
-            string tmp_ip = g_km->Findip(githubID);
-            msg->SetMessage(githubID, tmp_ip, str2);
-            msg->SendMessage();
 
         }
     }
