@@ -13,6 +13,7 @@ namespace newkey{
 
     class Keymanager{
     public:
+        Keymanager();
         Keymanager(string githubID, string passPhrase);
         virtual ~Keymanager();
         // Check validation between privatekey and passphrase
@@ -21,10 +22,11 @@ namespace newkey{
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
+        bool IsExist(string githubID);
 
         // GetKey, PutKey Socket
-        void RecvKeyAlive(string json);
-        void RecvKeyDie(string json);
+        void RecvKeyAlive(string jsonStr);
+        void RecvKeyDie(string jsonStr);
         void SendKeyAlive();
         void SendKeyDie();
     private:
@@ -33,9 +35,13 @@ namespace newkey{
         string passPhrase;
         // My key JSON
         Message *myJSON;
+        Nodeinfo *tmpInfo;
     };
 
     class Nodeinfo{
+    public:
+        Nodeinfo(string, string);
+        virtual ~Nodeinfo();
     private:
         // Node info IP & Pubkey
         string ip;

@@ -5,12 +5,14 @@
 
 namespace newkey{
 
+    Keymanager::Keymanager(){}
+
     Keymanager::Keymanager(string githubID, string passPhrase)
     {
         this->passPhrase = passPhrase;
         this->githubID = githubID;
         nodeMap = new unordered_map<string, Nodeinfo*>;
-        this->myJSON = new Message(1, 1, MyIP, this->githubID, "string pubkey");
+        this->myJSON = new Message("1", "1", MyIP, this->githubID, "string pubkey");
     }
 
     Keymanager::~Keymanager(){}
@@ -36,19 +38,39 @@ namespace newkey{
         return nodeIter->second;
     }
 
-    // manage node from packet
-    void Keymanager::RecvKeyAlive(string json){
-
+    bool Keymanager::IsExist(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        if( nodeIter == nodeMap->end() )
+            return false;
+        else
+            return true;
     }
 
-    void Keymanager::RecvKeyDie(string json){
+    // manage node from packet
+    void Keymanager::RecvKeyAlive(string jsonStr){
+        json tmp;
+        tmp = json::parse(jsonStr);
+        string tmp_githubID = tmp.at("githubID").get<std::string>();
+        if(IsExist(tmp_githubID) == false){
+            string tmp_ip = tmp.at("ip").get<std::string>();
+            string tmp_pubkey = tmp.at("pubkey").get<std::string>();
+            tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
+            AddMap(tmp_githubID, tmpInfo);
+        }
+    }
 
+    void Keymanager::RecvKeyDie(string jsonStr){
+        json tmp;
+        tmp = json::parse(jsonStr);
+        string tmp_githubID = tmp.at("githubID").get<std::string>();
+        if(IsExist(tmp_githubID) == true)
+            DelMap(tmp_githubID);
     }
 
     // init
     void Keymanager::SendKeyAlive(){
         char buffer[5];
-        this->myJSON->setBullian(1);
+        this->myJSON->setBullian("1");
         for( int ii = 0x00; ii < 10;ii++){
             sprintf(buffer, "%d",ii);
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
@@ -60,11 +82,18 @@ namespace newkey{
     // destructor
     void Keymanager::SendKeyDie(){
         char buffer[5];
-        this->myJSON->setBullian(0);
-        for( int ii = 0x00; ii < 255 ;ii++){
+        this->myJSON->setBullian("0");
+        for( int ii = 0x00; ii < 10 ;ii++){
             sprintf(buffer, "%d",ii);
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
         }
     }
+
+    Nodeinfo::Nodeinfo(string a, string b){
+        this->ip = a;
+        this->pubkey = b;
+    }
+
+    Nodeinfo::~Nodeinfo(){}
 
 }
