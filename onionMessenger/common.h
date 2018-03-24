@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <ctime>
+#include <ifaddrs.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -26,12 +27,13 @@ using namespace std;
 using json = nlohmann::json;
 
 // global queues
-extern queue<string> qkey;
 extern queue<string> qSendMsg;
 extern queue<string> qRecvMsg;
+extern string MyIP;
 
 // Usage & Print stderr
 void UsageMessenger();
 void CheckPW();
+void CheckIP();
 
 #endif // COMMON_H
