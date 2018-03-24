@@ -62,7 +62,7 @@ namespace sockth{
             qRecvMsg.push(msgStr);
             r_mutex.unlock();
         }
-        else if( (tmp_id.compare("1") == 0) && (tmp_bullian.compare("0") == 0)){ // not message
+        else if( (tmp_id.compare("1") == 0) && (tmp_bullian.compare("0") == 0)){ // not my message
 
         }
         close(sockFd);
