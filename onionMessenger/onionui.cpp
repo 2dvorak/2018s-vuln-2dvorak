@@ -24,14 +24,12 @@ namespace oniui{
     void OnionUI::MainUI(){
         OnionUI *ui = new OnionUI();
         ui->ShowLogo();
-        int value = 0;
+        char value = 0;
         while(1){
             ui->ShowMenu();
-            // let's check if input is integer..
-            // someCheckFunction();
             cin >> value;
             switch(value){
-            case 1:
+            case '1':
             {
                 if(qRecvMsg.empty() == 0) {
                     string str = qRecvMsg.front();
@@ -40,7 +38,7 @@ namespace oniui{
                 }
             }
             break;
-            case 2:
+            case '2':
             {
                 int maxX = 0, maxY = 0;
                 screen = "";
@@ -56,13 +54,13 @@ namespace oniui{
                 ui->ShowMenu();
             }
             break;
-            case 3:
+            case '3':
             {
                 exit(1);
             }
             break;
             default:
-            continue;
+                continue;
             }
         }
     }

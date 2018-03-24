@@ -4,9 +4,7 @@
 
 namespace newmsg{
 
-    Message::Message(){
-
-    }
+    Message::Message(){}
 
     Message::Message(int id, bool bullian, string IP, string content) {
         this->id = id;

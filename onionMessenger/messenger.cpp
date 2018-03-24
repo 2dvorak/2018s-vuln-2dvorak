@@ -29,14 +29,12 @@ namespace newmsger{
 
         sockth = new Sockthread();
         std::thread recvThread = sockth->recvMessageThread();
-        // wait for recvThread to be created. let's not send before recv
-        sleep(1);
+        sleep(1); // wait for recvThread to be created. let's not send before recv
         std::thread sendThread = sockth->sendMessageThread();
 
         std::thread *main = new std::thread(OnionUI::MainUI);
         // for now, no additional executions are left so we should
         // wait for the thread to return
         main->join();
-        // start to clean up threads..
     }
 }

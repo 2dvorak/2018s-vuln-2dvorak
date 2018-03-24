@@ -17,7 +17,6 @@ namespace sockth{
             perror("[KEY thread] Error reading socket\n");
             return -1;
         }
-        //printf("[KEY thread] %s\n",buffer);
         string msgStr(buffer);
         qRecvMsg.push(msgStr);
 
@@ -42,11 +41,7 @@ namespace sockth{
 
         // clear address structure(needed?)
         memset((char*) &servAddr, '\x00', sizeof(servAddr));
-
-        // !!!!!!!!!!!!!!!!!!!!! which protocol??
         servAddr.sin_family = AF_INET;
-
-        // !!!!!!!!!!!!!!!!!!!!! port number to what?
         servAddr.sin_port = htons(9987); // port number
 
         // !!!!!!!!!!!!!!!!!!!!! INADDR_ANY safe?
@@ -102,10 +97,7 @@ namespace sockth{
 
         int n;
         struct sockaddr_in servAddr;
-        //char msg[18] = "Message from :   ";
-        //string msgStr(qSendMsg.front());
         const char* msg = msgStr.c_str();
-        //qSendMsg.pop();
 
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
@@ -115,8 +107,6 @@ namespace sockth{
             perror("ERROR connecting");
             return -1;
         }
-        //msg[15] = '0' + (sockFd % 100) / 10;
-        //msg[16] = '0' + sockFd % 10;
         n = write(sockFd, msg, strlen(msg));
         if( n < 0 ) {
             perror("ERROR writing msg to socket\n");
@@ -130,8 +120,6 @@ namespace sockth{
         while(1) {
             // check msg queue
             while(qSendMsg.empty() == 1) ;
-
-            // make socket
             int sockFd;
 
             sockFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -143,10 +131,6 @@ namespace sockth{
             string msg(qSendMsg.front());
             qSendMsg.pop();
             new std::thread(Sockthread::sendMessage, sockFd, msg);
-            //std::thread t(sendMessage, sockFd, portNum);
-            //t.join();
-
-            //sleep(1);
         }
     }
 
