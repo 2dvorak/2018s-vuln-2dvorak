@@ -2,9 +2,9 @@
 #include "messenger.h"
 using namespace newmsger;
 
-queue<string>qkey;
 queue<string>qSendMsg;
 queue<string>qRecvMsg;
+string MyIP;
 
 int main(int argc, char *argv[])
 {
