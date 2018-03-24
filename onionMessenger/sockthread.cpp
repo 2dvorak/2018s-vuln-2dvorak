@@ -75,36 +75,18 @@ namespace sockth{
             return -1;
         }
 
-        // clear address structure(needed?)
         memset((char*) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
         servAddr.sin_port = htons(9987); // port number
-
-        // !!!!!!!!!!!!!!!!!!!!! INADDR_ANY safe?
-        // should be INADDR_ANY but how about checking if that
-        // ip's in my node list
-        // if not, ping to that node and check if valid node?
         servAddr.sin_addr.s_addr = INADDR_ANY;
-
-        // bind(int fd, struct sockaddr *local_addr, socklen_t addr_length)
-        // bind socket to current IP address on portNum
         if (bind(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             perror("ERROR on binding");
             return -1;
         }
 
-        // ? what for..?
         clientLen = sizeof(cliAddr);
-
-        // accept(int s, struct sockaddr *addr, socklen_t *addrlen);
-        // accept() function will write the connecting client's info
-        // into address structure then returns a new socket file descriptor
-        // for the accepted connection.
         while(1) {
             char clientIp[INET_ADDRSTRLEN];
-
-            // listen() function put all new connections into backlog queue until accept()
-            // !!!!!!!!!!!!!!!! SOMAXCONN ok?
             listen(sockFd, SOMAXCONN);
 
             newSockFd = accept(sockFd, (struct sockaddr *) &cliAddr, &clientLen);
