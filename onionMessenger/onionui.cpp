@@ -236,7 +236,7 @@ namespace oniui{
                 curY = msgList.size() + 1;
                 k_mutex.unlock();
                 string tmp_ip = g_km->Findip(githubID);
-                msg->SetMessage(githubID, tmp_ip, str2);
+                msg->SetMessage(githubID, tmp_ip, str);
                 msg->SendMessage();
                 str = "";
             }
