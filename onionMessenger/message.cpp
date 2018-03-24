@@ -30,11 +30,13 @@ namespace newmsg{
         this->jason["bullian"] = bullian;
     }
 
-    void Message::setJason(json) {
-        this->jason["id"] = jason["id"];
-        this->jason["bullian"] = jason["bullian"];
-        this->jason["recvip"] = jason["ip"];
-        this->jason["content"] = jason["content"];
+    void Message::SetMessage(string githubID, string toip, string contents){
+        this->jason["id"] = "1";
+        this->jason["bullian"] = "1";
+        this->jason["githubID"] = githubID;
+        this->jason["recvip"] = toip;
+        this->jason["sendip"] = MyIP;
+        this->jason["content"] = contents;
     }
 
     void Message::SendMessage(){

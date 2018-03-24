@@ -23,7 +23,7 @@ namespace newmsg{
         void setBullian(string);
         void setIP(string);
         string getIP();
-        void setContent(string);
+        void SetMessage(string, string, string);
         void setJason(json);
         void CheckMessage();
     private:
