@@ -23,6 +23,7 @@ namespace newkey{
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
+        string Findip(string githubID);
         bool IsExist(string githubID);
         void ShowList();
 

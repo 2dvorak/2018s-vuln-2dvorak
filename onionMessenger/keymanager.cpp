@@ -40,6 +40,11 @@ namespace newkey{
         return nodeIter->second;
     }
 
+    string Keymanager::Findip(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        return nodeIter->second->ip;
+    }
+
     bool Keymanager::IsExist(string githubID){
         nodeIter = nodeMap->find(githubID);
         if( nodeIter == nodeMap->end() )
