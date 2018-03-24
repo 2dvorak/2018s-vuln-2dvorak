@@ -7,7 +7,7 @@ namespace newmsg{
     Message::Message(){}
 
     // KEY
-    Message::Message(int id, int loginStatus, string ip, string githubID, string pubkey){
+    Message::Message(string id, string loginStatus, string ip, string githubID, string pubkey){
         this->jason["id"] = id;
         this->jason["bullian"] = loginStatus;
         this->jason["ip"] = ip;
@@ -25,7 +25,7 @@ namespace newmsg{
         return this->jason.at("ip").get<std::string>();
     }
 
-    void Message::setBullian(int bullian) {
+    void Message::setBullian(string bullian) {
         this->jason["bullian"] = bullian;
     }
 
