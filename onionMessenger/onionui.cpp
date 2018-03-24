@@ -76,14 +76,11 @@ namespace oniui{
         while(1){
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
-                if(str.compare(0, 5, "/exit", 0, 5) == 0) {
-                    //endwin();
-                    break;
-                }
                 json tmp;
                 tmp = json::parse(str);
-                string tmp_githubID = tmp.at("githubID").get<std::string>();
                 string tmp_content = tmp.at("content").get<std::string>();
+                string tmp_ip = tmp.at("sendip").get<std::string>();
+                string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
                     screen.append("You: " + tmp_content + "\n");
                     clear();
@@ -110,6 +107,10 @@ namespace oniui{
             move(maxY - 1, 1);
             getstr(&str[0]);
             string str2(str.c_str());
+            if(str2.compare(0, 5, "/exit", 0, 5) == 0) {
+                //endwin();
+                break;
+            }
             screen.append("Me: " + str2 + "\n");
             clear();
             mvprintw(0, 0, screen.c_str());
