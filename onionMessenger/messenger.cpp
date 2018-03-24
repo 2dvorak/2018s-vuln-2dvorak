@@ -12,11 +12,10 @@ using namespace oniui;
 namespace newmsger{
 
     Messenger::Messenger(string githubID, string passPhrase){
-        g_km = new Keymanager();
-        this->km = new Keymanager(githubID, passPhrase);
-        this->km->Validation();
         CheckIP();
-        this->km->SendKeyAlive();
+        g_km = new Keymanager(githubID, passPhrase);
+        g_km->Validation();
+        g_km->SendKeyAlive();
     }
 
     Messenger::~Messenger(){
