@@ -32,7 +32,7 @@ void CheckIP(){
         while(temp_addr != NULL) {
             if(temp_addr->ifa_addr->sa_family == AF_INET) {
                 // Check if interface is en0 which is the wifi connection on the iPhone
-                if(strcmp(temp_addr->ifa_name, "docker0")==0){
+                if( (strcmp(temp_addr->ifa_name, "eth0")==0) || (strcmp(temp_addr->ifa_name, "docker0")==0) ){
                     ipAddress=inet_ntoa(((struct sockaddr_in*)temp_addr->ifa_addr)->sin_addr);
                 }
             }
