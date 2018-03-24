@@ -23,7 +23,7 @@ namespace oniui{
 
     void OnionUI::MainUI(){
         OnionUI *ui = new OnionUI();
-        ui->ShowLogo();
+        ui->Init();
         char value = 0;
         while(1){
             ui->ShowMenu();
@@ -31,6 +31,7 @@ namespace oniui{
             switch(value){
             case '1':
             {
+
                 if(qRecvMsg.empty() == 0) {
                     string str = qRecvMsg.front();
                     cout << (new Message(str))->getContent() << "\n";
@@ -68,6 +69,7 @@ namespace oniui{
     void OnionUI::UIRecvThread(int maxY, int maxX) {
         while(1) {
             if(qRecvMsg.empty() == 0) {
+                g_mutex.lock();
                 string str = (new Message(qRecvMsg.front()))->getContent();
                 if(str.compare(0, 5, "/exit", 0, 5) == 0) {
                     //endwin();
@@ -79,6 +81,7 @@ namespace oniui{
                 mvprintw(maxY - 1, 0, ">");
                 refresh();
                 qRecvMsg.pop();
+                g_mutex.unlock();
             }
         }
     }
@@ -86,6 +89,7 @@ namespace oniui{
     void OnionUI::UISendThread(int maxY, int maxX) {
         //string str;
         while(1) {
+            g_mutex.lock();
             string str;
             mvprintw(maxY - 1, 0, ">");
             for(int i = 0 ; i < maxX - 2 ; i++) {
@@ -99,12 +103,17 @@ namespace oniui{
             mvprintw(0, 0, screen.c_str());
             refresh();
             if(str2.compare("/exit") == 0) {
-                qSendMsg.push("{\"id\":1,\"bullian\":true,\"IP\":\"192.168.0.1\",\"content\":\"/exit\"}");
+                qSendMsg.push("{\"id\":1,\"bullian\":true,\"IP\":\"172.17.0.2\",\"content\":\"/exit\"}");
                 break;
             }
             Message *msg = new Message(0,true,"192.168.0.1",string(str.c_str()));
             qSendMsg.push(msg->getJason().dump());
+            g_mutex.unlock();
         }
+    }
+
+    void OnionUI::Init(){
+        cout << onionlogo;
     }
 
     void OnionUI::ShowLogo(){
