@@ -4,7 +4,8 @@ using namespace newmsger;
 
 queue<string>qSendMsg;
 queue<string>qRecvMsg;
-mutex g_mutex;
+mutex r_mutex;
+mutex s_mutex;
 string MyIP;
 
 int main(int argc, char *argv[])
