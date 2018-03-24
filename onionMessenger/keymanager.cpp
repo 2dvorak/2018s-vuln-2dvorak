@@ -45,6 +45,13 @@ namespace newkey{
         return nodeIter->second->ip;
     }
 
+    string Keymanager::FindgithubID(string ip){
+        for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
+            if(ip.compare(nodeIter->second->ip) == 0)
+                return nodeIter->first;
+        }
+    }
+
     bool Keymanager::IsExist(string githubID){
         nodeIter = nodeMap->find(githubID);
         if( nodeIter == nodeMap->end() )
