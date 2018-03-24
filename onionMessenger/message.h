@@ -9,6 +9,7 @@ namespace newmsg{
         Message();
         Message(int, bool, string, string);
         Message(json);
+        Message(string);
         // for key
         Message(int id, int loginStatus, string IP, string githubID, string pubkey);
         virtual ~Message();

@@ -37,6 +37,14 @@ namespace newmsg{
         this->jason["pubkey"] = pubkey;
     }
 
+    Message::Message(string jsonStr) {
+        this->jason = json::parse(jsonStr);
+        this->id = this->jason["id"];
+        this->bullian = this->jason["bullian"];
+        this->ip = this->jason["ip"];
+        this->content = this->jason["content"];
+    }
+
     Message::~Message(){}
 
     int Message::getID() {
@@ -83,15 +91,15 @@ namespace newmsg{
     }
 
     void Message::SendMessage(){
-        g_mutex.lock();
+        s_mutex.lock();
         qSendMsg.push(this->jason.dump());
-        g_mutex.unlock();
+        s_mutex.unlock();
     }
 
     void Message::SendKey(){
-        g_mutex.lock();
+        s_mutex.lock();
         qSendMsg.push(this->jason.dump());
-        g_mutex.unlock();
+        s_mutex.unlock();
     }
 
     void Message::CheckMessage(){
@@ -99,10 +107,10 @@ namespace newmsg{
     }
 
     void Message::RecvMessage(){
-        g_mutex.lock();
+        r_mutex.lock();
         string str(qRecvMsg.front());
         qRecvMsg.pop();
-        g_mutex.unlock();
+        r_mutex.unlock();
         this->jason = json::parse(str);
         this->id = this->jason["id"];
         this->bullian = this->jason["bullian"];
