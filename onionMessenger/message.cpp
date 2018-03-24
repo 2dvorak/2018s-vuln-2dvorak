@@ -50,7 +50,7 @@ namespace newmsg{
     }
 
     void Message::CheckMessage(){
-        cout << this->jason.dump();
+        cout << this->jason.dump() << endl;
     }
 
     void Message::RecvMessage(){
