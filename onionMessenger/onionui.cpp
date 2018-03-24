@@ -34,7 +34,7 @@ namespace oniui{
 
                 if(qRecvMsg.empty() == 0) {
                     string str = qRecvMsg.front();
-                    cout << (new Message(str))->getContent() << "\n";
+                    cout << str << "\n";
                     qRecvMsg.pop();
                 }
             }
@@ -99,8 +99,8 @@ namespace oniui{
             clear();
             mvprintw(0, 0, screen.c_str());
             refresh();
-            Message *msg = new Message(0,true,"192.168.0.1",string(str.c_str()));
-            qSendMsg.push(msg->getJason().dump());
+//            Message *msg = new Message(0,true,"192.168.0.1",string(str.c_str()));
+            qSendMsg.push(str);
         }
     }
 
