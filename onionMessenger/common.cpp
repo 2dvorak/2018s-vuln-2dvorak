@@ -9,7 +9,7 @@ queue<string>qRecvMsg;
 mutex r_mutex;
 mutex s_mutex;
 string MyIP;
-
+newkey::Keymanager *g_km;
 
 void UsageMessenger(){
     cout << "Usage: ./onionMessenger [GithubID] [passPhrase]" << endl;
