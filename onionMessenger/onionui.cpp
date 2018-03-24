@@ -5,7 +5,7 @@
 
 using namespace newmsg;
 int curX = 0, curY = 0;
-string screen = "";
+vector<string> msgList;
 
 namespace oniui{
     OnionUI::OnionUI(){}
@@ -61,17 +61,16 @@ namespace oniui{
         }
     }
 
-    void OnionUI::UIRecvThread(int maxY, int maxX) {
+    void OnionUI::UIRecvThread(WINDOW* win, int maxY, int maxX) {
         while(1) {
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
-                if(str.compare(0, 5, "/exit", 0, 5) == 0) {
-                    //endwin();
+                if(str.compare("/exit") == 0) {
                     break;
                 }
-                screen.append("You: " + str + "\n");
+                msgList.push_back("You: " + str + "\n");
                 clear();
-                mvprintw(0, 0, screen.c_str());
+                mvprintw(0, 0, onionlogo);
                 mvprintw(maxY - 1, 0, ">");
                 refresh();
                 qRecvMsg.pop();
@@ -79,19 +78,63 @@ namespace oniui{
         }
     }
 
-    void OnionUI::UISendThread(int maxY, int maxX) {
-        //string str;
+    void OnionUI::UISendThread(WINDOW *win, int maxY, int maxX) {
+        string str = "";
+        //keypad(win, true);
+        mvwprintw(win, 0, 0, "He█r");
+        k_mutex.lock();
+        curY = 1;
+        k_mutex.unlock();
         while(1) {
-            string str;
-            mvprintw(maxY - 1, 0, ">");
-            getstr(&str[0]);
-            string str2(str.c_str());
-            screen.append("Me: " + str2 + "\n");
-            clear();
-            mvprintw(0, 0, screen.c_str());
-            refresh();
-            //Message *msg = new Message("1","true","127.0.0.1",str2);
-            //qSendMsg.push(str);
+            //string str;
+            mvwprintw(win, maxY - 1, 0, ">");
+            wprintw(win, str.c_str());
+            //getstr(&str[0]);
+            wrefresh(win);
+            int input = wgetch(win);
+            //mvwprintw(win, 0, 5, "pressed : %d", input);
+            //wmove(win, maxY -1, str.length() + 1);
+            if(input >= 0x20 && input <= 0x7e) {
+                str.push_back(input);
+            } else if(input == KEY_UP) {
+                k_mutex.lock();
+                if(msgList.size() > 22 && curY > 23) {
+                    curY--;
+                }
+                k_mutex.unlock();
+            } else if(input == KEY_DOWN) {
+                k_mutex.lock();
+                if(msgList.size() > 22 && curY < msgList.size() + 1) {
+                    curY++;
+                }
+                k_mutex.unlock();
+            } else if(input == KEY_EXIT) {
+                break; //return;
+            } else if(input == 10) {
+                k_mutex.lock();
+                msgList.push_back("Me: " + str + "\n");
+                curY = msgList.size() + 1;
+                k_mutex.unlock();
+                //Message *msg = new Message("1","true","127.0.0.1",str);
+                //s_mutex.lock();
+                //qSendMsg.push(str);
+                //s_mutex.unlock();
+                str = "";
+            }
+            wclear(win);
+            wrefresh(win);
+            mvwprintw(win, 0, 0, "Her");
+            wmove(win, 1, 0);
+            if(curY >= maxY - 1) {
+                for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
+                    wprintw(win, msgList.at(i).c_str());
+                    wrefresh(win);
+                }
+            } else {
+                for( int i = 0 ; i < msgList.size(); i++ ) {
+                    wprintw(win, msgList.at(i).c_str());
+                }
+            }
         }
     }
 
