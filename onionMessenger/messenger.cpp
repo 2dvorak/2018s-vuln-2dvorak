@@ -28,9 +28,11 @@ namespace newmsger{
         // 3. handle user input / print output to screen
 
         sockth = new Sockthread();
-        std::thread recvThread = sockth->recvMessageThread();
+//        std::thread recvThread = sockth->recvMessageThread();
+        sockth->recvMessageThread();
         sleep(1); // wait for recvThread to be created. let's not send before recv
-        std::thread sendThread = sockth->sendMessageThread();
+        sockth->sendMessageThread();
+//        std::thread sendThread = sockth->sendMessageThread();
 
         std::thread *main = new std::thread(OnionUI::MainUI);
         // for now, no additional executions are left so we should
