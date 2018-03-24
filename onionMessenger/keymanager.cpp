@@ -10,7 +10,7 @@ namespace newkey{
         this->passPhrase = passPhrase;
         this->githubID = githubID;
         this->nodeMap = new unordered_map<string, Nodeinfo*>;
-        this->myJSON = new Message(0, 1, MyIP, this->githubID, "string pubkey");
+        this->myJSON = new Message(1, 1, MyIP, this->githubID, "string pubkey");
     }
 
     Keymanager::~Keymanager(){}
