@@ -2,6 +2,7 @@
 #define SOCKTHREAD_H
 
 #include "common.h"
+using namespace newkey;
 
 namespace sockth{
     class Sockthread{
@@ -15,6 +16,7 @@ namespace sockth{
         static int CreateRecvSocket();
         static int RecvAll(int sockFd);
     private:
+        Keymanager *keyMan;
     };
 }
 

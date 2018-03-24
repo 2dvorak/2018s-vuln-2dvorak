@@ -44,20 +44,35 @@ namespace sockth{
     }
 
     int Sockthread::RecvAll(int sockFd) {
-        char buffer[256];
+        char buffer[4096];
         int n;
-        memset(buffer, '\x00', 256);
-        n = read(sockFd,buffer,255);
+        memset(buffer, '\x00', 4096);
+        n = read(sockFd, buffer, 4096);
         if(n < 0) {
             perror("[KEY thread] Error reading socket\n");
             return -1;
         }
         string msgStr(buffer);
-        r_mutex.lock();
-        qRecvMsg.push(msgStr);
-        r_mutex.unlock();
-        close(sockFd);
 
+        json tmp;
+        tmp = json::parse(msgStr);
+        string tmp_id = tmp.at("id").get<std::string>();
+        string tmp_bullian = tmp.at("bullian").get<std::string>();
+        if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("1") == 0) { // key alive
+            g_km->RecvKeyAlive(msgStr);
+        }
+        else if( (tmp_id.compare("1") == 0) && tmp_bullian.compare("0") == 0){ // key die
+            g_km->RecvKeyDie(msgStr);
+        }
+        else if( (tmp_id.compare("1") == 1) && (tmp_bullian.compare("1") == 1)){ // my message
+            r_mutex.lock();
+            qRecvMsg.push(msgStr);
+            r_mutex.unlock();
+        }
+        else if( (tmp_id.compare("1") == 1) && (tmp_bullian.compare("0") == 0)){ // not message
+
+        }
+        close(sockFd);
         return 0;
     }
 
@@ -108,7 +123,7 @@ namespace sockth{
     }
 
     int Sockthread::CreateSendSocket() {
-        while(1) {
+        while(1){
             // check msg queue
             while(qSendMsg.empty() == 1) ;
             int sockFd;
