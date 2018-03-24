@@ -47,7 +47,7 @@ namespace oniui{
                 t1.join();
                 if(t2.joinable()) t2.join();
                 endwin();
-                ui->ShowMenu();
+                //ui->ShowMenu();
             }
             break;
             case '3':
@@ -84,18 +84,14 @@ namespace oniui{
         while(1) {
             string str;
             mvprintw(maxY - 1, 0, ">");
-            for(int i = 0 ; i < maxX - 2 ; i++) {
-                addch(' ');
-            }
-            move(maxY - 1, 1);
             getstr(&str[0]);
             string str2(str.c_str());
             screen.append("Me: " + str2 + "\n");
             clear();
             mvprintw(0, 0, screen.c_str());
             refresh();
-//            Message *msg = new Message(0,true,"192.168.0.1",string(str.c_str()));
-            qSendMsg.push(str);
+            //Message *msg = new Message("1","true","127.0.0.1",str2);
+            //qSendMsg.push(str);
         }
     }
 

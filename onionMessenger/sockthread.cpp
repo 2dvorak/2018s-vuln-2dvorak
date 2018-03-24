@@ -21,7 +21,7 @@ namespace sockth{
         try{
 //        tmp = json::parse(msgStr);
 //        string destIP = tmp.at("ip").get<std::string>();
-        memset((char *) &servAddr, '\x00', sizeof(servAddr));
+            memset((char *) &servAddr, '\x00', sizeof(servAddr));
 
             servAddr.sin_family = AF_INET;
 //            inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
