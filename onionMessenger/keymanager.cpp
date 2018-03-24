@@ -46,6 +46,17 @@ namespace newkey{
             return true;
     }
 
+    void Keymanager::ShowList(){
+        int i = 0;
+        cout << " === Your List! === " << endl;
+        for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
+            i++;
+            cout << nodeIter->first << " : " << nodeIter->second->ip << endl;
+        }
+        cout << " ==== Done! ====" << endl;
+    }
+
+
     // manage node from packet
     void Keymanager::RecvKeyAlive(string jsonStr){
         json tmp;

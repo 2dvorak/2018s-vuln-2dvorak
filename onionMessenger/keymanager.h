@@ -18,11 +18,13 @@ namespace newkey{
         virtual ~Keymanager();
         // Check validation between privatekey and passphrase
         bool Validation();
+
         // Search, Add, Delete node in unordered_map
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
         bool IsExist(string githubID);
+        void ShowList();
 
         // GetKey, PutKey Socket
         void RecvKeyAlive(string jsonStr);
@@ -42,10 +44,10 @@ namespace newkey{
     public:
         Nodeinfo(string, string);
         virtual ~Nodeinfo();
-    private:
-        // Node info IP & Pubkey
         string ip;
         string pubkey;
+    private:
+        // Node info IP & Pubkey
     };
 }
 
