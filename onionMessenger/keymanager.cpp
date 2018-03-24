@@ -15,7 +15,9 @@ namespace newkey{
         this->myJSON = new Message("0", "1", MyIP, this->githubID, "string pubkey");
     }
 
-    Keymanager::~Keymanager(){}
+    Keymanager::~Keymanager(){
+
+    }
 
     bool Keymanager::Validation(){
         // check pw match private key
@@ -56,7 +58,6 @@ namespace newkey{
         cout << " ==== Done! ====" << endl;
     }
 
-
     // manage node from packet
     void Keymanager::RecvKeyAlive(string jsonStr){
         json tmp;
@@ -68,7 +69,6 @@ namespace newkey{
             tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
             AddMap(tmp_githubID, tmpInfo);
             this->SendKeyAlive();
-//            this->myJSON->CheckMessage();
         }
     }
 
