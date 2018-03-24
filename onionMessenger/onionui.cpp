@@ -6,6 +6,7 @@
 using namespace newmsg;
 int curX = 0, curY = 0;
 vector<string> msgList;
+bool end_flag = true;
 
 namespace oniui{
     OnionUI::OnionUI(){}
@@ -51,7 +52,7 @@ namespace oniui{
                 int highlight = 1;
                 int choice = 0;
                 int c;
-                int listLen = nodeMap->size() + 1;
+                int listLen = nodeMap->size();
                 msgList.clear();
                 initscr();
                 //raw();
@@ -66,11 +67,12 @@ namespace oniui{
                 keypad(listWin, true);
                 //scrollok(listWin, true);
                 refresh();
-
+                curY = 8;
                 while(1) {
                     int x, y, i = 0;
                     x = 2;
-                    y = 2;
+                    y = 1;
+                    wclear(listWin);
                     box(listWin, 0, 0);
                     /*if(highlight == i) {
                         wattron(listWin, A_REVERSE);
@@ -80,20 +82,28 @@ namespace oniui{
                         mvwprintw(listWin, y, x, "%s", "Me");
                     }
                     ++y;*/
-                    for(nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++)
+                    nodeIter = nodeMap->begin();
+                    if(curY > 8) {
+                        for(int j = 0 ; j < curY - 8; j ++) {
+                            nodeIter++;
+                        }
+                    }
+                    for(int j = 0; nodeIter != nodeMap->end() && j < 8 ; j++)
                     {
-                        i++;
-                        if(highlight == i + 1) /* High light the present choice */
+
+                        if(highlight == j + 1 + (curY - 8)) /* High light the present choice */
                         {	wattron(listWin, A_REVERSE);
-                            mvwprintw(listWin, y, x, "%s", nodeIter->first);
-                            githubID = nodeIter->first;
+                            mvwprintw(listWin, y, x, "%s", string(nodeIter->first).c_str());
+                            githubID = string(nodeIter->first);
                             wattroff(listWin, A_REVERSE);
                         }
                         else
-                            mvwprintw(listWin, y, x, "%s", nodeIter->first);
+                            mvwprintw(listWin, y, x, "%s", string(nodeIter->first).c_str());
+                        i++;
                         ++y;
+                        nodeIter++;
                     }
-                    i++;
+                    /*i++;
                     if(highlight == i) {
                         wattron(listWin, A_REVERSE);
                         mvwprintw(listWin, y, x, "%s", "Exit");
@@ -101,43 +111,57 @@ namespace oniui{
                     } else {
                         mvwprintw(listWin, y, x, "%s", "Exit");
                     }
-                    ++y;
-                    wmove(listWin, y, 1);
+                    ++y;*/
+                    //wmove(listWin, y, 1);
+                    curs_set(0);
                     wrefresh(listWin);
                     if(choice != 0) break;
                     c = wgetch(listWin);
                     switch(c)
                     {
                     case KEY_UP:
-                        {
-                            if(highlight == 1) {
-                                highlight = listLen;
-                            } else {
-                                highlight--;
-                            }
-                            break;
+                    {
+                        if(highlight == 1) {
+                            highlight = listLen;
+                            curY = listLen;
+                        } else {
+                            highlight--;
                         }
+                        if(nodeMap->size() > 8 && curY - 8 > highlight ) {
+                            curY--;
+                        }
+                        continue;
+                    }
                     case KEY_DOWN:
-                        {
-                            if(highlight == listLen) {
-                                highlight = 1;
-                            } else {
-                                highlight++;
-                            }
-                            break;
+                    {
+                        if(highlight == listLen) {
+                            highlight = 1;
+                            curY = 8;
+                        } else {
+                            highlight++;
                         }
+                        if(nodeMap->size() > 8 && curY < highlight ) {
+                            curY++;
+                        }
+                        continue;
+                    }
                     case 10:
                     {
                         choice = highlight;
+                        continue;
+                    }
+                    case 27:
+                    {
+                        choice = listLen;
                         break;
                     }
                     default:
                     {
                         refresh();
-                        break;
+                        continue;
                     }
                     }
-
+                    break;
                 }
                 clear();
                 delwin(listWin);
@@ -146,7 +170,7 @@ namespace oniui{
                     keypad(chatWin, true);
                     noecho();
                     wrefresh(chatWin);
-                  
+                    end_flag = true;
                     std::thread t1(OnionUI::UIRecvThread, chatWin, githubID, maxY, maxX);
                     std::thread t2(OnionUI::UISendThread, chatWin, githubID, maxY, maxX);
                     t1.join();
@@ -174,7 +198,7 @@ namespace oniui{
 
     void OnionUI::UIRecvThread(WINDOW* win, string githubID, int maxY, int maxX) {
         Message *msg = new Message();
-        while(1){
+        while(end_flag){
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
                 json tmp;
@@ -213,8 +237,6 @@ namespace oniui{
             //getstr(&str[0]);
             wrefresh(win);
             int input = wgetch(win);
-            //mvwprintw(win, 0, 5, "pressed : %d", input);
-            //wmove(win, maxY -1, str.length() + 1);
             if(input >= 0x20 && input <= 0x7e) {
                 str.push_back(input);
             } else if(input == KEY_UP) {
@@ -229,7 +251,8 @@ namespace oniui{
                     curY++;
                 }
                 k_mutex.unlock();
-            } else if(input == KEY_EXIT) {
+            } else if(input == 27) {
+                end_flag = false;
                 break; //return;
             } else if(input == 10) {
                 k_mutex.lock();
@@ -244,6 +267,7 @@ namespace oniui{
             wclear(win);
             wrefresh(win);
             mvwprintw(win, 0, 0, "Her");
+            //mvwprintw(win, 0, 5, "pressed : %d", input);
             wmove(win, 1, 0);
             if(curY >= maxY - 1) {
                 for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
