@@ -2,6 +2,9 @@
 #define KEYMANAGER_H
 
 #include "common.h"
+#include "message.h"
+
+using namespace newmsg;
 
 namespace newkey{
     class Nodeinfo;
@@ -12,12 +15,13 @@ namespace newkey{
         // Check validation between privatekey and passphrase
         bool Validation();
         // Search, Add, Delete node in unordered_map
-        void SearchMap(string githubID);
-        void AddMap(string githubID);
+        void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
+        Nodeinfo* SearchMap(string githubID);
         // GetKey, PutKey Socket
         void GetKey();
-        void PutKey();
+        void SendKeyAlive();
+        void SendKeyDie();
     private:
         // <githubID, *nodeInfo>
         unordered_map<string, Nodeinfo*>* nodeMap;
@@ -25,12 +29,14 @@ namespace newkey{
         // This client's github ID and passphrase
         string githubID;
         string passPhrase;
+        // My key JSON
+        Message *myJSON;
     };
 
     class Nodeinfo{
     private:
         // Node info IP & Pubkey
-        string IP;
+        string ip;
         string pubkey;
     };
 }

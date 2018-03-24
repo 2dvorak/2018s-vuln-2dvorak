@@ -1,6 +1,7 @@
 
 #include "common.h"
 #include "keymanager.h"
+#include "message.h"
 
 namespace newkey{
 
@@ -9,20 +10,49 @@ namespace newkey{
         this->passPhrase = passPhrase;
         this->githubID = githubID;
         this->nodeMap = new unordered_map<string, Nodeinfo*>;
+        this->myJSON = new Message(0, 1, MyIP, this->githubID, "string pubkey");
     }
 
     Keymanager::~Keymanager(){}
 
-    bool Keymanager::Validation(){return 0;}
+    bool Keymanager::Validation(){
+        // check pw match private key
+        return 0;
+    }
 
-    void Keymanager::SearchMap(string githubID){}
+    void Keymanager::AddMap(string githubID, Nodeinfo* IPnPubKey){
+        nodeMap->insert(unordered_map<string, Nodeinfo*>::value_type(githubID, IPnPubKey));
+    }
 
-    void Keymanager::AddMap(string githubID){}
+    void Keymanager::DelMap(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        delete(nodeIter->second);
+        nodeMap->erase(githubID);
+    }
 
-    void Keymanager::DelMap(string githubID){}
+    Nodeinfo* Keymanager::SearchMap(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        return nodeIter->second;
+    }
 
-    void Keymanager::GetKey(){}
+    void Keymanager::SendKeyAlive(){
+        char buffer[5];
+        this->myJSON->setBullian(1);
+        for( int ii = 0x00; ii < 255 ;ii++){
+            sprintf(buffer, "%d",ii);
+            this->myJSON->setIP(string("172.17.0.") + string(buffer));
+            this->myJSON->SendKey();
+//            this->myJSON->CheckMessage(); cout << endl;// for debug
+        }
+    }
 
-    void Keymanager::PutKey(){}
+    void Keymanager::SendKeyDie(){
+        char buffer[5];
+        this->myJSON->setBullian(0);
+        for( int ii = 0x00; ii < 255 ;ii++){
+            sprintf(buffer, "%d",ii);
+            this->myJSON->setIP(string("172.17.0.") + string(buffer));
+        }
+    }
 
 }
