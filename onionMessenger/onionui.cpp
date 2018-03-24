@@ -31,12 +31,7 @@ namespace oniui{
             switch(value){
             case '1':
             {
-
-                if(qRecvMsg.empty() == 0) {
-                    string str = qRecvMsg.front();
-                    cout << str << "\n";
-                    qRecvMsg.pop();
-                }
+                g_km->ShowList();
             }
             break;
             case '2':
