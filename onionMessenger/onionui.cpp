@@ -39,12 +39,12 @@ namespace oniui{
 
                 WINDOW *listWin, *chatWin;
 
-                cout << "=====================================" << endl;
+                /*cout << "=====================================" << endl;
                 cout << "Who do you want to talk to?" << endl;
                 g_km->ShowList();
                 cout << "githubID> ";
                 string githubID;
-                cin >> githubID; // validation check routine ++++
+                cin >> githubID; // validation check routine ++++*/
 
                 int maxX = 0, maxY = 0;
                 int listX = 0, listY = 0;
