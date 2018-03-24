@@ -19,12 +19,13 @@ namespace sockth{
         struct sockaddr_in servAddr;
         const char* msg = msgStr.c_str();
         try{
-        tmp = json::parse(msgStr);
-        string destIP = tmp.at("ip").get<std::string>();
+//        tmp = json::parse(msgStr);
+//        string destIP = tmp.at("ip").get<std::string>();
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
 
             servAddr.sin_family = AF_INET;
-            inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
+//            inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
+            inet_pton(AF_INET, "127.0.0.1",&servAddr.sin_addr);
             servAddr.sin_port = htons(9987); // port number
             if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
                 return -1;
