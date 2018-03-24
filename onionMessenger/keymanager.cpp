@@ -38,7 +38,7 @@ namespace newkey{
     void Keymanager::SendKeyAlive(){
         char buffer[5];
         this->myJSON->setBullian(1);
-        for( int ii = 0x00; ii < 255 ;ii++){
+        for( int ii = 0x00; ii < 10;ii++){
             sprintf(buffer, "%d",ii);
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
             this->myJSON->SendKey();
