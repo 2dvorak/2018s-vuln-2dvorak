@@ -63,11 +63,11 @@ namespace newkey{
         tmp = json::parse(jsonStr);
         string tmp_githubID = tmp.at("githubID").get<std::string>();
         if(IsExist(tmp_githubID) == false){
-            string tmp_ip = tmp.at("ip").get<std::string>();
+            string tmp_ip = tmp.at("sendip").get<std::string>();
             string tmp_pubkey = tmp.at("pubkey").get<std::string>();
             tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
             AddMap(tmp_githubID, tmpInfo);
-//            this->SendKeyAlive();
+            this->SendKeyAlive();
 //            this->myJSON->CheckMessage();
         }
     }
@@ -78,12 +78,6 @@ namespace newkey{
         string tmp_githubID = tmp.at("githubID").get<std::string>();
         if(IsExist(tmp_githubID) == true)
             DelMap(tmp_githubID);
-    }
-
-    void Keymanager::SendKey(string ip){
-        this->myJSON->setBullian("1");
-        this->myJSON->setIP(ip);
-        this->myJSON->SendKey();
     }
 
     // init
