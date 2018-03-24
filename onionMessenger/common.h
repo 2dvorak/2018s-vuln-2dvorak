@@ -30,6 +30,7 @@ using json = nlohmann::json;
 extern queue<string> qSendMsg;
 extern queue<string> qRecvMsg;
 extern string MyIP;
+extern mutex g_mutex;
 
 // Usage & Print stderr
 void UsageMessenger();
