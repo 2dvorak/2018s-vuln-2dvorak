@@ -7,9 +7,6 @@ namespace newmsg{
     class Message{
     public:
         Message();
-        Message(int, bool, string, string);
-        Message(json);
-        Message(string);
         // for key
         Message(int id, int loginStatus, string IP, string githubID, string pubkey);
         virtual ~Message();
@@ -18,24 +15,17 @@ namespace newmsg{
         void RecvMessage();
         void SendKey();
         void RecvKey();
-        int getID();
-        bool getBullian();
-        string getIP();
-        string getContent();
-        json getJason();
-        void setID(int);
+
+        // json setting
         void setBullian(int);
         void setIP(string);
+        string getIP();
         void setContent(string);
         void setJason(json);
         void CheckMessage();
     private:
         // We have to make rules(Protocol)
         // +a // string attachment;
-        int id;
-        int bullian;
-        string ip;
-        string content;
         json jason;
     };
 }
