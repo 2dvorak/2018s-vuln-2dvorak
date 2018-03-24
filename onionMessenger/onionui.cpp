@@ -52,6 +52,7 @@ namespace oniui{
             break;
             case '3':
             {
+                g_km->SendKeyDie();
                 exit(1);
             }
             break;
