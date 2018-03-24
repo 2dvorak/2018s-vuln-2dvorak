@@ -36,14 +36,21 @@ namespace oniui{
             break;
             case '2':
             {
+                cout << "=====================================" << endl;
+                cout << "Who do you want to talk to?" << endl;
+                g_km->ShowList();
+                cout << "githubID> ";
+                string githubID;
+                cin >> githubID; // validation check routine ++++
+
                 int maxX = 0, maxY = 0;
                 screen = "";
                 initscr();
                 raw();
                 getmaxyx(stdscr, maxY, maxX);
                 scrollok(stdscr, true);
-                std::thread t1(OnionUI::UIRecvThread, maxY, maxX);
-                std::thread t2(OnionUI::UISendThread, maxY, maxX);
+                std::thread t1(OnionUI::UIRecvThread, githubID, maxY, maxX);
+                std::thread t2(OnionUI::UISendThread, githubID, maxY, maxX);
                 t1.join();
                 if(t2.joinable()) t2.join();
                 endwin();
@@ -64,26 +71,36 @@ namespace oniui{
         }
     }
 
-    void OnionUI::UIRecvThread(int maxY, int maxX) {
-        while(1) {
+    void OnionUI::UIRecvThread(string githubID, int maxY, int maxX) {
+        Message *msg = new Message();
+        while(1){
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
                 if(str.compare(0, 5, "/exit", 0, 5) == 0) {
                     //endwin();
                     break;
                 }
-                screen.append("You: " + str + "\n");
-                clear();
-                mvprintw(0, 0, screen.c_str());
-                mvprintw(maxY - 1, 0, ">");
-                refresh();
-                qRecvMsg.pop();
+                json tmp;
+                tmp = json::parse(str);
+                string tmp_githubID = tmp.at("githubID").get<std::string>();
+                string tmp_content = tmp.at("content").get<std::string>();
+                if(tmp_githubID.compare(githubID) == 0){
+                    screen.append("You: " + tmp_content + "\n");
+                    clear();
+                    mvprintw(0, 0, screen.c_str());
+                    mvprintw(maxY - 1, 0, ">");
+                    refresh();
+                    qRecvMsg.pop();
+                }
+                else{
+                    continue;
+                }
             }
         }
     }
 
-    void OnionUI::UISendThread(int maxY, int maxX) {
-        //string str;
+    void OnionUI::UISendThread(string githubID, int maxY, int maxX) {
+        Message *msg = new Message();
         while(1) {
             string str;
             mvprintw(maxY - 1, 0, ">");
@@ -97,8 +114,9 @@ namespace oniui{
             clear();
             mvprintw(0, 0, screen.c_str());
             refresh();
-//            Message *msg = new Message(0,true,"192.168.0.1",string(str.c_str()));
-            qSendMsg.push(str);
+            string tmp_ip = g_km->Findip(githubID);
+            msg->SetMessage(githubID, tmp_ip, str2);
+            msg->SendMessage();
         }
     }
 
