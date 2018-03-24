@@ -10,12 +10,14 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <ctime>
+#include <ifaddrs.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <ncurses.h>
 
 #include "json.hpp"
+#include "keymanager.h"
 
 // message id macros
 #define TYPE_KEY	0
@@ -25,13 +27,20 @@
 using namespace std;
 using json = nlohmann::json;
 
+extern unordered_map<string, newkey::Nodeinfo*>* nodeMap;
+extern unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
+
 // global queues
-extern queue<string> qkey;
 extern queue<string> qSendMsg;
 extern queue<string> qRecvMsg;
+extern string MyIP;
+extern mutex s_mutex;
+extern mutex r_mutex;
+extern newkey::Keymanager *g_km;
 
 // Usage & Print stderr
 void UsageMessenger();
 void CheckPW();
+void CheckIP();
 
 #endif // COMMON_H

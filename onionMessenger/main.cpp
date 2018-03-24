@@ -2,10 +2,6 @@
 #include "messenger.h"
 using namespace newmsger;
 
-queue<string>qkey;
-queue<string>qSendMsg;
-queue<string>qRecvMsg;
-
 int main(int argc, char *argv[])
 {
     if( argc != 3 ){

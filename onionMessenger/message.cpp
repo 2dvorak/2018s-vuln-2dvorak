@@ -4,97 +4,64 @@
 
 namespace newmsg{
 
-    Message::Message(){
+    Message::Message(){}
 
-    }
-
-    Message::Message(int id, bool bullian, string IP, string content) {
-        this->id = id;
-        this->bullian = bullian;
-        this->IP = IP;
-        this->content = content;
+    // KEY
+    Message::Message(string id, string loginStatus, string ip, string githubID, string pubkey){
         this->jason["id"] = id;
-        this->jason["bullian"] = bullian;
-        this->jason["IP"] = IP;
-        this->jason["content"] = content;
-    }
-
-    Message::Message(json jason) {
-        this->jason["id"] = jason["id"];
-        this->jason["bullian"] = jason["bullian"];
-        this->jason["IP"] = jason["IP"];
-        this->jason["content"] = jason["content"];
-        this->id = jason["id"];
-        this->bullian = jason["bullian"];
-        this->IP = jason["IP"];
-        this->content = jason["content"];
-    }
-
-    Message::Message(string jsonStr) {
-        this->jason = json::parse(jsonStr);
-        this->id = this->jason["id"];
-        this->bullian = this->jason["bullian"];
-        this->IP = this->jason["IP"];
-        this->content = this->jason["content"];
+        this->jason["bullian"] = loginStatus;
+        this->jason["ip"] = ip;
+        this->jason["githubID"] = githubID;
+        this->jason["pubkey"] = pubkey;
     }
 
     Message::~Message(){}
 
-    int Message::getID() {
-        return this->id;
+    void Message::setIP(string ip) {
+        this->jason["ip"] = ip;
     }
 
-    bool Message::getBullian() {
-        return this->bullian;
+    string Message::getIP(){
+        return this->jason.at("ip").get<std::string>();
     }
 
-    string Message::getIP() {
-        return this->IP;
-    }
-
-    string Message::getContent() {
-        return this->content;
-    }
-
-    json Message::getJason() {
-        return this->jason;
-    }
-
-    void Message::setID(int id) {
-        this->id = id;
-    }
-
-    void Message::setBullian(bool bullian) {
-        this->bullian = bullian;
-    }
-
-    void Message::setIP(string IP) {
-        this->IP = IP;
-    }
-
-    void Message::setContent(string content) {
-        this->content = content;
+    void Message::setBullian(string bullian) {
+        this->jason["bullian"] = bullian;
     }
 
     void Message::setJason(json) {
         this->jason["id"] = jason["id"];
         this->jason["bullian"] = jason["bullian"];
-        this->jason["IP"] = jason["IP"];
+        this->jason["ip"] = jason["ip"];
         this->jason["content"] = jason["content"];
     }
 
     void Message::SendMessage(){
+        s_mutex.lock();
         qSendMsg.push(this->jason.dump());
+        s_mutex.unlock();
+    }
+
+    void Message::SendKey(){
+        s_mutex.lock();
+        qSendMsg.push(this->jason.dump());
+        s_mutex.unlock();
+    }
+
+    void Message::CheckMessage(){
+        cout << this->jason.dump();
     }
 
     void Message::RecvMessage(){
+        r_mutex.lock();
         string str(qRecvMsg.front());
         qRecvMsg.pop();
-        this->jason = json::parse(str);
-        this->id = this->jason["id"];
-        this->bullian = this->jason["bullian"];
-        this->IP = this->jason["IP"];
-        this->content = this->jason["content"];
+        r_mutex.unlock();
+//        this->jason = json::parse(str);
+//        this->id = this->jason["id"];
+//        this->bullian = this->jason["bullian"];
+//        this->ip = this->jason["ip"];
+//        this->content = this->jason["content"];
     }
 
 }

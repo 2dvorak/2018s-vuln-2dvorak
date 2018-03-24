@@ -12,14 +12,16 @@ using namespace oniui;
 namespace newmsger{
 
     Messenger::Messenger(string githubID, string passPhrase){
+        g_km = new Keymanager();
         this->km = new Keymanager(githubID, passPhrase);
-        if(km->Validation() == 1) {
-            CheckPW();
-            exit(1);
-        }
+        this->km->Validation();
+        CheckIP();
+        this->km->SendKeyAlive();
     }
 
-    Messenger::~Messenger(){}
+    Messenger::~Messenger(){
+         this->km->SendKeyDie();
+    }
 
     void Messenger::Main(){
         // create 3 threads
@@ -28,15 +30,12 @@ namespace newmsger{
         // 3. handle user input / print output to screen
 
         sockth = new Sockthread();
-        std::thread recvThread = sockth->recvMessageThread();
-        // wait for recvThread to be created. let's not send before recv
-        sleep(1);
-        std::thread sendThread = sockth->sendMessageThread();
-
+        sleep(1); // wait for recvThread to be created. let's not send before recv
+        std::thread recvThread = sockth->RecvMessageThread();
+        std::thread sendThread = sockth->SendMessageThread();
         std::thread *main = new std::thread(OnionUI::MainUI);
         // for now, no additional executions are left so we should
         // wait for the thread to return
         main->join();
-        // start to clean up threads..
     }
 }

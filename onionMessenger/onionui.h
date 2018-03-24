@@ -2,6 +2,9 @@
 #define ONIONUI_H
 
 #include "common.h"
+#include "message.h"
+
+using namespace newmsg;
 
 namespace oniui{
     class OnionUI{
@@ -11,9 +14,11 @@ namespace oniui{
         static void MainUI();
         static void UISendThread(int ,int);
         static void UIRecvThread(int ,int);
+        void Init();
         void ShowLogo();
         void ShowMenu();
     private:
+        Message *msg;
     };
 }
 

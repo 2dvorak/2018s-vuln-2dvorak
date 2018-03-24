@@ -8,25 +8,75 @@ namespace sockth{
 
     Sockthread::~Sockthread(){}
 
-    int Sockthread::recvKey(int sockFd) {
-        char buffer[256];
+    int Sockthread::SendAll(int sockFd, string msgStr) {
+        // get message from buffer
+        // getMesg();
+        // get recv ip addr
+        // getIp();
+
         int n;
-        memset(buffer, '\x00', 256);
-        n = read(sockFd,buffer,255);
+        json tmp;
+        struct sockaddr_in servAddr;
+        const char* msg = msgStr.c_str();
+        try{
+//        tmp = json::parse(msgStr);
+//        string destIP = tmp.at("ip").get<std::string>();
+        memset((char *) &servAddr, '\x00', sizeof(servAddr));
+
+            servAddr.sin_family = AF_INET;
+//            inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
+            inet_pton(AF_INET, "127.0.0.1",&servAddr.sin_addr);
+            servAddr.sin_port = htons(9987); // port number
+            if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
+                return -1;
+            }
+            n = write(sockFd, msg, strlen(msg));
+            if( n < 0 ) {
+                perror("ERROR writing msg to socket\n");
+                return -1;
+            }
+            close(sockFd);
+        }
+        catch(int e){
+            return 0;
+        }
+        return 0;
+    }
+
+    int Sockthread::RecvAll(int sockFd) {
+        char buffer[4096];
+        int n;
+        memset(buffer, '\x00', 4096);
+        n = read(sockFd, buffer, 4096);
         if(n < 0) {
             perror("[KEY thread] Error reading socket\n");
             return -1;
         }
-        //printf("[KEY thread] %s\n",buffer);
         string msgStr(buffer);
-        qRecvMsg.push(msgStr);
 
+        json tmp;
+        tmp = json::parse(msgStr);
+        string tmp_id = tmp.at("id").get<std::string>();
+        string tmp_bullian = tmp.at("bullian").get<std::string>();
+        if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("1") == 0) { // key alive
+            g_km->RecvKeyAlive(msgStr);
+        }
+        else if( (tmp_id.compare("1") == 0) && tmp_bullian.compare("0") == 0){ // key die
+            g_km->RecvKeyDie(msgStr);
+        }
+        else if( (tmp_id.compare("1") == 1) && (tmp_bullian.compare("1") == 1)){ // my message
+            r_mutex.lock();
+            qRecvMsg.push(msgStr);
+            r_mutex.unlock();
+        }
+        else if( (tmp_id.compare("1") == 1) && (tmp_bullian.compare("0") == 0)){ // not message
+
+        }
         close(sockFd);
-
         return 0;
     }
 
-    int Sockthread::createRecvSocket() {
+    int Sockthread::CreateRecvSocket() {
         int sockFd, newSockFd;
         socklen_t clientLen;
         char buffer[256];
@@ -40,40 +90,18 @@ namespace sockth{
             return -1;
         }
 
-        // clear address structure(needed?)
         memset((char*) &servAddr, '\x00', sizeof(servAddr));
-
-        // !!!!!!!!!!!!!!!!!!!!! which protocol??
         servAddr.sin_family = AF_INET;
-
-        // !!!!!!!!!!!!!!!!!!!!! port number to what?
         servAddr.sin_port = htons(9987); // port number
-
-        // !!!!!!!!!!!!!!!!!!!!! INADDR_ANY safe?
-        // should be INADDR_ANY but how about checking if that
-        // ip's in my node list
-        // if not, ping to that node and check if valid node?
         servAddr.sin_addr.s_addr = INADDR_ANY;
-
-        // bind(int fd, struct sockaddr *local_addr, socklen_t addr_length)
-        // bind socket to current IP address on portNum
         if (bind(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             perror("ERROR on binding");
             return -1;
         }
 
-        // ? what for..?
         clientLen = sizeof(cliAddr);
-
-        // accept(int s, struct sockaddr *addr, socklen_t *addrlen);
-        // accept() function will write the connecting client's info
-        // into address structure then returns a new socket file descriptor
-        // for the accepted connection.
         while(1) {
             char clientIp[INET_ADDRSTRLEN];
-
-            // listen() function put all new connections into backlog queue until accept()
-            // !!!!!!!!!!!!!!!! SOMAXCONN ok?
             listen(sockFd, SOMAXCONN);
 
             newSockFd = accept(sockFd, (struct sockaddr *) &cliAddr, &clientLen);
@@ -85,7 +113,7 @@ namespace sockth{
                 perror("ERROR on inet_ntop");
                 return -1;
             }
-            new std::thread(Sockthread::recvKey, newSockFd);
+            new std::thread(Sockthread::RecvAll, newSockFd);
         }
 
         memset(buffer, '\x00', 256);
@@ -94,44 +122,10 @@ namespace sockth{
         return 0;
     }
 
-    int Sockthread::sendMessage(int sockFd, string msgStr) {
-        // get message from buffer
-        // getMesg();
-        // get recv ip addr
-        // getIp();
-
-        int n;
-        struct sockaddr_in servAddr;
-        //char msg[18] = "Message from :   ";
-        //string msgStr(qSendMsg.front());
-        const char* msg = msgStr.c_str();
-        //qSendMsg.pop();
-
-        memset((char *) &servAddr, '\x00', sizeof(servAddr));
-        servAddr.sin_family = AF_INET;
-        inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr);
-        servAddr.sin_port = htons(9987); // port number
-        if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-            perror("ERROR connecting");
-            return -1;
-        }
-        //msg[15] = '0' + (sockFd % 100) / 10;
-        //msg[16] = '0' + sockFd % 10;
-        n = write(sockFd, msg, strlen(msg));
-        if( n < 0 ) {
-            perror("ERROR writing msg to socket\n");
-            return -1;
-        }
-        close(sockFd);
-        return 0;
-    }
-
-    int Sockthread::createSendSocket() {
-        while(1) {
+    int Sockthread::CreateSendSocket() {
+        while(1){
             // check msg queue
             while(qSendMsg.empty() == 1) ;
-
-            // make socket
             int sockFd;
 
             sockFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -139,24 +133,21 @@ namespace sockth{
                 perror("ERROR opening socket");
                 return -1;
             }
-
+            s_mutex.lock();
             string msg(qSendMsg.front());
             qSendMsg.pop();
-            new std::thread(Sockthread::sendMessage, sockFd, msg);
-            //std::thread t(sendMessage, sockFd, portNum);
-            //t.join();
-
-            //sleep(1);
+            s_mutex.unlock();
+            new std::thread(Sockthread::SendAll, sockFd, msg);
         }
     }
 
-    std::thread Sockthread::recvMessageThread(){
-        std::thread t(Sockthread::createRecvSocket);
+    std::thread Sockthread::RecvMessageThread(){
+        std::thread t(Sockthread::CreateRecvSocket);
         return t;
     }
 
-    std::thread Sockthread::sendMessageThread(){
-        std::thread t(Sockthread::createSendSocket);
+    std::thread Sockthread::SendMessageThread(){
+        std::thread t(Sockthread::CreateSendSocket);
         return t;
     }
 
