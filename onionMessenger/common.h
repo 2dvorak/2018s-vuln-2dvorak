@@ -5,6 +5,7 @@
 #include <thread>
 #include <unordered_map>
 #include <queue>
+#include <vector>
 #include <mutex>
 #include <cstring>
 #include <unistd.h>
