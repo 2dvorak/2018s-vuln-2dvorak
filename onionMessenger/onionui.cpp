@@ -36,16 +36,110 @@ namespace oniui{
             break;
             case '2':
             {
+                WINDOW *listWin, *chatWin;
                 int maxX = 0, maxY = 0;
-                screen = "";
+                int listX = 0, listY = 0;
+                int highlight = 1;
+                int choice = 0;
+                int c;
+                int listLen = nodeMap->size() + 2;
+                msgList.clear();
                 initscr();
-                raw();
+                //raw();
+                clear();
+                noecho();
+                cbreak();
                 getmaxyx(stdscr, maxY, maxX);
-                scrollok(stdscr, true);
-                std::thread t1(OnionUI::UIRecvThread, maxY, maxX);
-                std::thread t2(OnionUI::UISendThread, maxY, maxX);
-                t1.join();
-                if(t2.joinable()) t2.join();
+                listX = (maxX - 30) / 2;
+                listY = (maxY - 10) / 2;
+                listWin = newwin(10, 30, listY, listX);
+                keypad(listWin, true);
+                //scrollok(listWin, true);
+                refresh();
+
+                while(1) {
+                    int x, y, i = 1;
+                    x = 2;
+                    y = 2;
+                    box(listWin, 0, 0);
+                    if(highlight == i) {
+                        wattron(listWin, A_REVERSE);
+                        mvwprintw(listWin, y, x, "%s", "Me");
+                        wattroff(listWin, A_REVERSE);
+                    } else {
+                        mvwprintw(listWin, y, x, "%s", "Me");
+                    }
+                    ++y;
+                    for(nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++)
+                    {
+                        i++;
+                        if(highlight == i + 1) /* High light the present choice */
+                        {	wattron(listWin, A_REVERSE);
+                            mvwprintw(listWin, y, x, "%s", nodeIter->first);
+                            wattroff(listWin, A_REVERSE);
+                        }
+                        else
+                            mvwprintw(listWin, y, x, "%s", nodeIter->first);
+                        ++y;
+                    }
+                    i++;
+                    if(highlight == i) {
+                        wattron(listWin, A_REVERSE);
+                        mvwprintw(listWin, y, x, "%s", "Exit");
+                        wattroff(listWin, A_REVERSE);
+                    } else {
+                        mvwprintw(listWin, y, x, "%s", "Exit");
+                    }
+                    ++y;
+                    wmove(listWin, maxY, maxX);
+                    wrefresh(listWin);
+                    if(choice != 0) break;
+                    c = wgetch(listWin);
+                    switch(c)
+                    {
+                    case KEY_UP:
+                        {
+                            if(highlight == 1) {
+                                highlight = listLen;
+                            } else {
+                                highlight--;
+                            }
+                            break;
+                        }
+                    case KEY_DOWN:
+                        {
+                            if(highlight == listLen) {
+                                highlight = 1;
+                            } else {
+                                highlight++;
+                            }
+                            break;
+                        }
+                    case 10:
+                    {
+                        choice = highlight;
+                        break;
+                    }
+                    default:
+                    {
+                        refresh();
+                        break;
+                    }
+                    }
+
+                }
+                clear();
+                delwin(listWin);
+                if(choice < listLen) {
+                    chatWin = newwin(maxY, maxX, 0, 0);
+                    keypad(chatWin, true);
+                    noecho();
+                    wrefresh(chatWin);
+                    std::thread t1(OnionUI::UIRecvThread, chatWin, maxY, maxX);
+                    std::thread t2(OnionUI::UISendThread, chatWin, maxY, maxX);
+                    t1.join();
+                    if(t2.joinable()) t2.join();
+                }
                 endwin();
                 //ui->ShowMenu();
             }
@@ -81,7 +175,7 @@ namespace oniui{
     void OnionUI::UISendThread(WINDOW *win, int maxY, int maxX) {
         string str = "";
         //keypad(win, true);
-        mvwprintw(win, 0, 0, "He█r");
+        mvwprintw(win, 0, 0, "Her");
         k_mutex.lock();
         curY = 1;
         k_mutex.unlock();
