@@ -83,11 +83,15 @@ namespace newmsg{
     }
 
     void Message::SendMessage(){
+        g_mutex.lock();
         qSendMsg.push(this->jason.dump());
+        g_mutex.unlock();
     }
 
     void Message::SendKey(){
+        g_mutex.lock();
         qSendMsg.push(this->jason.dump());
+        g_mutex.unlock();
     }
 
     void Message::CheckMessage(){
