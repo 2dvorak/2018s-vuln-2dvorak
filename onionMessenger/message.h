@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+using namespace std;
+using json = nlohmann::json;
+
 namespace newmsg{
     class Message{
     public:

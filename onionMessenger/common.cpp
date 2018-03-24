@@ -1,5 +1,16 @@
 #include "common.h"
 
+// <githubID, *nodeInfo>
+unordered_map<string, newkey::Nodeinfo*>* nodeMap;
+unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
+
+queue<string>qSendMsg;
+queue<string>qRecvMsg;
+mutex r_mutex;
+mutex s_mutex;
+string MyIP;
+
+
 void UsageMessenger(){
     cout << "Usage: ./onionMessenger [GithubID] [passPhrase]" << endl;
 }

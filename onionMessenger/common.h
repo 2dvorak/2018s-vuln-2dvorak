@@ -17,6 +17,7 @@
 #include <ncurses.h>
 
 #include "json.hpp"
+#include "keymanager.h"
 
 // message id macros
 #define TYPE_KEY	0
@@ -25,6 +26,9 @@
 
 using namespace std;
 using json = nlohmann::json;
+
+extern unordered_map<string, newkey::Nodeinfo*>* nodeMap;
+extern unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
 
 // global queues
 extern queue<string> qSendMsg;

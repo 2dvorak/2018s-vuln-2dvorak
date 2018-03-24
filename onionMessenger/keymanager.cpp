@@ -9,7 +9,7 @@ namespace newkey{
     {
         this->passPhrase = passPhrase;
         this->githubID = githubID;
-        this->nodeMap = new unordered_map<string, Nodeinfo*>;
+        nodeMap = new unordered_map<string, Nodeinfo*>;
         this->myJSON = new Message(1, 1, MyIP, this->githubID, "string pubkey");
     }
 
@@ -20,6 +20,7 @@ namespace newkey{
         return 0;
     }
 
+    // manage node
     void Keymanager::AddMap(string githubID, Nodeinfo* IPnPubKey){
         nodeMap->insert(unordered_map<string, Nodeinfo*>::value_type(githubID, IPnPubKey));
     }
@@ -35,6 +36,16 @@ namespace newkey{
         return nodeIter->second;
     }
 
+    // manage node from packet
+    void Keymanager::RecvKeyAlive(string json){
+
+    }
+
+    void Keymanager::RecvKeyDie(string json){
+
+    }
+
+    // init
     void Keymanager::SendKeyAlive(){
         char buffer[5];
         this->myJSON->setBullian(1);
@@ -43,10 +54,10 @@ namespace newkey{
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
             if( this->myJSON->getIP() != MyIP)
                 this->myJSON->SendKey();
-//            this->myJSON->CheckMessage(); cout << endl;// for debug
         }
     }
 
+    // destructor
     void Keymanager::SendKeyDie(){
         char buffer[5];
         this->myJSON->setBullian(0);

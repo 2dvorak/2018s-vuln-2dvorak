@@ -2,12 +2,6 @@
 #include "messenger.h"
 using namespace newmsger;
 
-queue<string>qSendMsg;
-queue<string>qRecvMsg;
-mutex r_mutex;
-mutex s_mutex;
-string MyIP;
-
 int main(int argc, char *argv[])
 {
     if( argc != 3 ){

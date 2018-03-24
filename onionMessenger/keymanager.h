@@ -5,6 +5,8 @@
 #include "message.h"
 
 using namespace newmsg;
+using namespace std;
+using json = nlohmann::json;
 
 namespace newkey{
     class Nodeinfo;
@@ -19,14 +21,13 @@ namespace newkey{
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
+
         // GetKey, PutKey Socket
-        void GetKey();
+        void RecvKeyAlive(string json);
+        void RecvKeyDie(string json);
         void SendKeyAlive();
         void SendKeyDie();
     private:
-        // <githubID, *nodeInfo>
-        unordered_map<string, Nodeinfo*>* nodeMap;
-        unordered_map<string, Nodeinfo*>::iterator nodeIter;
         // This client's github ID and passphrase
         string githubID;
         string passPhrase;
