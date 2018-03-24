@@ -13,14 +13,13 @@ namespace newmsger{
 
     Messenger::Messenger(string githubID, string passPhrase){
         CheckIP();
-        sleep(1);
         g_km = new Keymanager(githubID, passPhrase);
         g_km->Validation();
         g_km->SendKeyAlive();
     }
 
     Messenger::~Messenger(){
-         this->km->SendKeyDie();
+         g_km->SendKeyDie();
     }
 
     void Messenger::Main(){
