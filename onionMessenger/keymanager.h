@@ -8,6 +8,7 @@ using namespace newmsg;
 
 namespace newkey{
     class Nodeinfo;
+
     class Keymanager{
     public:
         Keymanager(string githubID, string passPhrase);

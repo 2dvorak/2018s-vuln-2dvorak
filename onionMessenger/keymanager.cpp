@@ -41,7 +41,8 @@ namespace newkey{
         for( int ii = 0x00; ii < 10;ii++){
             sprintf(buffer, "%d",ii);
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
-            this->myJSON->SendKey();
+            if( this->myJSON->getIP() != MyIP)
+                this->myJSON->SendKey();
 //            this->myJSON->CheckMessage(); cout << endl;// for debug
         }
     }
