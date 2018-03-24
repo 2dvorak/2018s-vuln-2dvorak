@@ -76,8 +76,9 @@ namespace newkey{
         json tmp;
         tmp = json::parse(jsonStr);
         string tmp_githubID = tmp.at("githubID").get<std::string>();
-        if(IsExist(tmp_githubID) == true)
+        if(IsExist(tmp_githubID) == true){
             DelMap(tmp_githubID);
+        }
     }
 
     // init
@@ -99,6 +100,7 @@ namespace newkey{
         for( int ii = 0x00; ii < 10 ;ii++){
             sprintf(buffer, "%d",ii);
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
+            this->myJSON->SendKey();
         }
     }
 
