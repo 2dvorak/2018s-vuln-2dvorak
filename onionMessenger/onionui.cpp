@@ -77,16 +77,7 @@ namespace oniui{
                 clear();
                 mvprintw(0, 0, screen.c_str());
                 mvprintw(maxY - 1, 0, ">");
-                /*curY++;
-                if(maxY < curY) {
-                    scrl(-1);
-                    curY--;
-                }*/
                 refresh();
-                //cout << str << "\n";
-                /*mvprintw(0, 0, "You: ");
-                printw(str.c_str());
-                move(maxY - 1, 1);*/
                 qRecvMsg.pop();
             }
         }
@@ -101,24 +92,12 @@ namespace oniui{
                 addch(' ');
             }
             move(maxY - 1, 1);
-            //cout << ">";
-            //getline(cin, str);
             getstr(&str[0]);
             string str2(str.c_str());
             screen.append("Me: " + str2 + "\n");
             clear();
             mvprintw(0, 0, screen.c_str());
-            /*curY++;
-            if(maxY < curY) {
-                scrl(1);
-                curY--;
-            }*/
             refresh();
-            //cout << str << endl;
-
-            /*mvprintw(1, 0, "Me: ");
-            printw(str.c_str());
-            move(maxY - 1, 1);*/
             if(str2.compare("/exit") == 0) {
                 qSendMsg.push("{\"id\":1,\"bullian\":true,\"IP\":\"192.168.0.1\",\"content\":\"/exit\"}");
                 break;
