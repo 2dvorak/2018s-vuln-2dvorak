@@ -18,22 +18,27 @@ namespace sockth{
         json tmp;
         struct sockaddr_in servAddr;
         const char* msg = msgStr.c_str();
+        try{
         tmp = json::parse(msgStr);
-
+        string destIP = tmp.at("ip").get<std::string>();
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
-        servAddr.sin_family = AF_INET;
-        inet_pton(AF_INET, tmp["ip"].dump().c_str(), &servAddr.sin_addr);
-        servAddr.sin_port = htons(9987); // port number
-        if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-            perror("ERROR connecting");
-            return -1;
+
+            servAddr.sin_family = AF_INET;
+            inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
+            servAddr.sin_port = htons(9987); // port number
+            if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
+                return -1;
+            }
+            n = write(sockFd, msg, strlen(msg));
+            if( n < 0 ) {
+                perror("ERROR writing msg to socket\n");
+                return -1;
+            }
+            close(sockFd);
         }
-        n = write(sockFd, msg, strlen(msg));
-        if( n < 0 ) {
-            perror("ERROR writing msg to socket\n");
-            return -1;
+        catch(int e){
+            return 0;
         }
-        close(sockFd);
         return 0;
     }
 
@@ -47,9 +52,9 @@ namespace sockth{
             return -1;
         }
         string msgStr(buffer);
-        g_mutex.lock();
+        r_mutex.lock();
         qRecvMsg.push(msgStr);
-        g_mutex.unlock();
+        r_mutex.unlock();
         close(sockFd);
 
         return 0;
@@ -130,10 +135,10 @@ namespace sockth{
                 perror("ERROR opening socket");
                 return -1;
             }
-            g_mutex.lock();
+            s_mutex.lock();
             string msg(qSendMsg.front());
             qSendMsg.pop();
-            g_mutex.unlock();
+            s_mutex.unlock();
             new std::thread(Sockthread::SendAll, sockFd, msg);
         }
     }
