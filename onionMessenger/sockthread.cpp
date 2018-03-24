@@ -17,9 +17,11 @@ namespace sockth{
         int n;
         struct sockaddr_in servAddr;
         const char* msg = msgStr.c_str();
+
         json tmp;
         tmp = json::parse(msgStr);
         string destIP = tmp.at("recvip").get<std::string>();
+
 
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
