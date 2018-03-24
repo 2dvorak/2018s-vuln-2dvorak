@@ -8,12 +8,12 @@ namespace sockth{
     public:
         Sockthread();
         virtual ~Sockthread();
-        std::thread recvMessageThread();
-        std::thread sendMessageThread();
-        static int createSendSocket();
-        static int sendMessage(int sockFd, string msgStr);
-        static int createRecvSocket();
-        static int recvKey(int sockFd);
+        std::thread RecvMessageThread();
+        std::thread SendMessageThread();
+        static int CreateSendSocket();
+        static int SendAll(int sockFd, string msgStr);
+        static int CreateRecvSocket();
+        static int RecvAll(int sockFd);
     private:
     };
 }

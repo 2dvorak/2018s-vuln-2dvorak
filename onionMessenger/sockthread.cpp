@@ -8,7 +8,7 @@ namespace sockth{
 
     Sockthread::~Sockthread(){}
 
-    int Sockthread::recvKey(int sockFd) {
+    int Sockthread::RecvAll(int sockFd) {
         char buffer[256];
         int n;
         memset(buffer, '\x00', 256);
@@ -25,7 +25,7 @@ namespace sockth{
         return 0;
     }
 
-    int Sockthread::createRecvSocket() {
+    int Sockthread::CreateRecvSocket() {
         int sockFd, newSockFd;
         socklen_t clientLen;
         char buffer[256];
@@ -80,7 +80,7 @@ namespace sockth{
                 perror("ERROR on inet_ntop");
                 return -1;
             }
-            new std::thread(Sockthread::recvKey, newSockFd);
+            new std::thread(Sockthread::RecvAll, newSockFd);
         }
 
         memset(buffer, '\x00', 256);
@@ -89,7 +89,7 @@ namespace sockth{
         return 0;
     }
 
-    int Sockthread::sendMessage(int sockFd, string msgStr) {
+    int Sockthread::SendAll(int sockFd, string msgStr) {
         // get message from buffer
         // getMesg();
         // get recv ip addr
@@ -116,7 +116,7 @@ namespace sockth{
         return 0;
     }
 
-    int Sockthread::createSendSocket() {
+    int Sockthread::CreateSendSocket() {
         while(1) {
             // check msg queue
             while(qSendMsg.empty() == 1) ;
@@ -130,17 +130,17 @@ namespace sockth{
 
             string msg(qSendMsg.front());
             qSendMsg.pop();
-            new std::thread(Sockthread::sendMessage, sockFd, msg);
+            new std::thread(Sockthread::SendAll, sockFd, msg);
         }
     }
 
-    std::thread Sockthread::recvMessageThread(){
-        std::thread t(Sockthread::createRecvSocket);
+    std::thread Sockthread::RecvMessageThread(){
+        std::thread t(Sockthread::CreateRecvSocket);
         return t;
     }
 
-    std::thread Sockthread::sendMessageThread(){
-        std::thread t(Sockthread::createSendSocket);
+    std::thread Sockthread::SendMessageThread(){
+        std::thread t(Sockthread::CreateSendSocket);
         return t;
     }
 
