@@ -239,6 +239,8 @@ namespace oniui{
                 msg->SetMessage(githubID, tmp_ip, str);
                 msg->SendMessage();
                 str = "";
+            } else if(input == KEY_BACKSPACE) {
+                str.pop_back();
             }
             wclear(win);
             wrefresh(win);
