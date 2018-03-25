@@ -5,6 +5,7 @@
 
 using namespace newmsg;
 int curX = 0, curY = 0;
+string str = "";
 vector<string> msgList;
 bool end_flag = true;
 
@@ -59,8 +60,9 @@ namespace oniui{
                 listY = (maxY - 10) / 2;
                 listWin = newwin(10, 30, listY, listX);
                 keypad(listWin, true);
+                curs_set(0);
                 //scrollok(listWin, true);
-                refresh();
+                wrefresh(listWin);
                 curY = 8;
                 while(1) {
                     int x, y, i = 0;
@@ -89,7 +91,6 @@ namespace oniui{
                         ++y;
                         nodeIter++;
                     }
-                    curs_set(0);
                     wrefresh(listWin);
                     if(choice != 0) break;
                     c = wgetch(listWin);
@@ -139,10 +140,11 @@ namespace oniui{
                     }
                     break;
                 }
-                clear();
+                wclear(listWin);
                 delwin(listWin);
                 if(choice <= listLen) {
                     chatWin = newwin(maxY, maxX, 0, 0);
+                    curs_set(1);
                     keypad(chatWin, true);
                     noecho();
                     wrefresh(chatWin);
@@ -183,12 +185,30 @@ namespace oniui{
                 string tmp_ip = tmp.at("sendip").get<std::string>();
                 string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
+                    k_mutex.lock();
                     msgList.push_back(githubID + ": " + tmp_content + "\n");
-                    clear();
-                    mvprintw(0, 0, onionlogo);
-                    mvprintw(maxY - 1, 0, ">");
-                    refresh();
+                    curY = msgList.size() + 1;
+                    wclear(win);
+                    mvprintw(0, 0, "Her");
+                    wmove(win, 1, 0);
+                    if(curY >= maxY - 1) {
+                        for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
+                            wprintw(win, msgList.at(i).c_str());
+                        }
+                    } else {
+                        for( unsigned int i = 0 ; i < msgList.size(); i++ ) {
+                            wprintw(win, msgList.at(i).c_str());
+                        }
+                    }
+                    mvwprintw(win, maxY - 1, 0, ">");
+                    wprintw(win, str.c_str());
+                    wmove(win, maxY - 1, curX + 1);
+                    wrefresh(win);
+                    k_mutex.unlock();
+
+                    r_mutex.lock();
                     qRecvMsg.pop();
+                    r_mutex.unlock();
                 }
                 else{
                     continue;
@@ -200,21 +220,25 @@ namespace oniui{
 
     void OnionUI::UISendThread(WINDOW *win, string githubID, int maxY, int maxX) {
         Message *msg = new Message();
-        string str = "";
-        //keypad(win, true);
-        mvwprintw(win, 0, 0, "Her");
+        //string str = "";
         k_mutex.lock();
         curY = 1;
+        curX = 0;
         k_mutex.unlock();
         while(1) {
-            //string str;
+            k_mutex.lock();
+            mvwprintw(win, 0, 0, "Her");
             mvwprintw(win, maxY - 1, 0, ">");
             wprintw(win, str.c_str());
-            //getstr(&str[0]);
+            wmove(win, maxY - 1 , curX + 1);
             wrefresh(win);
+            k_mutex.unlock();
             int input = wgetch(win);
             if(input >= 0x20 && input <= 0x7e) {
-                str.push_back(input);
+                str.insert(curX, 1, input);
+                k_mutex.lock();
+                curX++;
+                k_mutex.unlock();
             } else if(input == KEY_UP) {
                 k_mutex.lock();
                 if(msgList.size() > 22 && curY > 23) {
@@ -234,18 +258,41 @@ namespace oniui{
                 k_mutex.lock();
                 msgList.push_back("Me: " + str + "\n");
                 curY = msgList.size() + 1;
+                curX = 0;
                 k_mutex.unlock();
                 string tmp_ip = g_km->Findip(githubID);
                 msg->SetMessage(githubID, tmp_ip, str);
                 msg->SendMessage();
                 str = "";
             } else if(input == KEY_BACKSPACE) {
-                str.pop_back();
+                if(str.length() > 0 && curX > 0) {
+                    str.erase(curX - 1, 1);
+                    k_mutex.lock();
+                    curX--;
+                    k_mutex.unlock();
+                }
+            } else if(input == KEY_LEFT) {
+                if(curX > 0) {
+                    k_mutex.lock();
+                    curX--;
+                    k_mutex.unlock();
+                }
+            } else if(input == KEY_RIGHT) {
+                if(curX < str.length()) {
+                    k_mutex.lock();
+                    curX++;
+                    k_mutex.unlock();
+                }
+            } else if(input == 330) {
+                if(curX < str.length()) {
+                    k_mutex.lock();
+                    str.erase(curX, 1);
+                    k_mutex.unlock();
+                }
             }
+            k_mutex.lock();
             wclear(win);
-            wrefresh(win);
-            mvwprintw(win, 0, 0, "Her");
-            //mvwprintw(win, 0, 5, "pressed : %d", input);
+            mvwprintw(win, 0, 5, "pressed : %d", input);
             wmove(win, 1, 0);
             if(curY >= maxY - 1) {
                 for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
@@ -257,8 +304,7 @@ namespace oniui{
                     wprintw(win, msgList.at(i).c_str());
                 }
             }
-
-
+            k_mutex.unlock();
         }
     }
 
