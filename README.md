@@ -13,10 +13,89 @@ Onion Messenger - Team3 HER
 # Usages
 ```sh
 # ./startMessenger.sh
-# ./onionMessenger
+# ./onionMessenger/onionMessenger [githubID] [PassPhrase]
+
 ```
 
 # Examples
+
+- githubA user
+```
+# ./onionMessenger/onionMessenger githubA ???????
+██╗  ██╗███████╗██████╗
+██║  ██║██╔════╝██╔══██╗  
+███████║█████╗  ██████╔╝  
+██╔══██║██╔══╝  ██╔══██╗  
+██║  ██║███████╗██║  ██║  
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝  
+1. List 
+2. Talk 
+3. Exit 
+> 1  
+ === Your List! === 
+githubB : 172.17.0.2
+ ==== Done! ==== 
+
+1. List
+2. Talk
+3. Exit
+> 2
+                             ┌────────────────────────────┐                             
+                             │ githubB                    │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             └────────────────────────────┘                             
+Her                                                                                      
+Me: hi                                                                                   
+githubB: Hello                                                                           
+Me: I am githubA                                                                         
+githubB: i am github B~                                                                  
+```
+
+- githubB user
+```
+# ./onionMessenger/onionMessenger githubB ???????
+██╗  ██╗███████╗██████╗
+██║  ██║██╔════╝██╔══██╗
+███████║█████╗  ██████╔╝
+██╔══██║██╔══╝  ██╔══██╗
+██║  ██║███████╗██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+1. List
+2. Talk
+3. Exit
+> 1
+ === Your List! ===
+githubA : 172.17.0.3
+ ==== Done! ====
+
+1. List
+2. Talk
+3. Exit
+> 2
+
+                             ┌────────────────────────────┐                             
+                             │ githubA                    │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             │                            │                             
+                             └────────────────────────────┘                             
+
+Her
+githubA: hi
+Me: Hello
+githubA: I am githubA
+Me: i am github B~
+```
 
 
 # Team member
