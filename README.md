@@ -2,23 +2,22 @@
 
 Onion Messenger - Team3 HER
 
-# Abstract
+### Abstract
+- PGP를 이용한 암호화 메신저
 
-
-# Installation
+### Installation
 ```sh
 # ./AutoDocker.sh
 ```
 
-# Usages
+### Usages
 ```sh
 # ./startMessenger.sh
 # ./onionMessenger/onionMessenger [githubID] [PassPhrase]
-
+Done!
 ```
 
-# Examples
-
+### Examples
 - githubA user
 ```
 # ./onionMessenger/onionMessenger githubA ???????
@@ -97,8 +96,14 @@ githubA: I am githubA
 Me: i am github B~
 ```
 
+### Environment
+- Git issue와 milestone을 사용하여 편한 의사소통 및 협업 가능
+- JSON을 사용하여 빠르고 편한 파싱 및 헤더 구성
+- ncurses를 이용한 보기 좋은 TUI환경 구성
+- Qt Creator를 사용하여 Makefile의 자동 생성 및 편한 개발환경 구축
 
-# Team member
+
+### Team member
 
 | Team member     | Position | Assignment |
 |:---------------:|:--------:|------------|
@@ -108,8 +113,9 @@ Me: i am github B~
 |  NakJun Choi    |   팀원   | |
 |  SeJin Jeong    |   팀원   | |
 
-# Insight
+### Insight
 
-# Reference
+### Reference
+ - https://github.com/nlohmann/json
 
 
