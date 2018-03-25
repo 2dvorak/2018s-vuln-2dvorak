@@ -110,8 +110,6 @@ namespace newkey{
             cout << nodeIter->first << " : " << nodeIter->second->ip << endl;
         }
         cout << " ==== Done! ====" << endl;
-        cout << this->privkey;
-        cout << this->pubkey;
     }
 
     // manage node from packet
