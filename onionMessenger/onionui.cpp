@@ -3,9 +3,20 @@
 #include "onionui.h"
 #include "message.h"
 
+#define LISTWIN_HEIGHT  10
+#define LISTWIN_WIDTH   30
+
+#define CHATWIN_HEIGHT  80
+#define CHATWIN_WIDTH   24
+
+#define CHAT_DELIMETER  2   // length of ': ' used for dividing user id and message
+#define CHAT_INPUTCHAR  1   // length of '>'
+#define LOGO_HEIGHT     1   // height of logo 'Her'
+
 using namespace newmsg;
 int curX = 0, curY = 0;
-string str = "";
+int curInputLine = 1;
+string typing = "";
 vector<string> msgList;
 bool end_flag = true;
 
@@ -50,20 +61,20 @@ namespace oniui{
                 int listLen = nodeMap->size();
                 msgList.clear();
                 initscr();
-                //raw();
                 clear();
                 noecho();
-                cbreak();
+                //cbreak();
+                raw();
                 getmaxyx(stdscr, maxY, maxX);
 
-                listX = (maxX - 30) / 2;
-                listY = (maxY - 10) / 2;
-                listWin = newwin(10, 30, listY, listX);
+                listX = (maxX - LISTWIN_WIDTH) / 2;
+                listY = (maxY - LISTWIN_HEIGHT) / 2;
+                listWin = newwin(LISTWIN_HEIGHT, LISTWIN_WIDTH, listY, listX);
                 keypad(listWin, true);
                 curs_set(0);
                 //scrollok(listWin, true);
                 wrefresh(listWin);
-                curY = 8;
+                curY = LISTWIN_HEIGHT - 2;
                 while(1) {
                     int x, y, i = 0;
                     x = 2;
@@ -71,15 +82,15 @@ namespace oniui{
                     wclear(listWin);
                     box(listWin, 0, 0);
                     nodeIter = nodeMap->begin();
-                    if(curY > 8) {
-                        for(int j = 0 ; j < curY - 8; j ++) {
+                    if(curY > LISTWIN_HEIGHT - 2) {
+                        for(int j = 0 ; j < curY - (LISTWIN_HEIGHT - 2); j ++) {
                             nodeIter++;
                         }
                     }
-                    for(int j = 0; nodeIter != nodeMap->end() && j < 8 ; j++)
+                    for(int j = 0; nodeIter != nodeMap->end() && j < (LISTWIN_HEIGHT - 2) ; j++)
                     {
 
-                        if(highlight == j + 1 + (curY - 8)) /* High light the present choice */
+                        if(highlight == j + 1 + (curY - (LISTWIN_HEIGHT - 2))) /* High light the present choice */
                         {	wattron(listWin, A_REVERSE);
                             mvwprintw(listWin, y, x, "%s", string(nodeIter->first).c_str());
                             githubID = string(nodeIter->first);
@@ -100,11 +111,13 @@ namespace oniui{
                     {
                         if(highlight == 1) {
                             highlight = listLen;
-                            curY = listLen;
+                            if(listLen > LISTWIN_HEIGHT - 2) {
+                                curY = listLen;
+                            }
                         } else {
                             highlight--;
                         }
-                        if(nodeMap->size() > 8 && curY - 8 > highlight ) {
+                        if(nodeMap->size() > (LISTWIN_HEIGHT - 2) && curY - (LISTWIN_HEIGHT - 2) > highlight ) {
                             curY--;
                         }
                         continue;
@@ -113,11 +126,11 @@ namespace oniui{
                     {
                         if(highlight == listLen) {
                             highlight = 1;
-                            curY = 8;
+                            curY = (LISTWIN_HEIGHT - 2);
                         } else {
                             highlight++;
                         }
-                        if(nodeMap->size() > 8 && curY < highlight ) {
+                        if(nodeMap->size() > (LISTWIN_HEIGHT - 2) && curY < highlight ) {
                             curY++;
                         }
                         continue;
@@ -153,8 +166,10 @@ namespace oniui{
                     std::thread t2(OnionUI::UISendThread, chatWin, githubID, maxY, maxX);
                     t1.join();
                     if(t2.joinable()) t2.join();
+                    wclear(chatWin);
+                    wrefresh(chatWin);
+                    delwin(chatWin);
                 }
-
                 endwin();
                 //ui->ShowMenu();
             }
@@ -186,10 +201,24 @@ namespace oniui{
                 string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
                     k_mutex.lock();
-                    msgList.push_back(githubID + ": " + tmp_content + "\n");
+                    if( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER < maxX) {
+                        msgList.push_back(tmp_githubID + ": " + tmp_content + "\n");
+                    } else if( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER == maxX ) {
+                        msgList.push_back(tmp_githubID + ": " + tmp_content);
+                    } else {
+                        int iter = ( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
+                        int index = maxX - tmp_githubID.length() - CHAT_DELIMETER - 1;
+                        msgList.push_back(tmp_githubID + ": " + tmp_content.substr(0, index));
+                        for(int i = 0; i < iter - 1; i++) {
+                            msgList.push_back(tmp_content.substr(index,maxX));
+                            index += maxX;
+                        }
+                        msgList.push_back(tmp_content.substr(index) + "\n");
+                    }
                     curY = msgList.size() + 1;
+                    //curY += (tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
                     wclear(win);
-                    mvprintw(0, 0, "Her");
+                    mvwprintw(win, 0, 0, "Her");
                     wmove(win, 1, 0);
                     if(curY >= maxY - 1) {
                         for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
@@ -200,9 +229,9 @@ namespace oniui{
                             wprintw(win, msgList.at(i).c_str());
                         }
                     }
-                    mvwprintw(win, maxY - 1, 0, ">");
-                    wprintw(win, str.c_str());
-                    wmove(win, maxY - 1, curX + 1);
+                    mvwprintw(win, maxY - curInputLine, 0, ">");
+                    wprintw(win, typing.c_str());
+                    wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
                     wrefresh(win);
                     k_mutex.unlock();
 
@@ -215,6 +244,7 @@ namespace oniui{
                 }
             }
         }
+        wclear(win);
     }
 
 
@@ -224,50 +254,71 @@ namespace oniui{
         k_mutex.lock();
         curY = 1;
         curX = 0;
+        curInputLine = 1;
         k_mutex.unlock();
         while(1) {
             k_mutex.lock();
             mvwprintw(win, 0, 0, "Her");
-            mvwprintw(win, maxY - 1, 0, ">");
-            wprintw(win, str.c_str());
-            wmove(win, maxY - 1 , curX + 1);
+            mvwprintw(win, maxY - curInputLine, 0, ">");
+            wprintw(win, typing.c_str());
+            wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
             wrefresh(win);
             k_mutex.unlock();
             int input = wgetch(win);
             if(input >= 0x20 && input <= 0x7e) {
-                str.insert(curX, 1, input);
+                typing.insert(curX, 1, input);
                 k_mutex.lock();
+                curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
                 curX++;
                 k_mutex.unlock();
             } else if(input == KEY_UP) {
                 k_mutex.lock();
-                if(msgList.size() > 22 && curY > 23) {
+                if(msgList.size() > (maxY - 1 - LOGO_HEIGHT) && curY > (maxY - LOGO_HEIGHT)) {
                     curY--;
                 }
                 k_mutex.unlock();
             } else if(input == KEY_DOWN) {
                 k_mutex.lock();
-                if(msgList.size() > 22 && curY < msgList.size() + 1) {
+                if(msgList.size() > (maxY - 1 - LOGO_HEIGHT) && curY < msgList.size() + 1) {
                     curY++;
                 }
                 k_mutex.unlock();
             } else if(input == 27) {
+                k_mutex.lock();
                 end_flag = false;
+                wclear(win);
+                k_mutex.unlock();
                 break; //return;
             } else if(input == 10) {
                 k_mutex.lock();
-                msgList.push_back("Me: " + str + "\n");
+                if( string("Me").length() + typing.length() + CHAT_DELIMETER < maxX) {
+                    msgList.push_back("Me: " + typing + "\n");
+                } else if(string("Me").length() + typing.length() + CHAT_DELIMETER == maxX) {
+                    msgList.push_back("Me: " + typing );
+                } else {
+                    int iter = ( string("Me").length() + typing.length() + CHAT_DELIMETER) / maxX;
+                    int index = maxX - string("Me").length() - CHAT_DELIMETER - 1;
+                    msgList.push_back("Me: " + typing.substr(0, index));
+                    for(int i = 0; i < iter - 1; i++) {
+                        msgList.push_back(typing.substr(index,maxX));
+                        index += maxX;
+                    }
+                    msgList.push_back(typing.substr(index) + "\n");
+                }
                 curY = msgList.size() + 1;
+                //curY += ( string("Me").length() + typing.length() + CHAT_DELIMETER ) / maxX;
                 curX = 0;
+                curInputLine = 1;
                 k_mutex.unlock();
                 string tmp_ip = g_km->Findip(githubID);
-                msg->SetMessage(githubID, tmp_ip, str);
+                msg->SetMessage(githubID, tmp_ip, typing);
                 msg->SendMessage();
-                str = "";
+                typing = "";
             } else if(input == KEY_BACKSPACE) {
-                if(str.length() > 0 && curX > 0) {
-                    str.erase(curX - 1, 1);
+                if(typing.length() > 0 && curX > 0) {
+                    typing.erase(curX - 1, 1);
                     k_mutex.lock();
+                    curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
                     curX--;
                     k_mutex.unlock();
                 }
@@ -278,15 +329,16 @@ namespace oniui{
                     k_mutex.unlock();
                 }
             } else if(input == KEY_RIGHT) {
-                if(curX < str.length()) {
+                if(curX < typing.length()) {
                     k_mutex.lock();
                     curX++;
                     k_mutex.unlock();
                 }
             } else if(input == 330) {
-                if(curX < str.length()) {
+                if(curX < typing.length()) {
                     k_mutex.lock();
-                    str.erase(curX, 1);
+                    typing.erase(curX, 1);
+                    curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
                     k_mutex.unlock();
                 }
             }
@@ -294,18 +346,23 @@ namespace oniui{
             wclear(win);
             mvwprintw(win, 0, 5, "pressed : %d", input);
             wmove(win, 1, 0);
-            if(curY >= maxY - 1) {
-                for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
+            if(curY >= maxY - curInputLine) {
+                for( int i = curY - (maxY - curInputLine) ; i < curY - curInputLine ; i++ ) {
                     wprintw(win, msgList.at(i).c_str());
-                    wrefresh(win);
+                    //i += (string("Me").length() + msgList.at(i).length() + CHAT_DELIMETER ) / maxX;
                 }
             } else {
                 for( unsigned int i = 0 ; i < msgList.size(); i++ ) {
                     wprintw(win, msgList.at(i).c_str());
+                    //i += (string("Me").length() + msgList.at(i).length() + CHAT_DELIMETER ) / maxX;
                 }
             }
             k_mutex.unlock();
         }
+        k_mutex.lock();
+        wclear(win);
+        wrefresh(win);
+        k_mutex.unlock();
     }
 
     void OnionUI::Init(){
