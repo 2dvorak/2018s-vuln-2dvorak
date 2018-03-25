@@ -40,12 +40,6 @@ namespace oniui{
 
                 WINDOW *listWin, *chatWin;
                 string githubID;
-                /*cout << "=====================================" << endl;
-                cout << "Who do you want to talk to?" << endl;
-                g_km->ShowList();
-                cout << "githubID> ";
-                string githubID;
-                cin >> githubID; // validation check routine ++++*/
 
                 int maxX = 0, maxY = 0;
                 int listX = 0, listY = 0;
@@ -74,14 +68,6 @@ namespace oniui{
                     y = 1;
                     wclear(listWin);
                     box(listWin, 0, 0);
-                    /*if(highlight == i) {
-                        wattron(listWin, A_REVERSE);
-                        mvwprintw(listWin, y, x, "%s", "Me");
-                        wattroff(listWin, A_REVERSE);
-                    } else {
-                        mvwprintw(listWin, y, x, "%s", "Me");
-                    }
-                    ++y;*/
                     nodeIter = nodeMap->begin();
                     if(curY > 8) {
                         for(int j = 0 ; j < curY - 8; j ++) {
@@ -103,16 +89,6 @@ namespace oniui{
                         ++y;
                         nodeIter++;
                     }
-                    /*i++;
-                    if(highlight == i) {
-                        wattron(listWin, A_REVERSE);
-                        mvwprintw(listWin, y, x, "%s", "Exit");
-                        wattroff(listWin, A_REVERSE);
-                    } else {
-                        mvwprintw(listWin, y, x, "%s", "Exit");
-                    }
-                    ++y;*/
-                    //wmove(listWin, y, 1);
                     curs_set(0);
                     wrefresh(listWin);
                     if(choice != 0) break;
@@ -148,7 +124,7 @@ namespace oniui{
                     case 10:
                     {
                         choice = highlight;
-                        continue;
+                        break;
                     }
                     case 27:
                     {
@@ -165,7 +141,7 @@ namespace oniui{
                 }
                 clear();
                 delwin(listWin);
-                if(choice < listLen) {
+                if(choice <= listLen) {
                     chatWin = newwin(maxY, maxX, 0, 0);
                     keypad(chatWin, true);
                     noecho();
@@ -275,7 +251,7 @@ namespace oniui{
                     wrefresh(win);
                 }
             } else {
-                for( int i = 0 ; i < msgList.size(); i++ ) {
+                for( unsigned int i = 0 ; i < msgList.size(); i++ ) {
                     wprintw(win, msgList.at(i).c_str());
                 }
             }
