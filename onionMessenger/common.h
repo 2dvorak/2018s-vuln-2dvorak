@@ -19,6 +19,7 @@
 
 #include "json.hpp"
 #include "keymanager.h"
+#include "pgpmanager.h"
 
 // message id macros
 #define TYPE_KEY	0
@@ -39,6 +40,7 @@ extern mutex s_mutex;
 extern mutex r_mutex;
 extern mutex k_mutex;
 extern newkey::Keymanager *g_km;
+extern PGPCrypt::PGPManager *PGP_m;
 
 // Usage & Print stderr
 void UsageMessenger();

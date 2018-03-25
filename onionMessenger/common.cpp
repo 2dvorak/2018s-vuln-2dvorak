@@ -11,6 +11,7 @@ mutex s_mutex;
 mutex k_mutex;
 string MyIP;
 newkey::Keymanager *g_km;
+PGPCrypt::PGPManager *PGP_m;
 
 void UsageMessenger(){
     cout << "Usage: ./onionMessenger [GithubID] [passPhrase]" << endl;
