@@ -9,5 +9,7 @@ COPY ./ /home/
 ## Setup some package
 RUN apt-get update
 RUN apt-get install -y net-tools \
-                       netcat
+                       netcat \
+                       libgpgme11-dev
+RUN cp testkey/* onionMessenger
 
