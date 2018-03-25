@@ -78,11 +78,20 @@ namespace newkey{
         return nodeIter->second->ip;
     }
 
+    string Keymanager::FindPubkey(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        return nodeIter->second->pubkey;
+    }
+
     string Keymanager::FindgithubID(string ip){
         for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
             if(ip.compare(nodeIter->second->ip) == 0)
                 return nodeIter->first;
         }
+    }
+
+    string Keymanager::FindPrivkey(){
+        return this->privkey;
     }
 
     bool Keymanager::IsExist(string githubID){

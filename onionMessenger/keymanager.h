@@ -24,7 +24,9 @@ namespace newkey{
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
         string Findip(string githubID);
+        string FindPubkey(string githubID);
         string FindgithubID(string ip);
+        string FindPrivkey();
         bool IsExist(string githubID);
         void ShowList();
 
