@@ -165,17 +165,6 @@ namespace oniui{
                 exit(1);
             }
             break;
-            case '4':
-            {
-                string input;
-                PGP_m->SetPubKey(g_km->ReturnPubkey());
-                input = PGP_m->Enc("aaaaaaaaaaaaaaaaaaaaaaa");
-                cout << input;
-
-                PGP_m->SetPriKey((g_km->ReturnPrivkey()));
-                cout << PGP_m->Dec(input);
-            }
-            break;
             default:
                 continue;
             }
@@ -193,8 +182,6 @@ namespace oniui{
                 string tmp_ip = tmp.at("sendip").get<std::string>();
                 string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
-//                    PGP_m->SetPriKey((g_km->ReturnPrivkey()));
-//                    msgList.push_back(githubID + ": " + PGP_m->Dec(tmp_content) + "\n");
                     msgList.push_back(githubID + ": " + tmp_content + "\n");
                     clear();
                     mvprintw(0, 0, onionlogo);
@@ -248,8 +235,6 @@ namespace oniui{
                 curY = msgList.size() + 1;
                 k_mutex.unlock();
                 string tmp_ip = g_km->Findip(githubID);
-//                PGP_m->SetPubKey(g_km->FindPubkey(githubID));
-//                msg->SetMessage(githubID, tmp_ip, PGP_m->Enc(str));
                 msg->SetMessage(githubID, tmp_ip, str);
                 msg->SendMessage();
                 str = "";
