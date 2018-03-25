@@ -90,8 +90,11 @@ namespace newkey{
         }
     }
 
-    string Keymanager::FindPrivkey(){
+    string Keymanager::ReturnPrivkey(){
         return this->privkey;
+    }
+    string Keymanager::ReturnPubkey(){
+        return this->pubkey;
     }
 
     bool Keymanager::IsExist(string githubID){
