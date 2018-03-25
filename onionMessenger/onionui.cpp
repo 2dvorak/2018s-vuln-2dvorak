@@ -129,7 +129,7 @@ namespace oniui{
                     }
                     case 27:
                     {
-                        choice = listLen;
+                        choice = listLen + 1;
                         break;
                     }
                     default:
