@@ -10,4 +10,4 @@ COPY ./ /home/
 RUN apt-get update
 RUN apt-get install -y net-tools \
                        netcat \
-
+RUN cp testkey/* onionMessenger
