@@ -18,7 +18,7 @@ namespace newmsger{
         g_km = new Keymanager(githubID, passPhrase);
         g_km->Validation();
         g_km->SendKeyAlive();
-        PGP_m = new PGPManager();
+        PGP_m = new PGPManager(passPhrase);
     }
 
     Messenger::~Messenger(){
