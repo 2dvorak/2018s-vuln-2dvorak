@@ -4,7 +4,6 @@ CONFIG -= app_bundle
 CONFIG -= qt
 LIBS += -lpthread
 LIBS += -lncurses
-LIBS += -lgpgme
 OBJECTS_DIR = .obj
 MOC_DIR = .MOC
 
@@ -25,4 +24,5 @@ HEADERS += \
     sockthread.h \
     json.hpp \
     onionui.h \
+    pgpmanager.h \
     pgpmanager.h
