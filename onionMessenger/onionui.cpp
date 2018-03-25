@@ -173,7 +173,6 @@ namespace oniui{
 
 
     void OnionUI::UIRecvThread(WINDOW* win, string githubID, int maxY, int maxX) {
-        Message *msg = new Message();
         while(end_flag){
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
