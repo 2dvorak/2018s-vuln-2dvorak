@@ -2,6 +2,7 @@
 #include "common.h"
 #include "keymanager.h"
 #include "message.h"
+#include <fstream>
 
 namespace newkey{
 
@@ -11,8 +12,40 @@ namespace newkey{
     {
         this->passPhrase = passPhrase;
         this->githubID = githubID;
+        // get pub key file
+        ifstream openFile1( (githubID+".pub").data() );
+        if( openFile1.is_open()){
+            openFile1.seekg(0, ios::end);
+            int size = openFile1.tellg();
+            this->pubkey.resize(size);
+            openFile1.seekg(0, ios::beg);
+            openFile1.read(&this->pubkey[0], size);
+            openFile1.close();
+        }
+        else{
+            cout << "Check github ID & pubkey plz :)" << endl;
+            openFile1.close();
+            exit(10);
+        }
+
+        // get priv key file
+        ifstream openFile2( (githubID+".key").data() );
+        if( openFile2.is_open()){
+            openFile2.seekg(0, ios::end);
+            int size = openFile2.tellg();
+            this->privkey.resize(size);
+            openFile2.seekg(0, ios::beg);
+            openFile2.read(&this->privkey[0], size);
+            openFile2.close();
+        }
+        else{
+            cout << "Check github ID & Privkey plz :)" << endl;
+            openFile2.close();
+            exit(10);
+        }
+
         nodeMap = new unordered_map<string, Nodeinfo*>;
-        this->myJSON = new Message("0", "1", MyIP, this->githubID, "string pubkey");
+        this->myJSON = new Message("0", "1", MyIP, this->githubID, this->pubkey);
     }
 
     Keymanager::~Keymanager(){
@@ -45,11 +78,23 @@ namespace newkey{
         return nodeIter->second->ip;
     }
 
+    string Keymanager::FindPubkey(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        return nodeIter->second->pubkey;
+    }
+
     string Keymanager::FindgithubID(string ip){
         for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
             if(ip.compare(nodeIter->second->ip) == 0)
                 return nodeIter->first;
         }
+    }
+
+    string Keymanager::ReturnPrivkey(){
+        return this->privkey;
+    }
+    string Keymanager::ReturnPubkey(){
+        return this->pubkey;
     }
 
     bool Keymanager::IsExist(string githubID){

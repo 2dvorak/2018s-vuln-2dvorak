@@ -4,10 +4,12 @@
 #include "keymanager.h"
 #include "sockthread.h"
 #include "onionui.h"
+#include "pgpmanager.h"
 
 using namespace newkey;
 using namespace sockth;
 using namespace oniui;
+using namespace PGPCrypt;
 
 namespace newmsger{
 
@@ -16,6 +18,7 @@ namespace newmsger{
         g_km = new Keymanager(githubID, passPhrase);
         g_km->Validation();
         g_km->SendKeyAlive();
+        PGP_m = new PGPManager();
     }
 
     Messenger::~Messenger(){

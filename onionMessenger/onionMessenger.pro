@@ -9,19 +9,20 @@ MOC_DIR = .MOC
 
 SOURCES += main.cpp \
     message.cpp \
-    pgpcrypto.cpp \
     keymanager.cpp \
     messenger.cpp \
     common.cpp \
     sockthread.cpp \
-    onionui.cpp
+    onionui.cpp \
+    pgpmanager.cpp
 
 HEADERS += \
     message.h \
-    pgpcrypto.h \
     common.h \
     keymanager.h \
     messenger.h \
     sockthread.h \
     json.hpp \
-    onionui.h
+    onionui.h \
+    pgpmanager.h \
+    pgpmanager.h

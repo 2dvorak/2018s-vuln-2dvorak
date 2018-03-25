@@ -24,7 +24,10 @@ namespace newkey{
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
         string Findip(string githubID);
+        string FindPubkey(string githubID);
         string FindgithubID(string ip);
+        string ReturnPrivkey();
+        string ReturnPubkey();
         bool IsExist(string githubID);
         void ShowList();
 
@@ -34,10 +37,13 @@ namespace newkey{
         void SendKeyAlive();
         void SendKeyDie();
         void SendKey(string ip);
+
     private:
         // This client's github ID and passphrase
         string githubID;
         string passPhrase;
+        string pubkey;
+        string privkey;
         // My key JSON
         Message *myJSON;
         Nodeinfo *tmpInfo;
