@@ -4,7 +4,7 @@
 FROM ubuntu:16.04
 MAINTAINER zanywhale@kaist.ac.kr
 WORKDIR /home/
-COPY onionMessenger /home/
+COPY ./ /home/
 
 ## Setup some package
 RUN apt-get update
