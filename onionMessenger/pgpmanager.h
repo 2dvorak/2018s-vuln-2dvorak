@@ -8,7 +8,7 @@ namespace PGPCrypt{
 
     class PGPManager{
     public:
-        PGPManager(string);
+        PGPManager();
         virtual ~PGPManager();
         string Enc(string input_plain);
         string Dec(string input_cipher);
