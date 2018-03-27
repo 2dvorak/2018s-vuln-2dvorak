@@ -1,9 +1,4 @@
 #include "pgpmanager.h"
-#include <locale.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
 
 namespace PGPCrypt{
 
@@ -11,7 +6,19 @@ namespace PGPCrypt{
 
     PGPManager::~PGPManager(){}
 
-    string PGPManager::Enc(string input_plain){}
+    string PGPManager::Enc(string input_plain){
+        FILE *pipe;
+        string enc = "";
+        return enc;
+    }
 
-    string PGPManager::Dec(string input_cipher){}
+    string PGPManager::Dec(string input_cipher){
+        FILE *pipe;
+        string dec = "";
+        return dec;
+    }
+
+    void PGPManager::ImportKeys() {
+        FILE *pipe;
+    }
 }

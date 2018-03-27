@@ -12,6 +12,7 @@ namespace newkey{
     {
         this->githubID = githubID;
         // get pub key file
+        // TODO? get .pub from .key
         ifstream openFile1( (githubID+".pub").data() );
         if( openFile1.is_open()){
             openFile1.seekg(0, ios::end);
