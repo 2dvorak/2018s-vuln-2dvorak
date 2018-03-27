@@ -1,4 +1,5 @@
 #include "pgpmanager.h"
+#include <termios.h>
 
 namespace PGPCrypt{
 
@@ -61,9 +62,10 @@ namespace PGPCrypt{
             exit(1);
         }
         // how to input passphrase securely?
-        // stdinNoEcho();
+        SetTTYEcho(false);
         cout << "Your passphrase :";
         cin >> this->passPhrase;
+        SetTTYEcho(true);
         string command = "gpg --import ";
         command.append(githubID);
         command.append(".pub 2>&1");
@@ -114,5 +116,16 @@ namespace PGPCrypt{
             }
         }
         return false;
+    }
+
+    void PGPManager::SetTTYEcho(bool enable) {
+        struct termios tty;
+        tcgetattr(STDIN_FILENO, &tty);
+        if( !enable ) {
+            tty.c_lflag &= ~ECHO;
+        } else {
+            tty.c_lflag |= ECHO;
+        }
+        (void) tcsetattr(STDIN_FILENO, TCSANOW, &tty);
     }
 }
