@@ -14,8 +14,7 @@ namespace PGPCrypt{
         string Dec(string input_cipher);
         void ImportKeys();
     private:
-        string privKey;
-        string pubKey;
+        string passPhrase;
     };
 }
 
