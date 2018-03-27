@@ -14,6 +14,7 @@ using namespace PGPCrypt;
 namespace newmsger{
 
     Messenger::Messenger(string githubID, string passPhrase){
+        std::system("clear");
         CheckIP();
         g_km = new Keymanager(githubID, passPhrase);
         g_km->Validation();
