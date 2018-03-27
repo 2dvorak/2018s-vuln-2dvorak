@@ -30,6 +30,7 @@ namespace newmsger{
         g_km = new Keymanager(githubID);
         g_km->SendKeyAlive();
         PGP_m = new PGPManager();
+        PGP_m->ImportKeys();
     }
 
     Messenger::~Messenger(){

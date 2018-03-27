@@ -63,6 +63,7 @@ namespace PGPCrypt{
         cout << "Your passphrase :";
         cin >> this->passPhrase;
         SetTTYEcho(true);
+        cout << endl;
         string command = "gpg --import ";
         command.append(g_km->ReturnGithubID());
         command.append(".pub 2>&1");
@@ -75,11 +76,12 @@ namespace PGPCrypt{
             output.push_back(c);
         }
         fclose(pipe);
+        output = "";
         command = "echo \"";
         // how to do this securely?
         command.append(this->passPhrase);
         command.append("\" | gpg --import ");
-        command.append(githubID);
+        command.append(g_km->ReturnGithubID());
         command.append(".key 2>&1");
         pipe = popen(command.c_str(), "r");
         if( pipe == NULL) {
@@ -89,6 +91,23 @@ namespace PGPCrypt{
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
+        if(output.find("failed") != std::string::npos || output.find("error") != std::string::npos) {
+            cout << "Please check your passphrase" << endl;
+            exit(1);
+        }
+        fclose(pipe);
+        // for debugging purpose only
+        output = "";
+        command = "gpg --list-secret-keys 2>&1";
+        pipe = popen(command.c_str(), "r");
+        if( pipe == NULL) {
+            perror("popen failed\n");
+            return;
+        }
+        while( (c = fgetc(pipe)) != EOF ) {
+            output.push_back(c);
+        }
+        cout << "Debug: " << output << endl;
         fclose(pipe);
     }
 
