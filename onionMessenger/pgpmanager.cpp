@@ -44,6 +44,12 @@ namespace PGPCrypt{
             dec.push_back(c);
         }
         fclose(pipe);
+        // maybe regex better?
+        int index = 0;
+        while(dec.find('"',index) != std::string::npos) {
+            index = dec.find('"',index) + 1;
+        }
+        dec = dec.substr(index + 1); // line feed is 1 byte
         return dec;
     }
 
