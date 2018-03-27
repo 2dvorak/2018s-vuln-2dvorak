@@ -34,8 +34,6 @@ namespace PGPCrypt{
         int c;
         string command = "echo \"";
         command.append(input_cipher);
-        command.append("\n");
-        command.append(this->passPhrase);
         command.append("\" | gpg --decrypt 2>&1");
         pipe = popen(command.c_str(),"r");
         if( pipe == NULL) {
