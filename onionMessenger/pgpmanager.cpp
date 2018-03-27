@@ -1,5 +1,5 @@
 #include "pgpmanager.h"
-#include <termios.h>
+#include "common.h"
 
 namespace PGPCrypt{
 
