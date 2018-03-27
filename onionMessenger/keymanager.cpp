@@ -73,6 +73,10 @@ namespace newkey{
         return this->pubkey;
     }
 
+    string Keymanager::ReturnGithubID(){
+        return this->githubID;
+    }
+
     bool Keymanager::IsExist(string githubID){
         nodeIter = nodeMap->find(githubID);
         if( nodeIter == nodeMap->end() )

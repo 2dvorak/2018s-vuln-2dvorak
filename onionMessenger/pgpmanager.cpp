@@ -57,23 +57,14 @@ namespace PGPCrypt{
         FILE *pipe;
         int c;
         string output = "";
-        string githubID = "";
-        cout << "Your Github ID :";
-        cin >> githubID;
-        // check if valid githubID
-        // NO COMMAND INJECTION ALLOWED EVER
-        // "Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen" - Github
-        if( CheckIDInvalid(githubID) ) {
-            cout << "Invalid Github ID!" << endl;
-            exit(1);
-        }
+
         // how to input passphrase securely?
         SetTTYEcho(false);
         cout << "Your passphrase :";
         cin >> this->passPhrase;
         SetTTYEcho(true);
         string command = "gpg --import ";
-        command.append(githubID);
+        command.append(g_km->ReturnGithubID());
         command.append(".pub 2>&1");
         pipe = popen(command.c_str(), "r");
         if( pipe == NULL) {
@@ -99,29 +90,6 @@ namespace PGPCrypt{
             output.push_back(c);
         }
         fclose(pipe);
-    }
-
-    bool PGPManager::CheckIDInvalid(string githubID) {
-        // "Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen" - Github
-        bool hyphenFound = false;
-        const char* githubIDChar = githubID.c_str();
-        if(githubIDChar[0] == '-' || githubIDChar[githubID.length() - 1] == '-') return true;
-        for(int i = 0 ; i < githubID.length(); i++ ) {
-            if(githubIDChar[i] < '0' || (githubIDChar[i] > '9' && githubIDChar[i] < 'A') || (githubIDChar[i] > 'Z' && githubIDChar[i] < 'a') || githubIDChar[i] > 'z') {
-                if(githubIDChar[i] == '-') {
-                    if(hyphenFound) {
-                        return true;
-                    }
-                    else {
-                        hyphenFound = true;
-                    }
-                }
-                else {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     void PGPManager::SetTTYEcho(bool enable) {

@@ -13,7 +13,6 @@ namespace PGPCrypt{
         string Enc(string input_plain, string recipientID);
         string Dec(string input_cipher);
         void ImportKeys();
-        bool CheckIDInvalid(string githubID);
         void SetTTYEcho(bool enable);
     private:
         string passPhrase;

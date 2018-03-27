@@ -13,8 +13,9 @@ using namespace oniui;
 namespace newmsger{
     class Messenger{
     public:
-        Messenger(string githubID, string passPhrase);
+        Messenger();
         virtual ~Messenger();
+        bool CheckIDInvalid(string githubID);
         void Main();
     private:
         Keymanager *km;

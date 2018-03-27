@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
         UsageMessenger();
     }
     else{
-        Messenger *msger = new Messenger(argv[1], argv[2]);
+        Messenger *msger = new Messenger();
         msger->Main();
     }
 }
