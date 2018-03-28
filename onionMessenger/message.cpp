@@ -49,10 +49,20 @@ namespace newmsg{
     }
 
     void Message::EncMessage(string githubID){
-        int cnt = g_km->ReturnCountMap();
+//        int cnt = g_km->ReturnCountMap();
         string rnd_githubID = g_km->ReturnRndGithubID(githubID);
-        string tmp_content = PGP_m->Enc(this->jason.dump(), rnd_githubID);
-        SetBridge(g_km->Findip(rnd_githubID), tmp_content);
+
+        string tmp_content = PGP_m->Enc(this->jason.dump(), githubID);
+        SetBridge(g_km->Findip(githubID), tmp_content);
+        string tmp2_content = PGP_m->Enc(this->jason.dump(), rnd_githubID);
+        SetBridge(g_km->Findip(rnd_githubID), tmp2_content);
+
+        // for debug
+//        ofstream wf("test111.txt");
+//        if(wf.is_open()){
+//            wf << this->jason.dump();
+//            wf.close();
+//        }
     }
 
     void Message::SendMessage(){
