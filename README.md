@@ -16,7 +16,7 @@
 
 ### OnionRouting
 - ex) Message 전송순서 : A -> B -> C -> D
-![onion](./images/onion.png)
+![onion](./images/onion.jpg)
 
 ### Installation
 - 컴파일을 위한 패키지 설치
