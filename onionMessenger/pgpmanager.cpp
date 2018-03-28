@@ -97,7 +97,7 @@ namespace PGPCrypt{
         fclose(pipe);
     }
 
-    void PGPManager::ImportKeys() {
+    void PGPManager::ImportKeys(string githubID) {
         FILE *pipe;
         int c;
         string output = "";
@@ -158,6 +158,14 @@ namespace PGPCrypt{
         //        }
         //        cout << "Debug: " << output << endl;
         //        fclose(pipe);
+        string testing = "JustForTestString!@#";
+        string test_enc = Enc(testing, githubID);
+        string test_dec = Dec(test_enc);
+        if(testing.compare(test_dec) != 0){
+            cout << "Check your PW plz!" << endl;
+            exit(1);
+        }
+
     }
 
     void PGPManager::SetTTYEcho(bool enable) {
