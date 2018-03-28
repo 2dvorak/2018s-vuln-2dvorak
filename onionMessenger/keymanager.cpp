@@ -104,6 +104,7 @@ namespace newkey{
             string tmp_ip = tmp.at("sendip").get<std::string>();
             string tmp_pubkey = tmp.at("pubkey").get<std::string>();
             tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
+            PGP_m->ImportPub(tmp_pubkey);
             AddMap(tmp_githubID, tmpInfo);
             this->SendKeyAlive();
         }
