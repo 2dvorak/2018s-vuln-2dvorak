@@ -75,9 +75,9 @@ namespace PGPCrypt{
         // maybe regex better?
         int index = 0;
         index = dec.find(g_km->ReturnGithubID(),index) + g_km->ReturnGithubID().size();
-
         dec = dec.substr(index + 2); // line feed is 1 byte
         dec.erase(dec.begin()+dec.length()-1);
+        dec = ReplaceAll(dec, std::string("\n"), std::string("\\n"));
         return dec;
     }
 
@@ -176,7 +176,6 @@ namespace PGPCrypt{
         string test_enc = Enc(testing, githubID);
         string test_dec = Dec(test_enc);
         if(testing.compare(test_dec) != 0){
-            cout << test_dec<<endl;
             cout << "Check your PW plz!" << endl;
             exit(1);
         }
