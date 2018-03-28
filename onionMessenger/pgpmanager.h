@@ -12,6 +12,7 @@ namespace PGPCrypt{
         virtual ~PGPManager();
         string Enc(string input_plain, string recipientID);
         string Dec(string input_cipher);
+        void ImportPub(string);
         void ImportKeys();
         void SetTTYEcho(bool enable);
     private:
