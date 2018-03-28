@@ -69,6 +69,10 @@ namespace newkey{
         }
     }
 
+    int Keymanager::ReturnCountMap(){
+        return nodeMap->size();
+    }
+
     string Keymanager::ReturnPubkey(){
         return this->pubkey;
     }

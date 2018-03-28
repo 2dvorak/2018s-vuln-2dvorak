@@ -24,6 +24,7 @@ namespace newkey{
         string Findip(string githubID);
         string FindPubkey(string githubID);
         string FindgithubID(string ip);
+        int ReturnCountMap();
         string ReturnPubkey();
         string ReturnGithubID();
         bool IsExist(string githubID);
