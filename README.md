@@ -1,70 +1,44 @@
 # HER Messenger - Team3
 
-Onion Messenger - Team3 HER
 
 ### Abstract
 - PGP를 이용한 암호화 메신저
+- OnionRouting으로 중간단계에서 발신자, 수신자 익명화
+
+### Protocol Design
+
+| Type   | Message Protocol | Key Protocol |
+|--------|------------------|--------------|
+| int    |                  |              |
+| bool   |                  |              |
+| string |                  |              |
+| string |                  |              |
+
+### OnionRouting
+그림파일 넣기
 
 ### Installation
-
-1. git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
+- 컴파일을 위한 패키지 설치
 ```
-githubc.com의 repositoiry에서 파일을 다운로드 받는다.
+$ sudo apt-get install g++
+$ sudo apt-get install make
+$ sudo apt-get install qt4-qmake
+$ sudo apt-get install libncurses-dev
 ```
-2. curl -fsSL https://get.docker.com/ | sudo sh   
+- 패키지 설치 이후
 ```
-리눅스에 Docker를 설치하기 위한 자동 설치 스크립트 명령어를 입력한다.
-```
-3. docker version                                 
-```
-구성한 Docker를 세팅하기 위한 명령어를 입력한다.
-$ docker version
-Client:
- Version:      1.13.1
- API version:  1.26
- Go version:   go1.6.2
- Git commit:   092cba3
- Built:        Thu Nov  2 20:40:23 2017
- OS/Arch:      linux/amd64
-
-Server:
- Version:      1.13.1
- API version:  1.26 (minimum version 1.12)
- Go version:   go1.6.2
- Git commit:   092cba3
- Built:        Thu Nov  2 20:40:23 2017
- OS/Arch:      linux/amd64
-
-위와 같이 나오면 정상적으로 설치된 것이다.
-"Got permission denied while trying to connect to
-the Docker daemon socket at unix 에러"가 나면
-$sudo usermod -a -G docker $[USER] 입력
-```
-4. ./AutoDocker.sh  
-```
-설치한 Docker를 확인하기 위한 명령어이다.
-수분의 시간이 소요된다.
-```                                
-5. ./onionMessenger <githubID> <passPhrase>       
-```
-로그인하기 위한 명령어이다.
-입력하고 다음과 같이 나오면 정상적으로 설치된 것이다.
-root@c73abde28da7:/home/onionMessenger# ./onionMessenger <ID> <P/W>
-██╗  ██╗███████╗██████╗
-██║  ██║██╔════╝██╔══██╗
-███████║█████╗  ██████╔╝
-██╔══██║██╔══╝  ██╔══██╗
-██║  ██║███████╗██║  ██║
-╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
-1. List
-2. Talk
-3. Exit
+$ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
+$ curl -fsSL https://get.docker.com/ | sudo sh
+$ cd ..  
+# ./AutoDocker.sh
 ```
 
 ### Usages
-```sh
+```
 # ./startMessenger.sh
-# ./onionMessenger/onionMessenger [githubID] [PassPhrase]
+# ./setup.sh
+# cd onionMessenger
+# ./onionMessenger [github ID] [PassPhrase]
 Done!
 ```
 
