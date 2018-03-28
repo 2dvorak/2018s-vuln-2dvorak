@@ -74,7 +74,9 @@ namespace PGPCrypt{
         string randomFile = "";
         int c;
         string output = "";
-        srand(time(NULL));
+        struct timeval time;
+        gettimeofday(&time,NULL);
+        srand((time.tv_sec*1000)+(time.tv_usec/1000));
         for(int i = 0 ; i < 10 ; i++) {
             randomFile.push_back('a' + rand()%26);
         }
