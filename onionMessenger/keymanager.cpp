@@ -69,6 +69,13 @@ namespace newkey{
         }
     }
 
+    string Keymanager::ReturnRndGithubID(string githubID){
+        for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
+            if(githubID.compare(nodeIter->first) != 0)
+                return nodeIter->first;
+        }
+    }
+
     int Keymanager::ReturnCountMap(){
         return nodeMap->size();
     }
