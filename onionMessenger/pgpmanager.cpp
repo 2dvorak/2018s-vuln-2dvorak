@@ -1,5 +1,6 @@
 #include "pgpmanager.h"
 #include "common.h"
+#include <fstream>
 
 namespace PGPCrypt{
 
@@ -31,10 +32,23 @@ namespace PGPCrypt{
     string PGPManager::Dec(string input_cipher){
         FILE *pipe;
         string dec = "";
+        string randomFile = "";
+        srand(time(NULL));
+        for(int i = 0 ; i < 10 ; i++) {
+            randomFile.push_back('a' + rand()%26);
+        }
+        ofstream tmpFile(randomFile.data());
+        if(tmpFile.is_open()) {
+            tmpFile << input_cipher << EOF;
+            tmpFile.close();
+        }
         int c;
-        string command = "echo \"";
-        command.append(input_cipher);
-        command.append("\" | gpg --decrypt 2>&1");
+        // gpg --passphrase "myPassphrase" --decrypt file
+        string command = "gpg --passphrase \"";
+        command.append(this->passPhrase);
+        command.append("\" --decrypt ");
+        command.append(randomFile);
+        command.append(" 2>&1");
         pipe = popen(command.c_str(),"r");
         if( pipe == NULL) {
             perror("popen failed\n");
@@ -77,10 +91,12 @@ namespace PGPCrypt{
         }
         fclose(pipe);
         output = "";
-        command = "echo \"";
         // how to do this securely?
-        command.append(this->passPhrase);
-        command.append("\" | gpg --import ");
+        // nope. this anyway prompts passphrase input...
+        //command = "echo \"";
+        //command.append(this->passPhrase);
+        command = "gpg --batch --import ";       // why --batch do not ask for passphrase?
+        //command = "gpg --import ";
         command.append(g_km->ReturnGithubID());
         command.append(".key 2>&1");
         pipe = popen(command.c_str(), "r");
@@ -91,10 +107,14 @@ namespace PGPCrypt{
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
-        if(output.find("failed") != std::string::npos || output.find("error") != std::string::npos) {
+        // secret key import don't care about passphrase.why?
+        /*if(output.find("failed") != std::string::npos || output.find("error") != std::string::npos || output.find("not") != std::string::npos) {
+            //cout << output << endl;
             cout << "Please check your passphrase" << endl;
             exit(1);
-        }
+        }*/
+        //for debugging
+        //cout << output << endl;
         fclose(pipe);
         // for debugging purpose only
         output = "";
