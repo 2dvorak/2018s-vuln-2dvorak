@@ -7,11 +7,15 @@ Onion Messenger - Team3 HER
 
 ### Installation
 
-1. curl -fsSL https://get.docker.com/ | sudo sh   
+1. git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
+```
+githubc.com의 repositoiry에서 파일을 다운로드 받는다.
+```
+2. curl -fsSL https://get.docker.com/ | sudo sh   
 ```
 리눅스에 Docker를 설치하기 위한 자동 설치 스크립트 명령어를 입력한다.
 ```
-2. docker version                                 
+3. docker version                                 
 ```
 구성한 Docker를 세팅하기 위한 명령어를 입력한다.
 $ docker version
@@ -36,13 +40,12 @@ Server:
 the Docker daemon socket at unix 에러"가 나면
 $sudo usermod -a -G docker $[USER] 입력
 ```
-3. ./AutoDocker.sh  
+4. ./AutoDocker.sh  
 ```
 설치한 Docker를 확인하기 위한 명령어이다.
 수분의 시간이 소요된다.
 ```                                
-4. ./onionMessenger <githubID> <passPhrase>       
-
+5. ./onionMessenger <githubID> <passPhrase>       
 ```
 로그인하기 위한 명령어이다.
 입력하고 다음과 같이 나오면 정상적으로 설치된 것이다.
@@ -56,7 +59,6 @@ root@c73abde28da7:/home/onionMessenger# ./onionMessenger <ID> <P/W>
 1. List
 2. Talk
 3. Exit
-
 ```
 
 ### Usages
