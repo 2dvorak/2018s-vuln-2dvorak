@@ -6,18 +6,56 @@ Onion Messenger - Team3 HER
 - PGP를 이용한 암호화 메신저
 
 ### Installation
-```sh
-1. curl -fsSL https://get.docker.com/ | sudo sh   / 리눅스에 Docker 설치
-2. docker version                                 / 사용자 Docker 그룹에 추가    
-   * Client와 Server 정보가 정상 출력되면 설치 완료임 
-   * Server 정보가 정상 출력되지 않으면? sudo usermod -a -G docker $[USER]
-3. ./AutoDocker.sh                                / 설치한 Docker 확인  
-4. 정상 설치 확인하기 : ls
-   ![ls](./images/ls.jpg)
-5. cp ./testkey/* ./onionMessenger                / 테스트키 복사해서 넣기
-6. cd onionMessenger                              / 폴더 변경하기
-7. ./onionMessenger <githubID> <passPhrase>       / 로그인하기
-   ![her](./images/her.jpg)    
+
+1. curl -fsSL https://get.docker.com/ | sudo sh   
+```
+리눅스에 Docker를 설치하기 위한 자동 설치 스크립트 명령어를 입력한다.
+```
+2. docker version                                 
+```
+구성한 Docker를 세팅하기 위한 명령어를 입력한다.
+$ docker version
+Client:
+ Version:      1.13.1
+ API version:  1.26
+ Go version:   go1.6.2
+ Git commit:   092cba3
+ Built:        Thu Nov  2 20:40:23 2017
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      1.13.1
+ API version:  1.26 (minimum version 1.12)
+ Go version:   go1.6.2
+ Git commit:   092cba3
+ Built:        Thu Nov  2 20:40:23 2017
+ OS/Arch:      linux/amd64
+
+위와 같이 나오면 정상적으로 설치된 것이다.
+"Got permission denied while trying to connect to
+the Docker daemon socket at unix 에러"가 나면
+$sudo usermod -a -G docker $[USER] 입력
+```
+3. ./AutoDocker.sh  
+```
+설치한 Docker를 확인하기 위한 명령어이다.
+수분의 시간이 소요된다.
+```                                
+4. ./onionMessenger <githubID> <passPhrase>       
+
+```
+로그인하기 위한 명령어이다.
+입력하고 다음과 같이 나오면 정상적으로 설치된 것이다.
+root@c73abde28da7:/home/onionMessenger# ./onionMessenger <ID> <P/W>
+██╗  ██╗███████╗██████╗
+██║  ██║██╔════╝██╔══██╗
+███████║█████╗  ██████╔╝
+██╔══██║██╔══╝  ██╔══██╗
+██║  ██║███████╗██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+1. List
+2. Talk
+3. Exit
 
 ```
 
