@@ -52,6 +52,7 @@ namespace sockth{
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
+        cout << tmp << endl;
         string tmp_id = tmp.at("id").get<std::string>();
         string tmp_bullian = tmp.at("bullian").get<std::string>();
         if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("1") == 0) { // key alive
@@ -67,7 +68,7 @@ namespace sockth{
         else if( (tmp_id.compare("1") == 0) ){
             string tmp_content = PGP_m->Dec(tmp.at("content").get<std::string>());
             tmp2 = json::parse(tmp_content);
-            string tmp2_bullian = tmp.at("bullian").get<std::string>();
+            string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
                 r_mutex.lock();
                 qRecvMsg.push(tmp_content);
