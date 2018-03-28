@@ -14,6 +14,7 @@ namespace newmsg{
         Message(string id, string loginStatus, string recvip, string githubID, string pubkey);
         virtual ~Message();
         // Socket Client
+        void EncMessage();
         void SendMessage();
         void RecvMessage();
         void SendKey();
