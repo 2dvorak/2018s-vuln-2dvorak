@@ -48,8 +48,8 @@ namespace PGPCrypt{
         command.append(this->passPhrase);
         command.append("\" --decrypt ");
         command.append(randomFile);
-        command.append(" 2>&1;rm ");
-        command.append(randomFile);
+        command.append(" 2>&1");
+        command.append(";rm "+randomFile);
         pipe = popen(command.c_str(),"r");
         if( pipe == NULL) {
             perror("popen failed\n");
