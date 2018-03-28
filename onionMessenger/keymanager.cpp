@@ -87,12 +87,12 @@ namespace newkey{
 
     void Keymanager::ShowList(){
         int i = 0;
-        cout << " === Your List! === " << endl;
+        cout << " ===================== " << endl;
         for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
             i++;
             cout << nodeIter->first << " : " << nodeIter->second->ip << endl;
         }
-        cout << " ==== Done! ====" << endl;
+        cout << " ===================== " << endl;
     }
 
     // manage node from packet

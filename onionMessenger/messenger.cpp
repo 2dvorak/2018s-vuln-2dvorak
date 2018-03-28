@@ -14,6 +14,7 @@ using namespace PGPCrypt;
 namespace newmsger{
 
     Messenger::Messenger(){
+        std::system("clear");
         CheckIP();
 
         string githubID = "";
