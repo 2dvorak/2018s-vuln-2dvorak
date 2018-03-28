@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <ncurses.h>
+#include <termios.h>
 
 #include "json.hpp"
 #include "keymanager.h"

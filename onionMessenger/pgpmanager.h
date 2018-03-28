@@ -10,11 +10,12 @@ namespace PGPCrypt{
     public:
         PGPManager();
         virtual ~PGPManager();
-        string Enc(string input_plain);
+        string Enc(string input_plain, string recipientID);
         string Dec(string input_cipher);
+        void ImportKeys();
+        void SetTTYEcho(bool enable);
     private:
-        string privKey;
-        string pubKey;
+        string passPhrase;
     };
 }
 

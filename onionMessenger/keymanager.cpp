@@ -8,11 +8,11 @@ namespace newkey{
 
     Keymanager::Keymanager(){}
 
-    Keymanager::Keymanager(string githubID, string passPhrase)
+    Keymanager::Keymanager(string githubID)
     {
-        this->passPhrase = passPhrase;
         this->githubID = githubID;
         // get pub key file
+        // TODO? get .pub from .key
         ifstream openFile1( (githubID+".pub").data() );
         if( openFile1.is_open()){
             openFile1.seekg(0, ios::end);
@@ -28,33 +28,12 @@ namespace newkey{
             exit(10);
         }
 
-        // get priv key file
-        ifstream openFile2( (githubID+".key").data() );
-        if( openFile2.is_open()){
-            openFile2.seekg(0, ios::end);
-            int size = openFile2.tellg();
-            this->privkey.resize(size);
-            openFile2.seekg(0, ios::beg);
-            openFile2.read(&this->privkey[0], size);
-            openFile2.close();
-        }
-        else{
-            cout << "Check github ID & Privkey plz :)" << endl;
-            openFile2.close();
-            exit(10);
-        }
-
         nodeMap = new unordered_map<string, Nodeinfo*>;
         this->myJSON = new Message("0", "1", MyIP, this->githubID, this->pubkey);
     }
 
     Keymanager::~Keymanager(){
 
-    }
-
-    bool Keymanager::Validation(){
-        // check pw match private key
-        return 0;
     }
 
     // manage node
@@ -90,11 +69,12 @@ namespace newkey{
         }
     }
 
-    string Keymanager::ReturnPrivkey(){
-        return this->privkey;
-    }
     string Keymanager::ReturnPubkey(){
         return this->pubkey;
+    }
+
+    string Keymanager::ReturnGithubID(){
+        return this->githubID;
     }
 
     bool Keymanager::IsExist(string githubID){

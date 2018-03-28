@@ -14,10 +14,8 @@ namespace newkey{
     class Keymanager{
     public:
         Keymanager();
-        Keymanager(string githubID, string passPhrase);
+        Keymanager(string githubID);
         virtual ~Keymanager();
-        // Check validation between privatekey and passphrase
-        bool Validation();
 
         // Search, Add, Delete node in unordered_map
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
@@ -26,8 +24,8 @@ namespace newkey{
         string Findip(string githubID);
         string FindPubkey(string githubID);
         string FindgithubID(string ip);
-        string ReturnPrivkey();
         string ReturnPubkey();
+        string ReturnGithubID();
         bool IsExist(string githubID);
         void ShowList();
 
