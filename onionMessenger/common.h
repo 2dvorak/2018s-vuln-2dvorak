@@ -18,6 +18,7 @@
 #include <ncurses.h>
 #include <termios.h>
 #include <random>
+#include <fstream>
 #include <sys/time.h>
 
 #include "json.hpp"
