@@ -1,4 +1,4 @@
-# Onion Messenger - Team3 HER
+# HER Messenger - Team3
 
 Onion Messenger - Team3 HER
 
@@ -7,7 +7,18 @@ Onion Messenger - Team3 HER
 
 ### Installation
 ```sh
-# ./AutoDocker.sh
+1. curl -fsSL https://get.docker.com/ | sudo sh   / 리눅스에 Docker 설치
+2. docker version                                 / 사용자 Docker 그룹에 추가    
+   * Client와 Server 정보가 정상 출력되면 설치 완료임 
+   * Server 정보가 정상 출력되지 않으면? sudo usermod -a -G docker $[USER]
+3. ./AutoDocker.sh                                / 설치한 Docker 확인  
+4. 정상 설치 확인하기 : ls
+   ![ls](./images/ls.jpg)
+5. cp ./testkey/* ./onionMessenger                / 테스트키 복사해서 넣기
+6. cd onionMessenger                              / 폴더 변경하기
+7. ./onionMessenger <githubID> <passPhrase>       / 로그인하기
+   ![her](./images/her.jpg)    
+
 ```
 
 ### Usages
@@ -27,13 +38,13 @@ Done!
 ██╔══██║██╔══╝  ██╔══██╗  
 ██║  ██║███████╗██║  ██║  
 ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝  
-1. List 
-2. Talk 
-3. Exit 
+1. List
+2. Talk
+3. Exit
 > 1  
- === Your List! === 
+ === Your List! ===
 githubB : 172.17.0.2
- ==== Done! ==== 
+ ==== Done! ====
 
 1. List
 2. Talk
@@ -56,7 +67,7 @@ Me: I am githubA
 githubB: i am github B~                                                                  
 ```
 
-- githubB user
+- github user
 ```
 # ./onionMessenger/onionMessenger githubB ???????
 ██╗  ██╗███████╗██████╗
@@ -107,15 +118,13 @@ Me: i am github B~
 
 | Team member     | Position | Assignment |
 |:---------------:|:--------:|------------|
-|  SeongIl Wi     |    TA    | |
-|  DongHyeon Oh   |   팀장   | |
-|  SeungYeop Lee  |   팀원   | |
-|  NakJun Choi    |   팀원   | |
-|  SeJin Jeong    |   팀원   | |
+|  SeongIl Wi     |    TA    | Advice |
+|  DongHyeon Oh   |   팀장   |HER messenger 개발 총괄|
+|  SeungYeop Lee  |   팀원   |HER messenger 개발|
+|  NakJun Choi    |   팀원   |PITCHME.md 작성, 홍보영상 편집, Presentation|
+|  SeJin Jeong    |   팀원   |Sockthread.cpp 함수 개발, README.md 작성 |
 
 ### Insight
 
 ### Reference
  - https://github.com/nlohmann/json
-
-
