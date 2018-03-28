@@ -17,6 +17,8 @@
 #include <arpa/inet.h>
 #include <ncurses.h>
 #include <termios.h>
+#include <random>
+#include <sys/time.h>
 
 #include "json.hpp"
 #include "keymanager.h"
