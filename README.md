@@ -9,13 +9,14 @@
 
 | Type   | Message Protocol | Key Protocol |
 |--------|------------------|--------------|
-| int    |                  |              |
+| int    | if ID = 1, Msg Protocol |if ID = 0, Key Protocol|
 | bool   |                  |              |
 | string |                  |              |
 | string |                  |              |
 
 ### OnionRouting
-그림파일 넣기
+- ex) Message 전송순서 : A -> B -> C -> D
+![onion](./images/onion.png)
 
 ### Installation
 - 컴파일을 위한 패키지 설치
