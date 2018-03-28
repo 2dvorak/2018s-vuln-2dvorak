@@ -311,7 +311,7 @@ namespace oniui{
                 k_mutex.unlock();
                 string tmp_ip = g_km->Findip(githubID);
                 msg->SetMessage(githubID, tmp_ip, typing);
-                msg->EncMessage();
+                msg->EncMessage(githubID);
                 msg->SendMessage();
                 typing = "";
             } else if(input == KEY_BACKSPACE) {
