@@ -31,13 +31,28 @@ namespace newmsger{
         g_km = new Keymanager(githubID);
         g_km->SendKeyAlive();
         PGP_m = new PGPManager();
-        PGP_m->ImportKeys();
+        PGP_m->ImportKeys(githubID);
     }
 
     Messenger::~Messenger(){
          g_km->SendKeyDie();
     }
 
+    void Messenger::Main(){
+        // create 3 threads
+        // 1. recv new node info / node exit notification
+        // 2. recv messages
+        // 3. handle user input / print output to screen
+
+        sockth = new Sockthread();
+        sleep(1); // wait for recvThread to be created. let's not send before recv
+        std::thread recvThread = sockth->RecvMessageThread();
+        std::thread sendThread = sockth->SendMessageThread();
+        std::thread *main = new std::thread(OnionUI::MainUI);
+        // for now, no additional executions are left so we should
+        // wait for the thread to return
+        main->join();
+    }
 
     bool Messenger::CheckIDInvalid(string githubID) {
         // "Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen" - Github
@@ -60,21 +75,5 @@ namespace newmsger{
             }
         }
         return false;
-    }
-
-    void Messenger::Main(){
-        // create 3 threads
-        // 1. recv new node info / node exit notification
-        // 2. recv messages
-        // 3. handle user input / print output to screen
-
-        sockth = new Sockthread();
-        sleep(1); // wait for recvThread to be created. let's not send before recv
-        std::thread recvThread = sockth->RecvMessageThread();
-        std::thread sendThread = sockth->SendMessageThread();
-        std::thread *main = new std::thread(OnionUI::MainUI);
-        // for now, no additional executions are left so we should
-        // wait for the thread to return
-        main->join();
     }
 }

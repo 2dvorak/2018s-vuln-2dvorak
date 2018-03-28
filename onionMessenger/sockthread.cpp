@@ -54,10 +54,14 @@ namespace sockth{
         string tmp_id = tmp.at("id").get<std::string>();
         string tmp_bullian = tmp.at("bullian").get<std::string>();
         if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("1") == 0) { // key alive
+            r_mutex.lock();
             g_km->RecvKeyAlive(msgStr);
+            r_mutex.unlock();
         }
         else if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("0") == 0){ // key die
+            r_mutex.lock();
             g_km->RecvKeyDie(msgStr);
+            r_mutex.unlock();
         }
         else if( (tmp_id.compare("1") == 0) && (tmp_bullian.compare("1") == 0)){ // my message
             r_mutex.lock();

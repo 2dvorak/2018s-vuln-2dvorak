@@ -12,7 +12,8 @@ namespace PGPCrypt{
         virtual ~PGPManager();
         string Enc(string input_plain, string recipientID);
         string Dec(string input_cipher);
-        void ImportKeys();
+        void ImportPub(string pub);
+        void ImportKeys(string githubID);
         void SetTTYEcho(bool enable);
     private:
         string passPhrase;

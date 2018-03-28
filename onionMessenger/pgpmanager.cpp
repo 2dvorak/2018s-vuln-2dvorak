@@ -65,10 +65,41 @@ namespace PGPCrypt{
             index = dec.find('"',index) + 1;
         }
         dec = dec.substr(index + 1); // line feed is 1 byte
+        dec.erase(dec.find("\n"),1);
         return dec;
     }
 
-    void PGPManager::ImportKeys() {
+    void PGPManager::ImportPub(string pub){
+        FILE *pipe;
+        string randomFile = "";
+        int c;
+        string output = "";
+        struct timeval time;
+        gettimeofday(&time,NULL);
+        srand((time.tv_sec*1000)+(time.tv_usec/1000));
+        for(int i = 0 ; i < 10 ; i++) {
+            randomFile.push_back('a' + rand()%26);
+        }
+        ofstream tmpFile(randomFile.data());
+        if(tmpFile.is_open()) {
+            tmpFile << pub << EOF;
+            tmpFile.close();
+        }
+
+        string command = "gpg --import " + randomFile + " 2>&1;rm " + randomFile;
+
+        pipe = popen(command.c_str(), "r");
+        if( pipe == NULL) {
+            perror("popen failed\n");
+            return;
+        }
+        while( (c = fgetc(pipe)) != EOF ) {
+            output.push_back(c);
+        }
+        fclose(pipe);
+    }
+
+    void PGPManager::ImportKeys(string githubID) {
         FILE *pipe;
         int c;
         string output = "";
@@ -97,7 +128,6 @@ namespace PGPCrypt{
         //command = "echo \"";
         //command.append(this->passPhrase);
         command = "gpg --batch --import ";       // why --batch do not ask for passphrase?
-        //command = "gpg --import ";
         command.append(g_km->ReturnGithubID());
         command.append(".key 2>&1");
         pipe = popen(command.c_str(), "r");
@@ -118,18 +148,26 @@ namespace PGPCrypt{
         //cout << output << endl;
         fclose(pipe);
         // for debugging purpose only
-        output = "";
-        command = "gpg --list-secret-keys 2>&1";
-        pipe = popen(command.c_str(), "r");
-        if( pipe == NULL) {
-            perror("popen failed\n");
-            return;
+        //        output = "";
+        //        command = "gpg --list-secret-keys 2>&1";
+        //        pipe = popen(command.c_str(), "r");
+        //        if( pipe == NULL) {
+        //            perror("popen failed\n");
+        //            return;
+        //        }
+        //        while( (c = fgetc(pipe)) != EOF ) {
+        //            output.push_back(c);
+        //        }
+        //        cout << "Debug: " << output << endl;
+        //        fclose(pipe);
+        string testing = "JustForTestString!@#";
+        string test_enc = Enc(testing, githubID);
+        string test_dec = Dec(test_enc);
+        if(testing.compare(test_dec) != 0){
+            cout << "Check your PW plz!" << endl;
+            exit(1);
         }
-        while( (c = fgetc(pipe)) != EOF ) {
-            output.push_back(c);
-        }
-        cout << "Debug: " << output << endl;
-        fclose(pipe);
+
     }
 
     void PGPManager::SetTTYEcho(bool enable) {
