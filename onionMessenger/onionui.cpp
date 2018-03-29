@@ -16,8 +16,8 @@
 using namespace newmsg;
 unsigned int curX = 0, curY = 0;
 unsigned int curInputLine = 1;
-string typing = "";
 vector<string> msgList;
+string typing = "";
 bool end_flag = true;
 
 namespace oniui{
@@ -197,6 +197,7 @@ namespace oniui{
                 tmp = json::parse(str);
                 string tmp_content = tmp.at("content").get<std::string>();
                 string tmp_ip = tmp.at("sendip").get<std::string>();
+                // WHY NOT tmp.at("githubID")???
                 string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
                     k_mutex.lock();
