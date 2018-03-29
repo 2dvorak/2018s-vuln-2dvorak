@@ -17,3 +17,6 @@ RUN apt-get install -y qt4-qmake
 RUN apt-get install -y libncurses-dev
 
 COPY ./ /home/
+RUN mkdir -p /home/onionMessenger/.obj
+RUN make -C /home/onionMessenger
+
