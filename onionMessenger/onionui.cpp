@@ -16,7 +16,7 @@
 using namespace newmsg;
 unsigned int curX = 0, curY = 0;
 unsigned int curInputLine = 1;
-vector<string> msgList;
+//vector<string> msgList;
 string typing = "";
 bool end_flag = true;
 
@@ -59,7 +59,6 @@ namespace oniui{
                 unsigned int choice = 0;
                 int c;
                 unsigned int listLen = nodeMap->size();
-                msgList.clear();
                 initscr();
                 clear();
                 noecho();
@@ -188,61 +187,107 @@ namespace oniui{
         }
     }
 
+    void OnionUI::PrintChat(WINDOW* win, unsigned int maxY, unsigned int maxX) {
+        k_mutex.lock();
+        //curY += (tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
+        wclear(win);
+        vector<string>* msgList = get<0>(chatRoomIter->second);
+        mvwprintw(win, 0, 0, "Her");
+        wmove(win, 1, 0);
+        if(curY + 1 > maxY - LOGO_HEIGHT - curInputLine) {
+            for( unsigned int i =  curY; i > curY - maxY - curInputLine - LOGO_HEIGHT ; i-- ) {
+                if( msgList->at(i).length() < maxX) {
+                    mvwprintw(win, i+1, 0, msgList->at(i).c_str());
+                } else if( msgList->at(i).length() == maxX ) {
+                    // no need to divde these cases?
+                    mvwprintw(win, i+1, 0, msgList->at(i).c_str());
+                } else {
+                    unsigned int lines = msgList->at(i).length() / maxX;
+                    if( msgList->at(i).length() % maxX > 0) lines++;
+                    mvwprintw(win, i+1, 0, msgList->at(i).substr(lines*maxX).c_str());
+                    //unsigned int index = maxX - 1;
+                    for(; lines > 1; lines--) {
+                        mvwprintw(win, i+1, 0, msgList->at(i).substr(lines*maxX,maxX).c_str());
+                        i--;
+                    }
+                }
+            }
+        } else {
+            for( unsigned int i = 0 ; i < msgList->size(); i++ ) {
+                wprintw(win, msgList->at(i).c_str());
+            }
+        }
+        mvwprintw(win, maxY - curInputLine, 0, ">");
+        wprintw(win, typing.c_str());
+        wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
+        wrefresh(win);
+        k_mutex.unlock();
+    }
 
     void OnionUI::UIRecvThread(WINDOW* win, string githubID, unsigned int maxY, unsigned int maxX) {
         while(end_flag){
-            if(qRecvMsg.empty() == 0) {
-                string str = qRecvMsg.front();
-                json tmp;
-                tmp = json::parse(str);
-                string tmp_content = tmp.at("content").get<std::string>();
-                string tmp_ip = tmp.at("sendip").get<std::string>();
-                // WHY NOT tmp.at("githubID")???
-                string tmp_githubID = g_km->FindgithubID(tmp_ip);
-                if(tmp_githubID.compare(githubID) == 0){
-                    k_mutex.lock();
-                    if( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER < maxX) {
-                        msgList.push_back(tmp_githubID + ": " + tmp_content + "\n");
-                    } else if( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER == maxX ) {
-                        msgList.push_back(tmp_githubID + ": " + tmp_content);
-                    } else {
-                        int iter = ( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
-                        int index = maxX - tmp_githubID.length() - CHAT_DELIMETER - 1;
-                        msgList.push_back(tmp_githubID + ": " + tmp_content.substr(0, index));
-                        for(int i = 0; i < iter - 1; i++) {
-                            msgList.push_back(tmp_content.substr(index,maxX));
-                            index += maxX;
-                        }
-                        msgList.push_back(tmp_content.substr(index) + "\n");
-                    }
-                    curY = msgList.size() + 1;
-                    //curY += (tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
-                    wclear(win);
-                    mvwprintw(win, 0, 0, "Her");
-                    wmove(win, 1, 0);
-                    if(curY >= maxY - 1) {
-                        for( unsigned int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
-                            wprintw(win, msgList.at(i).c_str());
-                        }
-                    } else {
-                        for( unsigned int i = 0 ; i < msgList.size(); i++ ) {
-                            wprintw(win, msgList.at(i).c_str());
-                        }
-                    }
-                    mvwprintw(win, maxY - curInputLine, 0, ">");
-                    wprintw(win, typing.c_str());
-                    wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
-                    wrefresh(win);
-                    k_mutex.unlock();
-
-                    r_mutex.lock();
-                    qRecvMsg.pop();
-                    r_mutex.unlock();
-                }
-                else{
-                    continue;
-                }
+            k_mutex.lock();
+            chatRoomIter = chatRoomMap->find(githubID);
+            k_mutex.unlock();
+            std::unique_lock<std::mutex> lck(r_mutex);
+            r_cv.wait(lck, RecvAvailable);
+            if(!end_flag) {
+                break;
             }
+            k_mutex.lock();
+            curY = get<0>(chatRoomIter->second)->size() - 1;
+            PrintChat(win, maxY, maxX);
+            /*string str = qRecvMsg.front();
+            json tmp;
+            tmp = json::parse(str);
+            string tmp_content = tmp.at("content").get<std::string>();
+            string tmp_ip = tmp.at("sendip").get<std::string>();
+            // WHY NOT tmp.at("githubID")???
+            string tmp_githubID = g_km->FindgithubID(tmp_ip);
+            if(tmp_githubID.compare(githubID) == 0){
+                k_mutex.lock();
+                if( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER < maxX) {
+                    msgList.push_back(tmp_githubID + ": " + tmp_content + "\n");
+                } else if( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER == maxX ) {
+                    msgList.push_back(tmp_githubID + ": " + tmp_content);
+                } else {
+                    int iter = ( tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
+                    int index = maxX - tmp_githubID.length() - CHAT_DELIMETER - 1;
+                    msgList.push_back(tmp_githubID + ": " + tmp_content.substr(0, index));
+                    for(int i = 0; i < iter - 1; i++) {
+                        msgList.push_back(tmp_content.substr(index,maxX));
+                        index += maxX;
+                    }
+                    msgList.push_back(tmp_content.substr(index) + "\n");
+                }
+                curY = msgList.size() + 1;
+                //curY += (tmp_githubID.length() + tmp_content.length() + CHAT_DELIMETER) / maxX;
+                wclear(win);
+                mvwprintw(win, 0, 0, "Her");
+                wmove(win, 1, 0);
+                if(curY >= maxY - 1) {
+                    for( unsigned int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
+                        wprintw(win, msgList.at(i).c_str());
+                    }
+                } else {
+                    for( unsigned int i = 0 ; i < msgList.size(); i++ ) {
+                        wprintw(win, msgList.at(i).c_str());
+                    }
+                }
+                mvwprintw(win, maxY - curInputLine, 0, ">");
+                wprintw(win, typing.c_str());
+                wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
+                wrefresh(win);
+                k_mutex.unlock();
+
+                r_mutex.lock();
+                qRecvMsg.pop();
+                r_mutex.unlock();
+            }
+            else{
+                continue;
+            }*/
+
         }
         wclear(win);
     }
@@ -250,6 +295,7 @@ namespace oniui{
 
     void OnionUI::UISendThread(WINDOW *win, string githubID,unsigned int maxY, unsigned int maxX) {
         Message *msg = new Message();
+        vector<string>* msgList = get<0>(chatRoomIter->second);
         //string str = "";
         k_mutex.lock();
         curY = 1;
@@ -273,13 +319,13 @@ namespace oniui{
                 k_mutex.unlock();
             } else if(input == KEY_UP) {
                 k_mutex.lock();
-                if(msgList.size() > (maxY - 1 - LOGO_HEIGHT) && curY > (maxY - LOGO_HEIGHT)) {
+                if(msgList->size() > (maxY - 1 - LOGO_HEIGHT) && curY > (maxY - LOGO_HEIGHT)) {
                     curY--;
                 }
                 k_mutex.unlock();
             } else if(input == KEY_DOWN) {
                 k_mutex.lock();
-                if(msgList.size() > (maxY - 1 - LOGO_HEIGHT) && curY < msgList.size() + 1) {
+                if(msgList->size() > (maxY - 1 - LOGO_HEIGHT) && curY < msgList->size() + 1) {
                     curY++;
                 }
                 k_mutex.unlock();
@@ -292,20 +338,20 @@ namespace oniui{
             } else if(input == 10) {
                 k_mutex.lock();
                 if( string("Me").length() + typing.length() + CHAT_DELIMETER < maxX) {
-                    msgList.push_back("Me: " + typing + "\n");
+                    msgList->push_back("Me: " + typing + "\n");
                 } else if(string("Me").length() + typing.length() + CHAT_DELIMETER == maxX) {
-                    msgList.push_back("Me: " + typing );
+                    msgList->push_back("Me: " + typing );
                 } else {
                     int iter = ( string("Me").length() + typing.length() + CHAT_DELIMETER) / maxX;
                     int index = maxX - string("Me").length() - CHAT_DELIMETER - 1;
-                    msgList.push_back("Me: " + typing.substr(0, index));
+                    msgList->push_back("Me: " + typing.substr(0, index));
                     for(int i = 0; i < iter - 1; i++) {
-                        msgList.push_back(typing.substr(index,maxX));
+                        msgList->push_back(typing.substr(index,maxX));
                         index += maxX;
                     }
-                    msgList.push_back(typing.substr(index) + "\n");
+                    msgList->push_back(typing.substr(index) + "\n");
                 }
-                curY = msgList.size() + 1;
+                curY = msgList->size() + 1;
                 //curY += ( string("Me").length() + typing.length() + CHAT_DELIMETER ) / maxX;
                 curX = 0;
                 curInputLine = 1;
@@ -349,12 +395,12 @@ namespace oniui{
             wmove(win, 1, 0);
             if(curY >= maxY - curInputLine) {
                 for( unsigned int i = curY - (maxY - curInputLine) ; i < curY - curInputLine ; i++ ) {
-                    wprintw(win, msgList.at(i).c_str());
+                    wprintw(win, msgList->at(i).c_str());
                     //i += (string("Me").length() + msgList.at(i).length() + CHAT_DELIMETER ) / maxX;
                 }
             } else {
-                for( unsigned int i = 0 ; i < msgList.size(); i++ ) {
-                    wprintw(win, msgList.at(i).c_str());
+                for( unsigned int i = 0 ; i < msgList->size(); i++ ) {
+                    wprintw(win, msgList->at(i).c_str());
                     //i += (string("Me").length() + msgList.at(i).length() + CHAT_DELIMETER ) / maxX;
                 }
             }
