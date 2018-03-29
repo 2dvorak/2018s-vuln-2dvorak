@@ -14,8 +14,8 @@
 #define LOGO_HEIGHT     1   // height of logo 'Her'
 
 using namespace newmsg;
-int curX = 0, curY = 0;
-int curInputLine = 1;
+unsigned int curX = 0, curY = 0;
+unsigned int curInputLine = 1;
 string typing = "";
 vector<string> msgList;
 bool end_flag = true;
@@ -53,12 +53,12 @@ namespace oniui{
                 WINDOW *listWin, *chatWin;
                 string githubID;
 
-                int maxX = 0, maxY = 0;
+                unsigned int maxX = 0, maxY = 0;
                 int listX = 0, listY = 0;
-                int highlight = 1;
-                int choice = 0;
+                unsigned int highlight = 1;
+                unsigned int choice = 0;
                 int c;
-                int listLen = nodeMap->size();
+                unsigned int listLen = nodeMap->size();
                 msgList.clear();
                 initscr();
                 clear();
@@ -83,7 +83,7 @@ namespace oniui{
                     box(listWin, 0, 0);
                     nodeIter = nodeMap->begin();
                     if(curY > LISTWIN_HEIGHT - 2) {
-                        for(int j = 0 ; j < curY - (LISTWIN_HEIGHT - 2); j ++) {
+                        for( unsigned int j = 0 ; j < curY - (LISTWIN_HEIGHT - 2); j ++) {
                             nodeIter++;
                         }
                     }
@@ -189,7 +189,7 @@ namespace oniui{
     }
 
 
-    void OnionUI::UIRecvThread(WINDOW* win, string githubID, int maxY, int maxX) {
+    void OnionUI::UIRecvThread(WINDOW* win, string githubID, unsigned int maxY, unsigned int maxX) {
         while(end_flag){
             if(qRecvMsg.empty() == 0) {
                 string str = qRecvMsg.front();
@@ -220,7 +220,7 @@ namespace oniui{
                     mvwprintw(win, 0, 0, "Her");
                     wmove(win, 1, 0);
                     if(curY >= maxY - 1) {
-                        for( int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
+                        for( unsigned int i = curY - maxY + 1; i < curY - 1 ; i++ ) {
                             wprintw(win, msgList.at(i).c_str());
                         }
                     } else {
@@ -247,7 +247,7 @@ namespace oniui{
     }
 
 
-    void OnionUI::UISendThread(WINDOW *win, string githubID, int maxY, int maxX) {
+    void OnionUI::UISendThread(WINDOW *win, string githubID,unsigned int maxY, unsigned int maxX) {
         Message *msg = new Message();
         //string str = "";
         k_mutex.lock();
@@ -347,7 +347,7 @@ namespace oniui{
             mvwprintw(win, 0, 5, "pressed : %d", input);
             wmove(win, 1, 0);
             if(curY >= maxY - curInputLine) {
-                for( int i = curY - (maxY - curInputLine) ; i < curY - curInputLine ; i++ ) {
+                for( unsigned int i = curY - (maxY - curInputLine) ; i < curY - curInputLine ; i++ ) {
                     wprintw(win, msgList.at(i).c_str());
                     //i += (string("Me").length() + msgList.at(i).length() + CHAT_DELIMETER ) / maxX;
                 }
