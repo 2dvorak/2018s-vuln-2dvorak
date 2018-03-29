@@ -59,7 +59,7 @@ Your passphrase :[YOUR passphrase]
 1. List
 2. Talk
 3. Exit
-
+```
 메뉴 1.
 ```
 
@@ -67,7 +67,7 @@ Your passphrase :[YOUR passphrase]
 
 ### Examples
 - githubA user
-
+```
 ██╗  ██╗███████╗██████╗
 ██║  ██║██╔════╝██╔══██╗  
 ███████║█████╗  ██████╔╝  
