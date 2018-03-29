@@ -7,12 +7,14 @@
 
 ### Protocol Design
 
-| Type   | Message Protocol | Key Protocol |
+| Field   | Message Protocol | Key Protocol |
 |--------|------------------|--------------|
-| int    | if ID = 1, Msg Protocol |if ID = 0, Key Protocol|
-| bool   |                  |              |
-| string |                  |              |
-| string |                  |              |
+| id     | id=1 : 메시지 | id=0 : Key |
+| boolean| bool? 전달 : 내 메시지 | bool? 로그인:로그아웃 |
+| sendIP|  -       | 송신자 IP        |
+| recvIP | 수신자 IP     | 수신자 IP             |
+| Github id | 송신자 id(마지막 메시지)  | 송신자 id |
+| contents| 암호화된 메시지 | 송신자 Public Key |
 
 ### OnionRouting
 - ex) Message 전송순서 : A -> B -> C -> D
