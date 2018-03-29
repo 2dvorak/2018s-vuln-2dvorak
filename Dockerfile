@@ -8,9 +8,9 @@ WORKDIR /home/
 ## Setup some package
 RUN sed -i 's/archive.ubuntu.com/ftp.daumkakao.com/g' /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y net-tools \
-                       netcat \
-                       g++ \
-                       make \
-                       qt4-qmake \
-                       libncurses-dev
+RUN apt-get install -y net-tools
+RUN apt-get install -y netcat
+RUN apt-get install -y g++
+RUN apt-get install -y make
+RUN apt-get install -y qt4-qmake
+RUN apt-get install -y libncurses-dev
