@@ -1,5 +1,5 @@
-cp testkey/* onionMessenger
-make -C onionMessenger dist
-make -C onionMessenger
+cp ../testkey/* ./
+mkdir .obj
+make
 mkdir ~/.gnupg
 echo 'no-tty' >> ~/.gnupg/gpg.conf
