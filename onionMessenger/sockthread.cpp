@@ -50,23 +50,36 @@ namespace sockth{
         }
         string msgStr(buffer);
         json tmp;
+        json tmp2;
         tmp = json::parse(msgStr);
         string tmp_id = tmp.at("id").get<std::string>();
         string tmp_bullian = tmp.at("bullian").get<std::string>();
         if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("1") == 0) { // key alive
-            g_km->RecvKeyAlive(msgStr);
-        }
-        else if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("0") == 0){ // key die
-            g_km->RecvKeyDie(msgStr);
-        }
-        else if( (tmp_id.compare("1") == 0) && (tmp_bullian.compare("1") == 0)){ // my message
             r_mutex.lock();
-            qRecvMsg.push(msgStr);
+            g_km->RecvKeyAlive(msgStr);
             r_mutex.unlock();
         }
-        else if( (tmp_id.compare("1") == 0) && (tmp_bullian.compare("0") == 0)){ // not my message
-
+        else if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("0") == 0){ // key die
+            r_mutex.lock();
+            g_km->RecvKeyDie(msgStr);
+            r_mutex.unlock();
         }
+        else if( (tmp_id.compare("1") == 0) ){
+            string tmp_content = PGP_m->Dec(tmp.at("content").get<std::string>());
+            tmp2 = json::parse(tmp_content);
+            string tmp2_bullian = tmp2.at("bullian").get<std::string>();
+            if( tmp2_bullian.compare("1") == 0){ // my message
+                r_mutex.lock();
+                qRecvMsg.push(tmp_content);
+                r_mutex.unlock();
+            }
+            else if( tmp2_bullian.compare("0") == 0){ // not my message
+                s_mutex.lock();
+                qSendMsg.push(tmp_content);
+                s_mutex.unlock();
+            }
+        }
+
         close(sockFd);
         return 0;
     }

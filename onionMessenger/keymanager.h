@@ -14,17 +14,20 @@ namespace newkey{
     class Keymanager{
     public:
         Keymanager();
-        Keymanager(string githubID, string passPhrase);
+        Keymanager(string githubID);
         virtual ~Keymanager();
-        // Check validation between privatekey and passphrase
-        bool Validation();
 
         // Search, Add, Delete node in unordered_map
         void AddMap(string githubID, Nodeinfo* IPnPubKey);
         void DelMap(string githubID);
         Nodeinfo* SearchMap(string githubID);
         string Findip(string githubID);
+        string FindPubkey(string githubID);
         string FindgithubID(string ip);
+        int ReturnCountMap();
+        list<string> ReturnRndGithubID(string githubID);
+        string ReturnPubkey();
+        string ReturnGithubID();
         bool IsExist(string githubID);
         void ShowList();
 
@@ -34,10 +37,13 @@ namespace newkey{
         void SendKeyAlive();
         void SendKeyDie();
         void SendKey(string ip);
+
     private:
         // This client's github ID and passphrase
         string githubID;
         string passPhrase;
+        string pubkey;
+        string privkey;
         // My key JSON
         Message *myJSON;
         Nodeinfo *tmpInfo;

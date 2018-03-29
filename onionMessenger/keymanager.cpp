@@ -2,26 +2,38 @@
 #include "common.h"
 #include "keymanager.h"
 #include "message.h"
+#include <fstream>
 
 namespace newkey{
 
     Keymanager::Keymanager(){}
 
-    Keymanager::Keymanager(string githubID, string passPhrase)
+    Keymanager::Keymanager(string githubID)
     {
-        this->passPhrase = passPhrase;
         this->githubID = githubID;
+        // get pub key file
+        // TODO? get .pub from .key
+        ifstream openFile1( (githubID+".pub").data() );
+        if( openFile1.is_open()){
+            openFile1.seekg(0, ios::end);
+            int size = openFile1.tellg();
+            this->pubkey.resize(size);
+            openFile1.seekg(0, ios::beg);
+            openFile1.read(&this->pubkey[0], size);
+            openFile1.close();
+        }
+        else{
+            cout << "Check github ID & pubkey plz :)" << endl;
+            openFile1.close();
+            exit(10);
+        }
+
         nodeMap = new unordered_map<string, Nodeinfo*>;
-        this->myJSON = new Message("0", "1", MyIP, this->githubID, "string pubkey");
+        this->myJSON = new Message("0", "1", MyIP, this->githubID, this->pubkey);
     }
 
     Keymanager::~Keymanager(){
 
-    }
-
-    bool Keymanager::Validation(){
-        // check pw match private key
-        return 0;
     }
 
     // manage node
@@ -45,11 +57,39 @@ namespace newkey{
         return nodeIter->second->ip;
     }
 
+    string Keymanager::FindPubkey(string githubID){
+        nodeIter = nodeMap->find(githubID);
+        return nodeIter->second->pubkey;
+    }
+
     string Keymanager::FindgithubID(string ip){
         for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
             if(ip.compare(nodeIter->second->ip) == 0)
                 return nodeIter->first;
         }
+        return "";
+    }
+
+    list<string> Keymanager::ReturnRndGithubID(string githubID){
+        list<string> tmp_list;
+        for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
+            if( (githubID.compare(nodeIter->first) != 0) || (this->githubID.compare(nodeIter->first) != 0)){
+                tmp_list.push_back(nodeIter->first);
+            }
+        }
+        return tmp_list;
+    }
+
+    int Keymanager::ReturnCountMap(){
+        return nodeMap->size();
+    }
+
+    string Keymanager::ReturnPubkey(){
+        return this->pubkey;
+    }
+
+    string Keymanager::ReturnGithubID(){
+        return this->githubID;
     }
 
     bool Keymanager::IsExist(string githubID){
@@ -62,12 +102,12 @@ namespace newkey{
 
     void Keymanager::ShowList(){
         int i = 0;
-        cout << " === Your List! === " << endl;
+        cout << " ===================== " << endl;
         for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
             i++;
             cout << nodeIter->first << " : " << nodeIter->second->ip << endl;
         }
-        cout << " ==== Done! ====" << endl;
+        cout << " ===================== " << endl;
     }
 
     // manage node from packet
@@ -79,6 +119,7 @@ namespace newkey{
             string tmp_ip = tmp.at("sendip").get<std::string>();
             string tmp_pubkey = tmp.at("pubkey").get<std::string>();
             tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
+            PGP_m->ImportPub(tmp_pubkey);
             AddMap(tmp_githubID, tmpInfo);
             this->SendKeyAlive();
         }

@@ -13,8 +13,8 @@ namespace oniui{
         virtual ~OnionUI();
         static void MainUI();
 
-        static void UISendThread(WINDOW*, string, int ,int);
-        static void UIRecvThread(WINDOW*, string, int ,int);
+        static void UISendThread(WINDOW*, string,unsigned int ,unsigned int);
+        static void UIRecvThread(WINDOW*, string,unsigned int ,unsigned int);
 
         void Init();
         void ShowLogo();
