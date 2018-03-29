@@ -48,7 +48,7 @@ namespace PGPCrypt{
         string randomFile = "";
         struct timeval tp;
         gettimeofday(&tp, NULL);
-        long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+        unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
         // srand(time(NULL));   // nope, time() is not enough
         srand(ms);
         for(int i = 0 ; i < 10 ; i++) {

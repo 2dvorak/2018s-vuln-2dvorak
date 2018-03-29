@@ -5,8 +5,8 @@ unordered_map<string, newkey::Nodeinfo*>* nodeMap;
 unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
 
 // <githubID, chatList, newMsg, timestamp>
-map<string, vector<string>*, int, time_t>* chatRoomMap;
-map<string, vector<string>*, int, time_t> chatRoomIter;
+map<string, tuple<vector<string>*, int, time_t>>* chatRoomMap;
+map<string, tuple<vector<string>*, int, time_t>>::iterator chatRoomIter;
 
 queue<string>qSendMsg;
 queue<string>qRecvMsg;

@@ -37,8 +37,8 @@ using json = nlohmann::json;
 extern unordered_map<string, newkey::Nodeinfo*>* nodeMap;
 extern unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
 
-extern map<string, vector<string>*, int, time_t>* chatRoomMap;
-extern map<string, vector<string>*, int, time_t> chatRoomIter;
+extern map<string, tuple<vector<string>*, int, time_t>>* chatRoomMap;
+extern map<string, tuple<vector<string>*, int, time_t>>::iterator chatRoomIter;
 
 // global queues
 extern queue<string> qSendMsg;
