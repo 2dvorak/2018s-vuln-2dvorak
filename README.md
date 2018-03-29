@@ -1,20 +1,26 @@
 # HER Messenger - Team3
 
+### HER messenger
+- 빠르고 안전해 믿고 쓰는 HER 메신저!
 
 ### Abstract
-- PGP를 이용한 암호화 메신저
+- PGP를 이용한 암호화된 메시지 송/수신
 - OnionRouting으로 중간단계에서 발신자, 수신자 익명화
+-
+-
 
 ### Protocol Design
 
 | Field   | Message Protocol | Key Protocol |
 |--------|------------------|--------------|
 | id     | id=1 : 메시지 | id=0 : Key |
-| boolean| bool? 전달 : 내 메시지 | bool? 로그인:로그아웃 |
-| sendIP|  -       | 송신자 IP        |
-| recvIP | 수신자 IP     | 수신자 IP             |
-| Github id | 송신자 id(마지막 메시지)  | 송신자 id |
-| contents| 암호화된 메시지 | 송신자 Public Key |
+| bollian| bool? 전달 : 내 메시지 | bool? 로그인:로그아웃 |
+| sendIP|  sender IP(마지막 메시지)       | sender IP        |
+| recvIP | receiver IP     | receiver IP             |
+| githubID | sender id(마지막 메시지)  | sender id |
+| content| 암호화된 메시지 | sender Public Key |
+
+- JSON을 사용했다는 것을 예시와 함께 추가
 
 ### OnionRouting
 - ex) Message 전송순서 : A -> B -> C -> D
@@ -22,6 +28,9 @@
 ![onion](./images/onion.jpg)
 
 ### Installation
+ ~$_ : 현재 사용자의 명령 대기
+ ~#_ : 슈퍼 유저의 명령 대기
+
 - 컴파일을 위한 패키지 설치
 ```
 $ sudo apt-get install g++
@@ -33,7 +42,7 @@ $ sudo apt-get install libncurses-dev
 ```
 $ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
 $ curl -fsSL https://get.docker.com/ | sudo sh
-$ cd ..  
+$ cd 2018s-onion-team3  
 # ./AutoDocker.sh
 ```
 
@@ -42,8 +51,7 @@ $ cd ..
 # ./startMessenger.sh
 # ./setup.sh
 # cd onionMessenger
-# ./onionMessenger [github ID] [PassPhrase]
-Done!
+# ./onionMessenger
 ```
 
 ### Examples
