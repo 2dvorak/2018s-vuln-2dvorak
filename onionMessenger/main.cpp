@@ -2,7 +2,7 @@
 #include "messenger.h"
 using namespace newmsger;
 
-int main(int argc, char *argv[])
+int main()
 {
     Messenger *msger = new Messenger();
     msger->Main();
