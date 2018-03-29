@@ -20,6 +20,7 @@
 #include <random>
 #include <fstream>
 #include <sys/time.h>
+#include <list>
 
 #include "json.hpp"
 #include "keymanager.h"
