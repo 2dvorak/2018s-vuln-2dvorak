@@ -5,12 +5,13 @@ unordered_map<string, newkey::Nodeinfo*>* nodeMap;
 unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
 
 // <githubID, chatList, newMsg, timestamp>
-map<string, tuple<vector<string>*, int, time_t>>* chatRoomMap;
-map<string, tuple<vector<string>*, int, time_t>>::iterator chatRoomIter;
+map<string, tuple<vector<string>*, unsigned int, time_t>>* chatRoomMap;
+map<string, tuple<vector<string>*, unsigned int, time_t>>::iterator chatRoomIter;
 
 queue<string>qSendMsg;
 queue<string>qRecvMsg;
 mutex r_mutex;
+std::condition_variable r_cv;
 mutex s_mutex;
 mutex k_mutex;
 string MyIP;
@@ -48,4 +49,13 @@ void CheckIP(){
     // Free memory
     freeifaddrs(interfaces);
     MyIP = ipAddress;
+}
+
+bool RecvAvailable() {
+    //tuple<vector<string>*, int, time_t>cr = chatRoomIter->find(githubID)->second;
+    return get<0>(chatRoomIter->second)->size() > get<1>(chatRoomIter->second);
+}
+
+bool SendAvailable() {
+    return !qSendMsg.empty();
 }
