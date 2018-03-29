@@ -14,13 +14,14 @@
 | Field   | Message Protocol | Key Protocol |
 |--------|------------------|--------------|
 | id     | id=1 : 메시지 | id=0 : Key |
-| bollian| bool? 전달 : 내 메시지 | bool? 로그인:로그아웃 |
+| bullian| bool? 전달 : 내 메시지 | bool? 로그인:로그아웃 |
 | sendIP|  sender IP(마지막 메시지)       | sender IP        |
 | recvIP | receiver IP     | receiver IP             |
 | githubID | sender id(마지막 메시지)  | sender id |
 | content| 암호화된 메시지 | sender Public Key |
 
-- JSON을 사용했다는 것을 예시와 함께 추가
+- 메시지를 JSON 형식으로 만들어 전송
+ex) Message : ```{“id”:“1”, “bullian”:“0”, “recvip”:“172.0.0.3”,“content”:“<암호화된 메시지>”}```
 
 ### OnionRouting
 - ex) Message 전송순서 : A -> B -> C -> D
@@ -28,8 +29,8 @@
 ![onion](./images/onion.jpg)
 
 ### Installation
- ~$_ : 현재 사용자의 명령 대기
- ~#_ : 슈퍼 유저의 명령 대기
+~$_ : 현재 사용자의 명령 대기
+~#_ : 슈퍼 유저의 명령 대기
 
 - 컴파일을 위한 패키지 설치
 ```
@@ -43,15 +44,36 @@ $ sudo apt-get install libncurses-dev
 $ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
 $ curl -fsSL https://get.docker.com/ | sudo sh
 $ cd 2018s-onion-team3  
-# ./AutoDocker.sh
+$ ./AutoDocker.sh
 ```
-
+- 본인 비밀키 파일 설정하기
+testkey 폴더에 [Your id].key와 [Your id].pub를 넣어주기
+명령어는 다음과 같다.
+```
+$
+$
+```
 ### Usages
 ```
 # ./startMessenger.sh
 # ./setup.sh
 # cd onionMessenger
+# mkdir -p .obj
+# make
 # ./onionMessenger
+Your Github ID :[YOUR id]
+Your passphrase :[YOUR passphrase]
+██╗  ██╗███████╗██████╗
+██║  ██║██╔════╝██╔══██╗
+███████║█████╗  ██████╔╝
+██╔══██║██╔══╝  ██╔══██╗
+██║  ██║███████╗██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+1. List
+2. Talk
+3. Exit
+
+메뉴 1.
 ```
 
 ### Examples
