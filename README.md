@@ -32,7 +32,7 @@
 ![onion](./images/onion.jpg)    
 
 ### Installation
-~$_ : 현재 사용자의 명령 대기
+~$_ : 현재 사용자의 명령 대기  
 ~#_ : 슈퍼 유저의 명령 대기
 
 - 프로그램 파일 설치
@@ -87,7 +87,7 @@ githubB : 172.17.0.2
 3. Exit
 > 2
                              ┌────────────────────────────┐                             
-                             │ githubB                    │                             
+                             │ githubA                    │                             
                              │                            │                             
                              │                            │                             
                              │                            │                             
@@ -103,9 +103,8 @@ Me: I am githubA
 githubB: i am github B~                                                                  
 ```
 
-- github user
+- githubB user
 ```
-# ./onionMessenger/onionMessenger githubB ???????
 ██╗  ██╗███████╗██████╗
 ██║  ██║██╔════╝██╔══██╗
 ███████║█████╗  ██████╔╝
