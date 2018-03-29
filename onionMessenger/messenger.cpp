@@ -59,7 +59,7 @@ namespace newmsger{
         bool hyphenFound = false;
         const char* githubIDChar = githubID.c_str();
         if(githubIDChar[0] == '-' || githubIDChar[githubID.length() - 1] == '-') return true;
-        for(int i = 0 ; i < githubID.length(); i++ ) {
+        for(unsigned int i = 0 ; i < githubID.length(); i++ ) {
             if(githubIDChar[i] < '0' || (githubIDChar[i] > '9' && githubIDChar[i] < 'A') || (githubIDChar[i] > 'Z' && githubIDChar[i] < 'a') || githubIDChar[i] > 'z') {
                 if(githubIDChar[i] == '-') {
                     if(hyphenFound) {
