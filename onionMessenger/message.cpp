@@ -51,12 +51,16 @@ namespace newmsg{
     void Message::EncMessage(string githubID){
         int cnt = g_km->ReturnCountMap();
         list<string> rnd_githubID = g_km->ReturnRndGithubID(githubID);
+        std::vector<std::reference_wrapper<std::string>> v(rnd_githubID.begin(), rnd_githubID.end());
+        std::random_device rd;
+        std::mt19937 generator(rd());
+        std::shuffle(v.begin(), v.end(), generator);
 
         string tmp_content = PGP_m->Enc(this->jason.dump(), githubID);
         SetBridge(g_km->Findip(githubID), tmp_content);
-        for(int i = 0; i < cnt; i++){
-            string tmp_githubID = rnd_githubID.front();
-            rnd_githubID.pop_front();
+        for(int i = 0; (i < cnt) && (i<5); i++){
+            string tmp_githubID = v.back();
+            v.pop_back();
             string tmp2_content = PGP_m->Enc(this->jason.dump(), tmp_githubID);
             SetBridge(g_km->Findip(tmp_githubID), tmp2_content);
         }
