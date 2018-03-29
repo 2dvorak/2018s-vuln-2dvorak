@@ -58,7 +58,7 @@ void CheckPW();
 void CheckIP();
 
 // Thread wait
-bool RecvAvailable(string);
+bool RecvAvailable();
 bool SendAvailable();
 
 #endif // COMMON_H
