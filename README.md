@@ -20,7 +20,7 @@
 | githubID | sender id(마지막 메시지)  | sender id |
 | content| 암호화된 메시지 | sender Public Key |
 
-- 메시지를 JSON 형식으로 만들어 전송
+- 메시지를 JSON 형식으로 만들어 전송  
 ex) Message : ```{“id”:“1”, “bullian”:“0”, “recvip”:“172.0.0.3”,“content”:“<암호화된 메시지>”}```
 
 ### OnionRouting
