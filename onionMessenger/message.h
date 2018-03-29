@@ -14,6 +14,7 @@ namespace newmsg{
         Message(string id, string loginStatus, string recvip, string githubID, string pubkey);
         virtual ~Message();
         // Socket Client
+        void EncMessage(string githubID);
         void SendMessage();
         void RecvMessage();
         void SendKey();
@@ -24,6 +25,7 @@ namespace newmsg{
         void setIP(string);
         string getIP();
         void SetMessage(string, string, string);
+        void SetBridge(string toip, string contents);
         void setJason(json);
         void CheckMessage();
     private:

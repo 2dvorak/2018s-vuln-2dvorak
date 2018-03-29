@@ -195,7 +195,7 @@ namespace oniui{
                 string str = qRecvMsg.front();
                 json tmp;
                 tmp = json::parse(str);
-                string tmp_content = PGP_m->Dec(tmp.at("content").get<std::string>());
+                string tmp_content = tmp.at("content").get<std::string>();
                 string tmp_ip = tmp.at("sendip").get<std::string>();
                 string tmp_githubID = g_km->FindgithubID(tmp_ip);
                 if(tmp_githubID.compare(githubID) == 0){
@@ -310,8 +310,8 @@ namespace oniui{
                 curInputLine = 1;
                 k_mutex.unlock();
                 string tmp_ip = g_km->Findip(githubID);
-                string enc_typing = PGP_m->Enc(typing, githubID);
-                msg->SetMessage(githubID, tmp_ip, enc_typing);
+                msg->SetMessage(githubID, tmp_ip, typing);
+                msg->EncMessage(githubID);
                 msg->SendMessage();
                 typing = "";
             } else if(input == KEY_BACKSPACE) {

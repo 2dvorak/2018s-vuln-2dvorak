@@ -8,12 +8,25 @@ namespace PGPCrypt{
 
     PGPManager::~PGPManager(){}
 
+    std::string ReplaceAll(std::string &str, const std::string& from, const std::string& to){
+        size_t start_pos = 0; //string처음부터 검사
+        while((start_pos = str.find(from, start_pos)) != std::string::npos)  //from을 찾을 수 없을 때까지
+        {
+            str.replace(start_pos, from.length(), to);
+            start_pos += to.length(); // 중복검사를 피하고 from.length() > to.length()인 경우를 위해서
+        }
+        return str;
+    }
+
     string PGPManager::Enc(string input_plain, string recipientID){
         FILE *pipe;
         string enc = "";
+        string change_plain = "";
         int c;
+
+        change_plain = ReplaceAll(input_plain, std::string("\""), std::string("\\\""));
         string command = "echo \"";
-        command.append(input_plain);
+        command.append(change_plain);
         command.append("\" | gpg --encrypt --armor --yes --trust-model always -r ");
         command.append(recipientID);
         command.append(" 2>&1");
@@ -61,11 +74,10 @@ namespace PGPCrypt{
         fclose(pipe);
         // maybe regex better?
         int index = 0;
-        while(dec.find('"',index) != std::string::npos) {
-            index = dec.find('"',index) + 1;
-        }
-        dec = dec.substr(index + 1); // line feed is 1 byte
-        dec.erase(dec.find("\n"),1);
+        index = dec.find(g_km->ReturnGithubID(),index) + g_km->ReturnGithubID().size();
+        dec = dec.substr(index + 2); // line feed is 1 byte
+        dec.erase(dec.begin()+dec.length()-1);
+        dec = ReplaceAll(dec, std::string("\n"), std::string("\\n"));
         return dec;
     }
 

@@ -39,6 +39,37 @@ namespace newmsg{
         this->jason["content"] = contents;
     }
 
+    void Message::SetBridge(string toip, string contents){
+        this->jason["id"] = "1";
+        this->jason["bullian"] = "0";
+        this->jason["githubID"] = "";
+        this->jason["recvip"] = toip;
+        this->jason["sendip"] = "";
+        this->jason["content"] = contents;
+    }
+
+    void Message::EncMessage(string githubID){
+        int cnt = g_km->ReturnCountMap();
+        list<string> rnd_githubID = g_km->ReturnRndGithubID(githubID);
+
+        string tmp_content = PGP_m->Enc(this->jason.dump(), githubID);
+        SetBridge(g_km->Findip(githubID), tmp_content);
+        for(int i = 0; i < cnt; i++){
+            string tmp_githubID = rnd_githubID.front();
+            rnd_githubID.pop_front();
+            string tmp2_content = PGP_m->Enc(this->jason.dump(), tmp_githubID);
+            SetBridge(g_km->Findip(tmp_githubID), tmp2_content);
+        }
+
+
+        // for debug
+//        ofstream wf("test111.txt");
+//        if(wf.is_open()){
+//            wf << this->jason.dump();
+//            wf.close();
+//        }
+    }
+
     void Message::SendMessage(){
         s_mutex.lock();
         qSendMsg.push(this->jason.dump());

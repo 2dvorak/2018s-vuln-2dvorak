@@ -67,6 +67,21 @@ namespace newkey{
             if(ip.compare(nodeIter->second->ip) == 0)
                 return nodeIter->first;
         }
+        return "";
+    }
+
+    list<string> Keymanager::ReturnRndGithubID(string githubID){
+        list<string> tmp_list;
+        for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
+            if( (githubID.compare(nodeIter->first) != 0) || (this->githubID.compare(nodeIter->first) != 0)){
+                tmp_list.push_back(nodeIter->first);
+            }
+        }
+        return tmp_list;
+    }
+
+    int Keymanager::ReturnCountMap(){
+        return nodeMap->size();
     }
 
     string Keymanager::ReturnPubkey(){
