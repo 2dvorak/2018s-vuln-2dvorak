@@ -52,7 +52,6 @@ namespace sockth{
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
-        cout << tmp << endl;
         string tmp_id = tmp.at("id").get<std::string>();
         string tmp_bullian = tmp.at("bullian").get<std::string>();
         if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("1") == 0) { // key alive
