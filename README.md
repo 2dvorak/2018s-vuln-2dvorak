@@ -6,8 +6,8 @@
 ### Abstract
 - PGP를 이용한 암호화된 메시지 송/수신
 - OnionRouting으로 중간단계에서 발신자, 수신자 익명화
--
--
+- 메신저 송/수신 경로 random 지정으로 익명성 강화
+- Docker에 생소한 사용자의 편의성 강화
 
 ### Protocol Design
 
@@ -20,13 +20,17 @@
 | githubID | sender id(마지막 메시지)  | sender id |
 | content| 암호화된 메시지 | sender Public Key |
 
-- 메시지를 JSON 형식으로 만들어 전송  
+- 메시지를 JSON 형식으로 만들어 전송
 ex) Message : ```{“id”:“1”, “bullian”:“0”, “recvip”:“172.0.0.3”,“content”:“<암호화된 메시지>”}```
 
 ### OnionRouting
-- ex) Message 전송순서 : A -> B -> C -> D
-
-![onion](./images/onion.jpg)
+- 메시지 전송 경로는 최대 5단계로 random 지정
+- 중간단계 송신자는 메시지 암호화로 내용 파악이 불가함   
+- ex) Message 전송순서가 A -> B -> C -> D 일 경우
+      OnionRouting은 다음과 같이 진행된다.
+  - 그림에서 B와 C는 A가 보낸 메시지를 알 수 없으며,
+    오직 D만 A가 보낸 메시지 내용 파악 가능         
+![onion](./images/onion.jpg)    
 
 ### Installation
 ~$_ : 현재 사용자의 명령 대기
@@ -46,13 +50,9 @@ $ curl -fsSL https://get.docker.com/ | sudo sh
 $ cd 2018s-onion-team3  
 $ ./AutoDocker.sh
 ```
-- 본인 비밀키 파일 설정하기
+- 본인 비밀키 파일 설정하기  
 testkey 폴더에 [Your id].key와 [Your id].pub를 넣어주기
-명령어는 다음과 같다.
-```
-$
-$
-```
+
 ### Usages
 ```
 # ./startMessenger.sh
@@ -74,6 +74,8 @@ Your passphrase :[YOUR passphrase]
 3. Exit
 
 메뉴 1.
+```
+
 ```
 
 ### Examples
