@@ -69,12 +69,13 @@ namespace sockth{
             tmp2 = json::parse(tmp_content);
             string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
-                r_mutex.lock();
+                std::unique_lock<std::mutex> lck(r_mutex);
+                //r_mutex.lock();
                 //original enqueue
                 //qRecvMsg.push(tmp_content);
                 string tmp2_sender = tmp2.at("githubID").get<std::string>();
                 string tmp2_content = tmp2.at("content").get<std::string>();
-                map<string,tuple<vector<string>*,int,time_t>>::iterator it = chatRoomMap->find(tmp2_sender);
+                map<string,tuple<vector<string>*,unsigned int,time_t>>::iterator it = chatRoomMap->find(tmp2_sender);
                 time_t now = time(NULL);
                 if(it == chatRoomMap->end()) {
                     vector<string>* newChatRoom = new std::vector<string>();
@@ -87,7 +88,8 @@ namespace sockth{
                     get<0>(it->second)->push_back(tmp2_sender + ": " + tmp2_content);
                     get<2>(it->second) = now;
                 }
-                r_mutex.unlock();
+                //r_mutex.unlock();
+                r_cv.notify_one();
             }
             else if( tmp2_bullian.compare("0") == 0){ // not my message
                 s_mutex.lock();
