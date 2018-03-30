@@ -21,10 +21,10 @@
 | content| 암호화된 메시지 | sender Public Key |
 
 - 메시지를 JSON 형식으로 만들어 전송  
-  - ex) 메시지 : ```{“id”:“1”, “bullian”:“0”, “recvip”:“172.0.0.3”,“content”:“<암호화된 메시지>”}```
+  - ex) 메시지 : ```{"id":"1", "bullian":"0", "recvip":"172.0.0.3","content":"<암호화된 메시지>"}```
 
 ### OnionRouting
-- 메시지 전송 경로는 최대 5단계로 random 지정
+- 메시지는 최대 5단계의 random path로 전송
 - 중간단계 송신자는 메시지 암호화로 내용 파악이 불가함   
 - Message 전송순서가 A -> B -> C -> D 일 경우 OnionRouting은 다음과 같이 진행된다.
   - 그림에서 B와 C는 A가 보낸 메시지를 알 수 없으며, 오직 D만 A가 보낸 메시지 내용 파악 가능        
@@ -32,9 +32,10 @@
 ![onion](./images/onion.jpg)    
 
 ### Installation
-~$_ : 현재 사용자의 명령 대기  
-~#_ : 슈퍼 유저의 명령 대기
-
+```
+$ : 현재 사용자의 명령 대기  
+# : 슈퍼 유저의 명령 대기
+```
 - 프로그램 파일 설치
 ```
 $ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
