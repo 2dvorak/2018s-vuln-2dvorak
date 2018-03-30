@@ -82,7 +82,7 @@ Your passphrase :[YOUR passphrase]
 ```
 > 1
  =====================
-githubA : 172.17.0.2
+2dvorak : 172.17.0.2
  =====================
 
 1. List
