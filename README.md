@@ -21,13 +21,13 @@
 | content| 암호화된 메시지 | sender Public Key |
 
 * 메시지를 JSON 형식으로 만들어 전송  
-  - 전송 중간 단계 메시지 example
-`{"id":"1", "bullian":"0","sendIP" : "", "recvip":"172.17.0.3","githubID":"","content":"<Encrypted Message>"}`
-  - 전송 마지막 단계 메시지 example
+  - 전송 중간 단계 메시지 example  
+  `{"id":"1", "bullian":"0","sendIP" : "", "recvip":"172.17.0.3","githubID":"","content":"<Encrypted Message>"}`
+  - 전송 마지막 단계 메시지 example  
 `{"id":"1","bullian":"1","sendIP" : "172.17.0.5","recvip":"172.17.0.3","githubID":"skyshiri","content":"Plantext Message"}`
-  - Key 전송 example
+  - Key 전송 example  
 `{"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}`
-  - Deauthentication example
+  - Deauthentication example  
 `{"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}`
 
 ### OnionRouting
