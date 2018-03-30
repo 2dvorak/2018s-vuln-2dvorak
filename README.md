@@ -20,8 +20,15 @@
 | githubID | sender id(마지막 메시지)  | sender id |
 | content| 암호화된 메시지 | sender Public Key |
 
-- 메시지를 JSON 형식으로 만들어 전송  
-  - ex) 메시지 : ```{"id":"1", "bullian":"0", "recvip":"172.0.0.3","content":"<암호화된 메시지>"}```
+* 메시지를 JSON 형식으로 만들어 전송  
+  - 전송 중간 단계 메시지 example
+`{"id":"1", "bullian":"0","sendIP" : "", "recvip":"172.17.0.3","githubID":"","content":"<Encrypted Message>"}`
+  - 전송 마지막 단계 메시지 example
+`{"id":"1","bullian":"1","sendIP" : "172.17.0.5","recvip":"172.17.0.3","githubID":"skyshiri","content":"Plantext Message"}`
+  - Key 전송 example
+`{"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}`
+  - Deauthentication example
+`{"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}`
 
 ### OnionRouting
 - 메시지는 최대 5단계의 random path로 전송
@@ -41,14 +48,22 @@ $ : 현재 사용자의 명령 대기
 $ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
 $ curl -fsSL https://get.docker.com/ | sudo sh
 $ cd 2018s-onion-team3  
-$ ./AutoDocker.sh
+$ gpg --armor --export [githubID] > [githubID].pub
+$ gpg --export-secret-keys -a [githubID] > [githubID].key
 ```
-- 메신저 암호화를 위한 본인 Key 설정  
-  - testkey 폴더에 [Your id].key와 [Your id].pub를 넣어주기
+- 메신저 암호화를 위한 본인 Key 설정
+   - testkey 폴더에 [Your id].key와 [Your id].pub를 넣어주기
+
+![testkey](./images/testkey.jpg)
+```
+# ./AutoDocker.sh
+```
 
 ### Usages
+- ./startMessenger.sh를 터미널 창에 입력하고,ID와 passphrase를 입력하면
+메신저에 접속된다.
 ```
-# ./startMessenger.sh
+#./startMessenger.sh
 Your Github ID :[YOUR id]
 Your passphrase :[YOUR passphrase]
 ██╗  ██╗███████╗██████╗
@@ -61,73 +76,29 @@ Your passphrase :[YOUR passphrase]
 2. Talk
 3. Exit
 ```
-메뉴 1.
-```
 
+- List
+  - 숫자 '1'을 터미널 창에 입력하면 채팅할 수 있는 상대방의 ID와 IP를 볼 수 있는 리스트가 나온다.
 ```
-
-### Examples
-- githubA user
-```
-██╗  ██╗███████╗██████╗
-██║  ██║██╔════╝██╔══██╗  
-███████║█████╗  ██████╔╝  
-██╔══██║██╔══╝  ██╔══██╗  
-██║  ██║███████╗██║  ██║  
-╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝  
-1. List
-2. Talk
-3. Exit
-> 1  
- === Your List! ===
-githubB : 172.17.0.2
- ==== Done! ====
-
-1. List
-2. Talk
-3. Exit
-> 2
-                             ┌────────────────────────────┐                             
-                             │ githubA                    │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             └────────────────────────────┘                             
-Her                                                                                      
-Me: hi                                                                                   
-githubB: Hello                                                                           
-Me: I am githubA                                                                         
-githubB: i am github B~                                                                  
-```
-
-- githubB user
-```
-██╗  ██╗███████╗██████╗
-██║  ██║██╔════╝██╔══██╗
-███████║█████╗  ██████╔╝
-██╔══██║██╔══╝  ██╔══██╗
-██║  ██║███████╗██║  ██║
-╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
-1. List
-2. Talk
-3. Exit
 > 1
- === Your List! ===
-githubA : 172.17.0.3
- ==== Done! ====
+ =====================
+githubA : 172.17.0.2
+ =====================
 
 1. List
 2. Talk
 3. Exit
+>
+```
+- Talk
+  - 숫자 '2'를 터미널 창에 입력하면 채팅이 가능한 리스트를 확인할 수 있다.
+  - 리스트에서 채팅할 대상자 ID를 화살표로 선택하고 엔터키를 누르면, 채팅이 가능하다.
+```
 > 2
-
                              ┌────────────────────────────┐                             
-                             │ githubA                    │                             
-                             │                            │                             
+                             │ skyshiri                   |
+                             │ githubB                    |     
+                             │ 2dvorak                    │                             
                              │                            │                             
                              │                            │                             
                              │                            │                             
@@ -135,12 +106,34 @@ githubA : 172.17.0.3
                              │                            │                             
                              │                            │                             
                              └────────────────────────────┘                             
+Her                                                            
 
-Her
-githubA: hi
-Me: Hello
-githubA: I am githubA
-Me: i am github B~
+
+Me: hi
+
+skyshiri: Hello  
+
+Me: I am sejin  
+
+2dvorak: I am 2dvorak
+```
+- Talk
+  - 채팅을 종료하고 싶다면 ESC키를 누른다.
+```
+1. List
+2. Talk
+3. Exit
+>
+```
+
+- Exit
+  - 숫자 '3'을 터미널 창에 입력하면 프로그램이 종료된다.
+```
+> 3
+Good Bye!
+f0b151349c7c
+skyshiri@ubuntu:~/team3$
+
 ```
 
 ### Environment
