@@ -59,6 +59,7 @@ namespace newmsg{
             randData.append(1,rand()%26 + 'a');
         }
         this->jason[randField.c_str()] = randData;
+        msgStr = tmp.dump();
     }
 
     void Message::EncMessage(string githubID){
