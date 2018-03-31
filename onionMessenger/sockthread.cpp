@@ -40,15 +40,30 @@ namespace sockth{
     }
 
     int Sockthread::RecvAll(int sockFd) {
-        char buffer[4096];
+        char buffer[4];
         int n;
-        memset(buffer, '\x00', 4096);
-        n = read(sockFd, buffer, 4096);
-        if(n < 0) {
-            perror("[KEY thread] Error reading socket\n");
-            return -1;
+        memset(buffer, '\x00', 4);
+        string msgStr = "";
+        while((n = read(sockFd, buffer, 4)) >= 0) {
+            if(n < 0) {
+                perror("[KEY thread] Error reading socket\n");
+                return -1;
+            }
+            if(n == 0) {
+                // check if json ended?
+                if(msgStr.find("}") == string::npos) {
+                    // error or rogue message
+                    return -1;
+                }
+            }
+            if(n > 0) {
+                msgStr += string(buffer);
+                if(msgStr.find("}") != string::npos) {
+                    break;
+                }
+            }
+            memset(buffer, '\x00', 4);
         }
-        string msgStr(buffer);
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
@@ -106,7 +121,6 @@ namespace sockth{
     int Sockthread::CreateRecvSocket() {
         int sockFd, newSockFd;
         socklen_t clientLen;
-        char buffer[256];
         struct sockaddr_in servAddr, cliAddr;
 
         // create socket
@@ -142,9 +156,6 @@ namespace sockth{
             }
             new std::thread(Sockthread::RecvAll, newSockFd);
         }
-
-        memset(buffer, '\x00', 256);
-
         close(sockFd);
         return 0;
     }
