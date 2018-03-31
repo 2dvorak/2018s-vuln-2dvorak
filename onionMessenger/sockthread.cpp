@@ -69,9 +69,28 @@ namespace sockth{
             tmp2 = json::parse(tmp_content);
             string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
+                //std::unique_lock<std::mutex> lck(r_mutex);
                 r_mutex.lock();
-                qRecvMsg.push(tmp_content);
+                //original enqueue
+                //qRecvMsg.push(tmp_content);
+                string tmp2_sender = tmp2.at("githubID").get<std::string>();
+                string tmp2_content = tmp2.at("content").get<std::string>();
+                map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(tmp2_sender);
+                time_t now = time(NULL);
+                if(it == chatRoomMap->end()) {
+                    vector<string>* newChatRoom = new std::vector<string>();
+                    // how about implementing something like g_km->AddMap();?
+
+                    // always insert to begin.
+                    // ACTUALLY, ALWAYS INSERT TO END, THEN ITERATE BACKWARDS.
+                    newChatRoom->push_back(tmp2_sender + ": " + tmp2_content);
+                    chatRoomMap->insert(pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
+                } else {
+                    get<0>(*(it->second))->push_back(tmp2_sender + ": " + tmp2_content);
+                    get<2>(*(it->second)) = now;
+                }
                 r_mutex.unlock();
+                //r_cv.notify_one();
             }
             else if( tmp2_bullian.compare("0") == 0){ // not my message
                 s_mutex.lock();
