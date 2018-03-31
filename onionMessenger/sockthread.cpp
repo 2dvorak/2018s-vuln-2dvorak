@@ -22,20 +22,6 @@ namespace sockth{
         json tmp;
         tmp = json::parse(msgStr);
         string destIP = tmp.at("recvip").get<std::string>();
-        struct timeval tp;
-        gettimeofday(&tp, NULL);
-        unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
-        srand(ms);
-        string randField = "", randData = "";
-        unsigned int lenField = rand() % 32, lenData = rand() % 2048;
-        for(unsigned int i = 0 ; i < lenField; i++) {
-            randField.append(1,rand()%26 + 'a');
-        }
-        for(unsigned int i = 0 ; i < 4096; i++) {
-            randData.append(1,rand()%26 + 'a');
-        }
-        tmp[randField.c_str()] = randData;
-        msgStr = tmp.dump();
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
         inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
@@ -76,6 +62,7 @@ namespace sockth{
             msgStr = msgStr.substr(0, msgStr.find("\"}") + 2);
 
         }
+        //cout << msgStr << endl;
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
