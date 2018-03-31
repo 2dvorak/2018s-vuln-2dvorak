@@ -300,6 +300,9 @@ namespace oniui{
         while(1) {
             int input = wgetch(win);
             if(input >= 0x20 && input <= 0x7e) {
+                if(curX == maxX - 1 && maxY == curInputLine + LOGO_HEIGHT) {
+                    continue;
+                }
                 typing.insert(curX, 1, input);
                 k_mutex.lock();
                 curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
