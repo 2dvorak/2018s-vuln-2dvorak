@@ -78,7 +78,7 @@ namespace PGPCrypt{
         fclose(pipe);
         // maybe regex better?
         int index = 0;
-        index = dec.find(g_km->ReturnGithubID(),index) + g_km->ReturnGithubID().size();
+        index = dec.find("\"\n");
         dec = dec.substr(index + 2); // line feed is 1 byte
         dec.erase(dec.begin()+dec.length()-1);
         dec = ReplaceAll(dec, std::string("\n"), std::string("\\n"));
