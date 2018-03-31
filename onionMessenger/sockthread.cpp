@@ -83,6 +83,7 @@ namespace sockth{
 
                     // always insert to begin.
                     // ACTUALLY, ALWAYS INSERT TO END, THEN ITERATE BACKWARDS.
+                    newChatRoom->push_back(tmp2_sender + ": " + tmp2_content);
                     chatRoomMap->insert(pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
                 } else {
                     get<0>(*(it->second))->push_back(tmp2_sender + ": " + tmp2_content);
