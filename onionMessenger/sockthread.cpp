@@ -69,8 +69,8 @@ namespace sockth{
             tmp2 = json::parse(tmp_content);
             string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
-                std::unique_lock<std::mutex> lck(r_mutex);
-                //r_mutex.lock();
+                //std::unique_lock<std::mutex> lck(r_mutex);
+                r_mutex.lock();
                 //original enqueue
                 //qRecvMsg.push(tmp_content);
                 string tmp2_sender = tmp2.at("githubID").get<std::string>();
@@ -88,8 +88,8 @@ namespace sockth{
                     get<0>(*(it->second))->push_back(tmp2_sender + ": " + tmp2_content);
                     get<2>(*(it->second)) = now;
                 }
-                //r_mutex.unlock();
-                r_cv.notify_one();
+                r_mutex.unlock();
+                //r_cv.notify_one();
             }
             else if( tmp2_bullian.compare("0") == 0){ // not my message
                 s_mutex.lock();

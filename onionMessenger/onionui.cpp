@@ -258,8 +258,17 @@ namespace oniui{
                 continue;
             }
             k_mutex.unlock();
-            std::unique_lock<std::mutex> lck(r_mutex);
-            r_cv.wait(lck, RecvAvailable);
+            // I'm not good at threads....
+            //std::unique_lock<std::mutex> lck(r_mutex);
+            //r_cv.wait(lck);
+            while(end_flag) {
+                r_mutex.lock();
+                if(RecvAvailable()) {
+                    r_mutex.unlock();
+                    break;
+                }
+                r_mutex.unlock();
+            }
             if(!end_flag) {
                 break;
             }
@@ -406,19 +415,24 @@ namespace oniui{
                 k_mutex.unlock();
                 break; //return;
             } else if(input == 10) {    // ENTER
-                k_mutex.lock();
+                r_mutex.lock();
                 msgList->push_back("Me: " + typing);
+                r_mutex.unlock();
                 //curY = msgList->size() + 1;
                 //curY += ( string("Me").length() + typing.length() + CHAT_DELIMETER ) / maxX;
+                k_mutex.lock();
                 curX = 0;
                 curInputLine = 1;
-                typing = "";
+
                 k_mutex.unlock();
-                PrintChat(win, githubID, maxY, maxX);
+
                 string tmp_ip = g_km->Findip(githubID);
                 msg->SetMessage(githubID, tmp_ip, typing);
                 msg->EncMessage(githubID);
                 msg->SendMessage();
+
+                typing = "";
+                PrintChat(win, githubID, maxY, maxX);
             } else if(input == KEY_BACKSPACE) {
                 if(typing.length() > 0 && curX > 0) {
                     typing.erase(curX - 1, 1);
