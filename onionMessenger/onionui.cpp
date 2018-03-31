@@ -193,10 +193,10 @@ namespace oniui{
     void OnionUI::PrintChat(WINDOW* win, string githubID, unsigned int maxY, unsigned int maxX) {
         k_mutex.lock();
         chatRoomIter = chatRoomMap->find(githubID);
-        if(chatRoomIter == chatRoomMap->end()) {
+        /*if(chatRoomIter == chatRoomMap->end()) {
             k_mutex.unlock();
             return;
-        }
+        }*/
         vector<string>* msgList = get<0>(*(chatRoomIter->second));
 
         if(get<1>(*(chatRoomIter->second)) < msgList->size()) { // recv thread recved or enter key(send) -> update screen
@@ -235,12 +235,13 @@ namespace oniui{
             get<1>(*(chatRoomIter->second)) = msgList->size();
         } else {
             if(chat.length() > maxX * (maxY - curInputLine - LOGO_HEIGHT)) {
-                mvwprintw(win, 0, 30, "chat length exceed by : %d", chat.length() - maxX * (maxY - curInputLine - LOGO_HEIGHT));
+                mvwprintw(win, 0, 50, "[DEBUG]chat length exceed by : %d", chat.length() - maxX * (maxY - curInputLine - LOGO_HEIGHT));
             }
         }
 
         wclear(win);
-        mvwprintw(win, 0, 0, "Her");
+        mvwprintw(win, 0, 0, "ChatRoom with ");
+        wprintw(win, githubID.c_str());
         mvwprintw(win, LOGO_HEIGHT, 0, chat.c_str());
         mvwprintw(win, maxY - curInputLine, 0, ">");
         wprintw(win, typing.c_str());
@@ -251,13 +252,14 @@ namespace oniui{
 
     void OnionUI::UIRecvThread(WINDOW* win, string githubID, unsigned int maxY, unsigned int maxX) {
         while(end_flag){
-            k_mutex.lock();
             chatRoomIter = chatRoomMap->find(githubID);
             if(chatRoomIter == chatRoomMap->end()) {
-                k_mutex.unlock();
-                continue;
+                r_mutex.lock();
+                vector<string>* newChatRoom = new std::vector<string>();
+                chatRoomMap->insert(chatRoomMap->begin(),pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
+                r_mutex.unlock();
             }
-            k_mutex.unlock();
+            chatRoomIter = chatRoomMap->find(githubID);
             // I'm not good at threads....
             //std::unique_lock<std::mutex> lck(r_mutex);
             //r_cv.wait(lck);
@@ -295,6 +297,8 @@ namespace oniui{
         curY = 1;
         curX = 0;
         curInputLine = 1;
+        //wclear(win);
+        //wrefresh(win);
         k_mutex.unlock();
         PrintChat(win, githubID, maxY, maxX);
         while(1) {
@@ -414,10 +418,31 @@ namespace oniui{
             } else if(input == 27) {    // ESC
                 k_mutex.lock();
                 end_flag = false;
+                chat = "";
                 wclear(win);
+                wrefresh(win);
                 k_mutex.unlock();
                 break; //return;
             } else if(input == 10) {    // ENTER
+                if(nodeMap->find(githubID) == nodeMap->end()) { // opponent disconnected
+                    k_mutex.lock();
+                    mvwprintw(win, maxY - curInputLine -1, 0, "!A SUMMONER HAS DISCONNECTED");
+                    for(unsigned int i = 0 ; i < maxX*curInputLine + maxX - string("!A SUMMONER HAS DISCONNECTED").length(); i++) {
+                        waddch(win, ' ');
+                    }
+                    mvwprintw(win, maxY - curInputLine, 0, "PRESS ESC TO FF THIS GAME");
+                    k_mutex.unlock();
+                    while(wgetch(win) != 27) {
+                        //do_nothing
+                    }
+                    k_mutex.lock();
+                    end_flag = false;
+                    chat = "";
+                    wclear(win);
+                    wrefresh(win);
+                    k_mutex.unlock();
+                    break;
+                }
                 r_mutex.lock();
                 msgList->push_back("Me: " + typing);
                 r_mutex.unlock();
