@@ -190,8 +190,9 @@ namespace oniui{
         }
     }
 
-    void OnionUI::PrintChat(WINDOW* win, unsigned int maxY, unsigned int maxX) {
+    void OnionUI::PrintChat(WINDOW* win, string githubID, unsigned int maxY, unsigned int maxX) {
         k_mutex.lock();
+        chatRoomIter = chatRoomMap->find(githubID);
         if(chatRoomIter == chatRoomMap->end()) {
             k_mutex.unlock();
             return;
@@ -263,7 +264,7 @@ namespace oniui{
                 break;
             }
             //curY = get<0>(chatRoomIter->second)->size() - 1;
-            PrintChat(win, maxY, maxX);
+            PrintChat(win, githubID, maxY, maxX);
         }
         wclear(win);
     }
@@ -286,7 +287,7 @@ namespace oniui{
         curX = 0;
         curInputLine = 1;
         k_mutex.unlock();
-        PrintChat(win, maxY, maxX);
+        PrintChat(win, githubID, maxY, maxX);
         while(1) {
             int input = wgetch(win);
             if(input >= 0x20 && input <= 0x7e) {
@@ -298,7 +299,7 @@ namespace oniui{
                 //wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
                 //wrefresh(win);
                 k_mutex.unlock();
-                PrintChat(win, maxY, maxX);
+                PrintChat(win, githubID, maxY, maxX);
             } else if(input == KEY_UP) {
                 k_mutex.lock();
                 if(curLineIndexUp > 0) {
@@ -347,7 +348,7 @@ namespace oniui{
                     }
                 }
                 k_mutex.unlock();
-                PrintChat(win, maxY, maxX);
+                PrintChat(win, githubID, maxY, maxX);
             } else if(input == KEY_DOWN) {
                 k_mutex.lock();
                 if(curLineIndexDown > 0) {
@@ -397,7 +398,7 @@ namespace oniui{
                     }
                 }
                 k_mutex.unlock();
-                PrintChat(win, maxY, maxX);
+                PrintChat(win, githubID, maxY, maxX);
             } else if(input == 27) {    // ESC
                 k_mutex.lock();
                 end_flag = false;
@@ -413,7 +414,7 @@ namespace oniui{
                 curInputLine = 1;
                 typing = "";
                 k_mutex.unlock();
-                PrintChat(win, maxY, maxX);
+                PrintChat(win, githubID, maxY, maxX);
                 string tmp_ip = g_km->Findip(githubID);
                 msg->SetMessage(githubID, tmp_ip, typing);
                 msg->EncMessage(githubID);
