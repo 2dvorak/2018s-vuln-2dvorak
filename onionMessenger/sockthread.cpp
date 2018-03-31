@@ -1,6 +1,7 @@
 
 #include "common.h"
 #include "sockthread.h"
+#include <sys/select.h>
 
 namespace sockth{
 
@@ -16,8 +17,8 @@ namespace sockth{
 
         int n;
         struct sockaddr_in servAddr;
-        const char* msg = msgStr.c_str();
-
+        //const char* msg = msgStr.c_str();
+        int bufSize = 4096;
         json tmp;
         tmp = json::parse(msgStr);
         string destIP = tmp.at("recvip").get<std::string>();
@@ -30,30 +31,93 @@ namespace sockth{
         if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             return -1;
         }
-        n = write(sockFd, msg, strlen(msg));
-        if( n < 0 ) {
-            perror("ERROR writing msg to socket\n");
-            return -1;
+        unsigned int iter = msgStr.length() / bufSize;
+        if(msgStr.length() % bufSize > 0) iter++;
+        for(unsigned int i = 0 ; i < iter ;i++) {
+            n = write(sockFd, msgStr.substr(i*bufSize,bufSize).c_str(), bufSize);
+            if( n < 0 ) {
+                perror("ERROR writing msg to socket\n");
+                cout << "ERROR writing msg to socket\n";
+                close(sockFd);
+                return -1;
+            }
         }
         close(sockFd);
         return 0;
     }
 
     int Sockthread::RecvAll(int sockFd) {
-        char buffer[4];
+        char buffer[4096];
         int n;
-        memset(buffer, '\x00', 4);
+        int bufSize = 4096;
+        memset(buffer, '\x00', bufSize);
         string msgStr = "";
-        while((n = read(sockFd, buffer, 4)) >= 0) {
+        //struct timeval timeout;
+        //int timeout = 1 * 1000;
+        //setsockopt(sockFd, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+        while((n = read(sockFd, buffer, bufSize)) > EOF) {
+            msgStr += string(buffer);
+            if(msgStr.find("\"}") != string::npos) break;
+            memset(buffer, '\x00', bufSize);
+        }
+        /*if(msgStr.find("\"}") != string::npos) {
+            close(sockFd);
+        }*/
+        /*fd_set set;
+        FD_ZERO(&set); // clear the set
+        FD_SET(sockFd, &set); // add our file descriptor to the set
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 5000;
+        while(true) {
+            int rv = select(sockFd + 1, &set, NULL, NULL, &timeout);
+            if (rv < 0)
+            {
+                // select error...
+                return -1;
+            }
+            else if (rv == 0)
+            {
+                // timeout, socket does not have anything to read
+                if(msgStr.find("\"}") != string::npos) {
+                    // error or rogue message
+                    break;
+                }
+            }
+            else
+            {
+                // socket has something to read
+                n = recv(sockFd, buffer, bufSize, 0);
+                if (n < 0)
+                {
+                    // read failed...
+                    return -1;
+                }
+                else if (n == 0)
+                {
+                    // peer disconnected...
+                    return -1;
+                }
+                else
+                {
+                    // read successful...
+                    msgStr += string(buffer);
+                    if(msgStr.find("\"}") != string::npos) {
+                        break;
+                    }
+                }
+                memset(buffer, '\x00', bufSize);
+            }
+        }*/
+        /*while((n = read(sockFd, buffer, 4)) >= 0) {
             if(n < 0) {
                 perror("[KEY thread] Error reading socket\n");
                 return -1;
             }
             if(n == 0) {
                 // check if json ended?
-                if(msgStr.find("}") == string::npos) {
+                if(msgStr.find("}") != string::npos) {
                     // error or rogue message
-                    return -1;
+                    break;
                 }
             }
             if(n > 0) {
@@ -63,7 +127,16 @@ namespace sockth{
                 }
             }
             memset(buffer, '\x00', 4);
+        }*/
+        if(msgStr.find("}") == string::npos) {
+            // error or rogue message
+            close(sockFd);
+            return -1;
+        } else {
+            msgStr = msgStr.substr(0, msgStr.find("\"}") + 2);
+            close(sockFd);
         }
+        cout << msgStr << endl;
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
@@ -114,7 +187,7 @@ namespace sockth{
             }
         }
 
-        close(sockFd);
+        //close(sockFd);
         return 0;
     }
 
