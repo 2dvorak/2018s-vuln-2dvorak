@@ -75,7 +75,7 @@ namespace sockth{
                 //qRecvMsg.push(tmp_content);
                 string tmp2_sender = tmp2.at("githubID").get<std::string>();
                 string tmp2_content = tmp2.at("content").get<std::string>();
-                map<string,tuple<vector<string>*,unsigned int,time_t>>::iterator it = chatRoomMap->find(tmp2_sender);
+                map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(tmp2_sender);
                 time_t now = time(NULL);
                 if(it == chatRoomMap->end()) {
                     vector<string>* newChatRoom = new std::vector<string>();
@@ -83,10 +83,10 @@ namespace sockth{
 
                     // always insert to begin.
                     // ACTUALLY, ALWAYS INSERT TO END, THEN ITERATE BACKWARDS.
-                    chatRoomMap->insert(map<string,tuple<vector<string>*,int,time_t>>::value_type(tmp2_sender, make_tuple(newChatRoom, 0, now)));
+                    chatRoomMap->insert(pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
                 } else {
-                    get<0>(it->second)->push_back(tmp2_sender + ": " + tmp2_content);
-                    get<2>(it->second) = now;
+                    get<0>(*(it->second))->push_back(tmp2_sender + ": " + tmp2_content);
+                    get<2>(*(it->second)) = now;
                 }
                 //r_mutex.unlock();
                 r_cv.notify_one();
