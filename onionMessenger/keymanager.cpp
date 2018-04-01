@@ -38,6 +38,10 @@ namespace newkey{
 
     // manage node
     void Keymanager::AddMap(string githubID, Nodeinfo* IPnPubKey){
+        // vector init
+        vector<string>* newChatRoom = new std::vector<string>();
+        chatRoomMap->insert(chatRoomMap->begin(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
+        //map addition
         nodeMap->insert(unordered_map<string, Nodeinfo*>::value_type(githubID, IPnPubKey));
     }
 

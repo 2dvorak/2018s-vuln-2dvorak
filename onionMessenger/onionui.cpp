@@ -83,26 +83,42 @@ namespace oniui{
                     y = 1;
                     wclear(listWin);
                     box(listWin, 0, 0);
-                    nodeIter = nodeMap->begin();
-                    if(curY > LISTWIN_HEIGHT - 2) {
-                        for( unsigned int j = 0 ; j < curY - (LISTWIN_HEIGHT - 2); j ++) {
-                            nodeIter++;
-                        }
-                    }
-                    for(int j = 0; nodeIter != nodeMap->end() && j < (LISTWIN_HEIGHT - 2) ; j++)
+                    chatRoomIter = chatRoomMap->begin();
+                    for(int j = 0; chatRoomIter != chatRoomMap->end() && j < (LISTWIN_HEIGHT - 2) ; j++)
                     {
 
-                        if(highlight == j + 1 + (curY - (LISTWIN_HEIGHT - 2))) /* High light the present choice */
+                        if(highlight == j + 1 + (curY - (LISTWIN_HEIGHT - 2))) // Highlight the present choice
                         {	wattron(listWin, A_REVERSE);
-                            mvwprintw(listWin, y, x, "%s", string(nodeIter->first).c_str());
-                            githubID = string(nodeIter->first);
+                            githubID = string(chatRoomIter->first);
+                            //mvwprintw(listWin, y, x - 1, " ");
+                            if(githubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                mvwprintw(listWin, y, x, "%s..", githubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                            } else {
+                                mvwprintw(listWin, y, x, "%s", githubID.c_str());
+                            }
+                            wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                            if(get<2>(*(chatRoomIter->second)) > 0) {
+                                string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                            }
                             wattroff(listWin, A_REVERSE);
                         }
-                        else
-                            mvwprintw(listWin, y, x, "%s", string(nodeIter->first).c_str());
+                        else {
+                            string tmpGithubID = string(chatRoomIter->first);
+                            if(githubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                mvwprintw(listWin, y, x, "%s..", tmpGithubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                            } else {
+                                mvwprintw(listWin, y, x, "%s", tmpGithubID.c_str());
+                            }
+                            wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                            if(get<2>(*(chatRoomIter->second)) > 0) {
+                                string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                            }
+                        }
                         i++;
                         ++y;
-                        nodeIter++;
+                        chatRoomIter++;
                     }
                     wrefresh(listWin);
                     if(choice != 0) break;
@@ -256,7 +272,7 @@ namespace oniui{
             if(chatRoomIter == chatRoomMap->end()) {
                 r_mutex.lock();
                 vector<string>* newChatRoom = new std::vector<string>();
-                chatRoomMap->insert(chatRoomMap->begin(),pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
+                chatRoomMap->insert(chatRoomMap->end(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
                 r_mutex.unlock();
             }
             chatRoomIter = chatRoomMap->find(githubID);
@@ -287,7 +303,7 @@ namespace oniui{
         if(chatRoomIter == chatRoomMap->end()) {
             r_mutex.lock();
             vector<string>* newChatRoom = new std::vector<string>();
-            chatRoomMap->insert(chatRoomMap->begin(),pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
+            chatRoomMap->insert(chatRoomMap->end(),pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
             r_mutex.unlock();
         }
         chatRoomIter = chatRoomMap->find(githubID);
@@ -442,8 +458,12 @@ namespace oniui{
                     break;
                 }
                 r_mutex.lock();
+                unordered_map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(githubID);
                 msgList->push_back("Me: " + typing);
-                get<2>(*(chatRoomMap->find(githubID)->second)) = time(NULL);
+                get<2>(*(it->second)) = time(NULL);
+                pair<string, tuple<vector<string>*,unsigned int,time_t>*> newEntry(*it);
+                chatRoomMap->erase(it);
+                chatRoomMap->insert(chatRoomMap->begin(), newEntry);
                 r_mutex.unlock();
                 //curY = msgList->size() + 1;
                 //curY += ( string("Me").length() + typing.length() + CHAT_DELIMETER ) / maxX;
