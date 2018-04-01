@@ -311,9 +311,6 @@ namespace oniui{
                 k_mutex.lock();
                 curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
                 curX++;
-                //mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, typing.c_str());
-                //wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX < maxX )? curX + CHAT_INPUTCHAR : curX % maxX + 1);
-                //wrefresh(win);
                 k_mutex.unlock();
                 PrintChat(win, githubID, maxY, maxX);
             } else if(input == KEY_UP) {
@@ -445,6 +442,7 @@ namespace oniui{
                 }
                 r_mutex.lock();
                 msgList->push_back("Me: " + typing);
+                get<2>(*(chatRoomMap->find(githubID)->second)) = time(NULL);
                 r_mutex.unlock();
                 //curY = msgList->size() + 1;
                 //curY += ( string("Me").length() + typing.length() + CHAT_DELIMETER ) / maxX;
@@ -460,6 +458,16 @@ namespace oniui{
                 msg->SendMessage();
 
                 typing = "";
+                PrintChat(win, githubID, maxY, maxX);
+            } else if(input == '\t') { // tab
+                if(curX >= maxX - 4 && maxY == curInputLine + LOGO_HEIGHT) {
+                    continue;
+                }
+                typing.insert(curX, 4, ' ');
+                k_mutex.lock();
+                curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
+                curX += 4;
+                k_mutex.unlock();
                 PrintChat(win, githubID, maxY, maxX);
             } else if(input == KEY_BACKSPACE) {
                 if(typing.length() > 0 && curX > 0) {

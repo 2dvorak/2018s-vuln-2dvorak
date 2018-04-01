@@ -46,6 +46,19 @@ namespace newmsg{
         this->jason["recvip"] = toip;
         this->jason["sendip"] = "";
         this->jason["content"] = contents;
+        struct timeval tp;
+        gettimeofday(&tp, NULL);
+        unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+        srand(ms);
+        string randField = "", randData = "";
+        unsigned int lenField = rand() % 32, lenData = rand() % 4096;
+        for(unsigned int i = 0 ; i < lenField; i++) {
+            randField.append(1,rand()%26 + 'a');
+        }
+        for(unsigned int i = 0 ; i < lenData; i++) {
+            randData.append(1,rand()%26 + 'a');
+        }
+        this->jason[randField.c_str()] = randData;
     }
 
     void Message::EncMessage(string githubID){
