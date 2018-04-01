@@ -19,6 +19,7 @@
 #include <termios.h>
 #include <random>
 #include <fstream>
+#include <set>
 #include <condition_variable>
 #include <sys/time.h>
 #include <list>

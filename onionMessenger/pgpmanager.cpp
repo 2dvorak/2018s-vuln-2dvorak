@@ -1,6 +1,7 @@
 #include "pgpmanager.h"
 #include "common.h"
 #include <fstream>
+#include <regex>
 
 namespace PGPCrypt{
 
@@ -49,6 +50,9 @@ namespace PGPCrypt{
         struct timeval tp;
         gettimeofday(&tp, NULL);
         unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+        std::regex e("gpg:\\sencrypted\\swith\\s\\d+-bit\\sRSA\\skey,\\sID\\s[\\w\\d]+,\\screated\\s\\d\\d\\d\\d-\\d\\d-\\d\\d\\n\\s+\".*?\"\\n");
+        std::smatch m;
+
         // srand(time(NULL));   // nope, time() is not enough
         srand(ms);
         for(int i = 0 ; i < 10 ; i++) {
@@ -78,8 +82,18 @@ namespace PGPCrypt{
         fclose(pipe);
         // maybe regex better?
         int index = 0;
-        index = dec.find("\"\n");
-        dec = dec.substr(index + 2); // line feed is 1 byte
+        //index = dec.find("\"\n");
+        //dec = dec.substr(index + 2); // line feed is 1 byte
+        auto it = std::sregex_iterator(dec.begin(), dec.end(), e);
+        for (; it != std::sregex_iterator();
+              ++it) {
+            for (auto elem : *it) {
+                index = it->position() + elem.length();
+                //cout << elem << endl;
+            }
+
+        }
+        dec = dec.substr(index);
         dec.erase(dec.begin()+dec.length()-1);
         dec = ReplaceAll(dec, std::string("\n"), std::string("\\n"));
         return dec;
