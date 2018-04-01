@@ -442,6 +442,7 @@ namespace oniui{
                 }
                 r_mutex.lock();
                 msgList->push_back("Me: " + typing);
+                get<2>(*(chatRoomMap->find(githubID)->second)) = time(NULL);
                 r_mutex.unlock();
                 //curY = msgList->size() + 1;
                 //curY += ( string("Me").length() + typing.length() + CHAT_DELIMETER ) / maxX;
