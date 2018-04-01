@@ -90,6 +90,7 @@ namespace sockth{
                 string tmp2_sender = tmp2.at("githubID").get<std::string>();
                 string tmp2_content = tmp2.at("content").get<std::string>();
                 map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(tmp2_sender);
+                //map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator itTemp = it;
                 time_t now = time(NULL);
                 if(it == chatRoomMap->end()) {
                     vector<string>* newChatRoom = new std::vector<string>();
@@ -98,10 +99,13 @@ namespace sockth{
                     // always insert to begin.
                     // ACTUALLY, ALWAYS INSERT TO END, THEN ITERATE BACKWARDS.
                     newChatRoom->push_back(tmp2_sender + ": " + tmp2_content);
-                    chatRoomMap->insert(pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
+                    chatRoomMap->insert(chatRoomMap->begin(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
                 } else {
                     get<0>(*(it->second))->push_back(tmp2_sender + ": " + tmp2_content);
                     get<2>(*(it->second)) = now;
+                    pair<string, tuple<vector<string>*,unsigned int,time_t>*> newEntry(*it);
+                    chatRoomMap->erase(it);
+                    chatRoomMap->insert(chatRoomMap->end(), newEntry);
                 }
                 r_mutex.unlock();
                 //r_cv.notify_one();
