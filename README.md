@@ -52,20 +52,20 @@ $ : 현재 사용자의 명령 대기
 $ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
 $ curl -fsSL https://get.docker.com/ | sudo sh
 $ cd 2018s-onion-team3
+```
+- Put [Your ID].key, [Your ID].pub in testkey directory
+```
 $ cd testkey  
 $ gpg --armor --export [githubID] > [githubID].pub
 $ gpg --export-secret-keys -a [githubID] > [githubID].key
 ```
-- 메신저 암호화를 위한 본인 Key 설정
-   - testkey 폴더에 [Your id].key와 [Your id].pub를 넣어주기
-
-![testkey](./images/testkey.jpg)
+- Docker 설정
 ```
 # ./AutoDocker.sh
 ```
 
 ### Usages
-- ./startMessenger.sh를 터미널 창에 입력하고,ID와 passphrase를 입력하면
+- ./startMessenger.sh를 터미널 창에 입력하고, ID와 passphrase를 입력하면
 메신저에 접속된다.
 ```
 #./startMessenger.sh
