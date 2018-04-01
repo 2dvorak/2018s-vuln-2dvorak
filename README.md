@@ -159,6 +159,7 @@ skyshiri@ubuntu:~/team3$
 |  SeJin Jeong    |   팀원   |Sockthread.cpp 함수 개발, README.md 작성 |
 
 ### Insight
+![insight](./images/insight.jpg)
 
 ### Reference
  - https://github.com/nlohmann/json
