@@ -1,6 +1,7 @@
 
 #include "common.h"
 #include "sockthread.h"
+#include <sys/select.h>
 
 namespace sockth{
 
@@ -16,13 +17,11 @@ namespace sockth{
 
         int n;
         struct sockaddr_in servAddr;
-        const char* msg = msgStr.c_str();
-
+        //const char* msg = msgStr.c_str();
+        int bufSize = 4096;
         json tmp;
         tmp = json::parse(msgStr);
         string destIP = tmp.at("recvip").get<std::string>();
-
-
         memset((char *) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
         inet_pton(AF_INET, destIP.c_str(), &servAddr.sin_addr);
@@ -30,25 +29,40 @@ namespace sockth{
         if( connect(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             return -1;
         }
-        n = write(sockFd, msg, strlen(msg));
-        if( n < 0 ) {
-            perror("ERROR writing msg to socket\n");
-            return -1;
+        unsigned int iter = msgStr.length() / bufSize;
+        if(msgStr.length() % bufSize > 0) iter++;
+        for(unsigned int i = 0 ; i < iter ;i++) {
+            n = write(sockFd, msgStr.substr(i*bufSize,bufSize).c_str(), bufSize);
+            if( n < 0 ) {
+                perror("ERROR writing msg to socket\n");
+                close(sockFd);
+                return -1;
+            }
         }
         close(sockFd);
         return 0;
     }
 
     int Sockthread::RecvAll(int sockFd) {
-        char buffer[4096];
+        char buffer[4097];
         int n;
-        memset(buffer, '\x00', 4096);
-        n = read(sockFd, buffer, 4096);
-        if(n < 0) {
-            perror("[KEY thread] Error reading socket\n");
-            return -1;
+        int bufSize = 4096;
+        memset(buffer, '\x00', bufSize + 1);
+        string msgStr = "";
+        while((n = read(sockFd, buffer, bufSize)) > EOF) {
+            msgStr.append(string(buffer).substr(0,4096));
+            if(msgStr.find("\"}") != string::npos) break;
+            memset(buffer, '\x00', bufSize + 1);
         }
-        string msgStr(buffer);
+        close(sockFd);
+        if(msgStr.find("}") == string::npos) {
+            // error or rogue message?
+            return -1;
+        } else {
+            msgStr = msgStr.substr(0, msgStr.find("\"}") + 2);
+
+        }
+        //cout << msgStr << endl;
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
@@ -69,9 +83,28 @@ namespace sockth{
             tmp2 = json::parse(tmp_content);
             string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
+                //std::unique_lock<std::mutex> lck(r_mutex);
                 r_mutex.lock();
-                qRecvMsg.push(tmp_content);
+                //original enqueue
+                //qRecvMsg.push(tmp_content);
+                string tmp2_sender = tmp2.at("githubID").get<std::string>();
+                string tmp2_content = tmp2.at("content").get<std::string>();
+                map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(tmp2_sender);
+                time_t now = time(NULL);
+                if(it == chatRoomMap->end()) {
+                    vector<string>* newChatRoom = new std::vector<string>();
+                    // how about implementing something like g_km->AddMap();?
+
+                    // always insert to begin.
+                    // ACTUALLY, ALWAYS INSERT TO END, THEN ITERATE BACKWARDS.
+                    newChatRoom->push_back(tmp2_sender + ": " + tmp2_content);
+                    chatRoomMap->insert(pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
+                } else {
+                    get<0>(*(it->second))->push_back(tmp2_sender + ": " + tmp2_content);
+                    get<2>(*(it->second)) = now;
+                }
                 r_mutex.unlock();
+                //r_cv.notify_one();
             }
             else if( tmp2_bullian.compare("0") == 0){ // not my message
                 s_mutex.lock();
@@ -80,14 +113,13 @@ namespace sockth{
             }
         }
 
-        close(sockFd);
+        //close(sockFd);
         return 0;
     }
 
     int Sockthread::CreateRecvSocket() {
         int sockFd, newSockFd;
         socklen_t clientLen;
-        char buffer[256];
         struct sockaddr_in servAddr, cliAddr;
 
         // create socket
@@ -123,9 +155,6 @@ namespace sockth{
             }
             new std::thread(Sockthread::RecvAll, newSockFd);
         }
-
-        memset(buffer, '\x00', 256);
-
         close(sockFd);
         return 0;
     }

@@ -13,6 +13,7 @@ namespace oniui{
         virtual ~OnionUI();
         static void MainUI();
 
+        static void PrintChat(WINDOW*, string, unsigned int ,unsigned int);
         static void UISendThread(WINDOW*, string,unsigned int ,unsigned int);
         static void UIRecvThread(WINDOW*, string,unsigned int ,unsigned int);
 

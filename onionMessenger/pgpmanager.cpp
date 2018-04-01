@@ -48,7 +48,7 @@ namespace PGPCrypt{
         string randomFile = "";
         struct timeval tp;
         gettimeofday(&tp, NULL);
-        long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+        unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
         // srand(time(NULL));   // nope, time() is not enough
         srand(ms);
         for(int i = 0 ; i < 10 ; i++) {
@@ -61,9 +61,9 @@ namespace PGPCrypt{
         }
         int c;
         // gpg --passphrase "myPassphrase" --decrypt file
-        string command = "gpg --passphrase \"";
+        string command = "gpg --passphrase '";
         command.append(this->passPhrase);
-        command.append("\" --decrypt ");
+        command.append("' --decrypt ");
         command.append(randomFile);
         command.append(" 2>&1");
         command.append(";rm "+randomFile);
@@ -78,7 +78,7 @@ namespace PGPCrypt{
         fclose(pipe);
         // maybe regex better?
         int index = 0;
-        index = dec.find(g_km->ReturnGithubID(),index) + g_km->ReturnGithubID().size();
+        index = dec.find("\"\n");
         dec = dec.substr(index + 2); // line feed is 1 byte
         dec.erase(dec.begin()+dec.length()-1);
         dec = ReplaceAll(dec, std::string("\n"), std::string("\\n"));

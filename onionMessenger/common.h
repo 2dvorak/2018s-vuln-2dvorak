@@ -19,6 +19,7 @@
 #include <termios.h>
 #include <random>
 #include <fstream>
+#include <condition_variable>
 #include <sys/time.h>
 #include <list>
 
@@ -37,12 +38,16 @@ using json = nlohmann::json;
 extern unordered_map<string, newkey::Nodeinfo*>* nodeMap;
 extern unordered_map<string, newkey::Nodeinfo*>::iterator nodeIter;
 
+extern map<string, tuple<vector<string>*, unsigned int, time_t>*>* chatRoomMap;
+extern map<string, tuple<vector<string>*, unsigned int, time_t>*>::iterator chatRoomIter;
+
 // global queues
 extern queue<string> qSendMsg;
 extern queue<string> qRecvMsg;
 extern string MyIP;
 extern mutex s_mutex;
 extern mutex r_mutex;
+extern std::condition_variable r_cv;
 extern mutex k_mutex;
 extern newkey::Keymanager *g_km;
 extern PGPCrypt::PGPManager *PGP_m;
@@ -51,5 +56,9 @@ extern PGPCrypt::PGPManager *PGP_m;
 void UsageMessenger();
 void CheckPW();
 void CheckIP();
+
+// Thread wait
+bool RecvAvailable();
+bool SendAvailable();
 
 #endif // COMMON_H
