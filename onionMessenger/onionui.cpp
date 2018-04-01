@@ -199,7 +199,7 @@ namespace oniui{
         }*/
         vector<string>* msgList = get<0>(*(chatRoomIter->second));
 
-        if(get<1>(*(chatRoomIter->second)) < msgList->size()) { // recv thread recved or enter key(send) -> update screen
+        if(get<1>(*(chatRoomIter->second)) < msgList->size() || curIndexUp == -2) { // recv thread recved or enter key(send) -> update screen
             chat = "";
             int index = msgList->size() - 1;
             while(chat.length() < maxX * (maxY - curInputLine - LOGO_HEIGHT) && index > -1) {
@@ -297,6 +297,7 @@ namespace oniui{
         curY = 1;
         curX = 0;
         curInputLine = 1;
+        curIndexUp = -2;
         //wclear(win);
         //wrefresh(win);
         k_mutex.unlock();
