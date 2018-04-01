@@ -460,7 +460,7 @@ namespace oniui{
                 r_mutex.lock();
                 unordered_map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(githubID);
                 msgList->push_back("Me: " + typing);
-                get<2>(*(it->second)) = time(NULL);
+                get<2>(*(it->second)) = time(NULL) + 32400; // korean time zone
                 pair<string, tuple<vector<string>*,unsigned int,time_t>*> newEntry(*it);
                 chatRoomMap->erase(it);
                 chatRoomMap->insert(chatRoomMap->begin(), newEntry);
@@ -473,11 +473,26 @@ namespace oniui{
 
                 k_mutex.unlock();
 
-                string tmp_ip = g_km->Findip(githubID);
-                msg->SetMessage(g_km->ReturnGithubID(), tmp_ip, typing);
-                msg->EncMessage(githubID);
-                msg->SendMessage();
-
+                if(githubID.at(0) == '-') {
+                    int start = 1, end = 0;
+                    while(githubID.find('=', start) != string::npos) {
+                        end = githubID.find('=', start);
+                        if(nodeMap->find(githubID.substr(start, end)) == nodeMap->end()) {
+                            start = end + 1;
+                            continue;
+                        }
+                        string tmp_ip = g_km->Findip(githubID.substr(start, end));
+                        msg->SetMessage(g_km->ReturnGithubID(), tmp_ip, typing);
+                        msg->EncMessage(githubID);
+                        msg->SendMessage();
+                        start = end + 1;
+                    }
+                } else {
+                    string tmp_ip = g_km->Findip(githubID);
+                    msg->SetMessage(g_km->ReturnGithubID(), tmp_ip, typing);
+                    msg->EncMessage(githubID);
+                    msg->SendMessage();
+                }
                 typing = "";
                 PrintChat(win, githubID, maxY, maxX);
             } else if(input == '\t') { // tab

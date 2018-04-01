@@ -91,7 +91,7 @@ namespace sockth{
                 string tmp2_content = tmp2.at("content").get<std::string>();
                 unordered_map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(tmp2_sender);
                 //map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator itTemp = it;
-                time_t now = time(NULL);
+                time_t now = time(NULL) + 32400;    // korean time zone
                 if(it == chatRoomMap->end()) {
                     vector<string>* newChatRoom = new std::vector<string>();
                     // how about implementing something like g_km->AddMap();?

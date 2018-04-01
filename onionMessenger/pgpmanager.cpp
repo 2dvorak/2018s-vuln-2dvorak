@@ -87,16 +87,12 @@ namespace PGPCrypt{
         auto it = std::sregex_iterator(dec.begin(), dec.end(), e);
         for (; it != std::sregex_iterator();
               ++it) {
-            //for (auto x:m) std::cout << x << " ";
-            //std::cout << std::endl;
-            //s = m.suffix().str();
             for (auto elem : *it) {
                 index = it->position() + elem.length();
                 //cout << elem << endl;
             }
 
         }
-        //std::regex_match ( dec, m, e );
         dec = dec.substr(index);
         dec.erase(dec.begin()+dec.length()-1);
         dec = ReplaceAll(dec, std::string("\n"), std::string("\\n"));
