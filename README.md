@@ -1,12 +1,14 @@
 # HER Messenger - Team3
 
 ### HER messenger
-- 빠르고 안전해 믿고 쓰는 HER 메신저!
+- 빠르고 안전해 믿고 쓰는 HER 메신저
+- 새로운 메시지가 왔을 때 메시지 개수 표시 기능
+- OnionRouting에서 padding을 통한 익명성 강화
 
 ### Abstract
 - PGP를 이용한 암호화된 메시지 송/수신
 - OnionRouting으로 중간단계에서 발신자, 수신자 익명화
-- 메신저 송/수신 경로 random 지정으로 익명성 강화
+- 메신저 송/수신 경로 random 지정
 - Docker에 생소한 사용자의 편의성 강화
 
 ### Protocol Design
