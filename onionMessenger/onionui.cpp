@@ -89,6 +89,7 @@ namespace oniui{
                 curY = LISTWIN_HEIGHT - 2;
                 std::set<string, bool(*)(const string &lhs, const string &rhs)> myGroup(&strCmp);
                 while(1) {
+                    listLen = chatRoomMap->size();
                     int x, y, i = 0;
                     x = 2;
                     y = 1;
