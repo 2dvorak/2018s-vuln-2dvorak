@@ -61,9 +61,9 @@ namespace PGPCrypt{
         }
         int c;
         // gpg --passphrase "myPassphrase" --decrypt file
-        string command = "gpg --passphrase \"";
+        string command = "gpg --passphrase '";
         command.append(this->passPhrase);
-        command.append("\" --decrypt ");
+        command.append("' --decrypt ");
         command.append(randomFile);
         command.append(" 2>&1");
         command.append(";rm "+randomFile);
