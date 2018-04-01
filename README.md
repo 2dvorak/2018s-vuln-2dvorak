@@ -20,15 +20,17 @@
 | githubID | sender id(마지막 메시지)  | sender id |
 | content| 암호화된 메시지 | sender Public Key |
 
-* 메시지를 JSON 형식으로 만들어 전송  
-  - 전송 중간 단계 메시지 example  
-  `{"id":"1", "bullian":"0","sendIP" : "", "recvip":"172.17.0.3","githubID":"","content":"<Encrypted Message>"}`
-  - 전송 마지막 단계 메시지 example  
-`{"id":"1","bullian":"1","sendIP" : "172.17.0.5","recvip":"172.17.0.3","githubID":"skyshiri","content":"Plantext Message"}`
-  - Key 전송 example  
-`{"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}`
-  - Deauthentication example  
-`{"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}`
+- 메시지를 JSON 형식으로 만들어 전송  
+```
+- 전송 중간 단계 메시지 example  
+ {"id":"1", "bullian":"0","sendIP" : "", "recvip":"172.17.0.3","githubID":"","content":"<Encrypted Message>"}
+- 전송 마지막 단계 메시지 example  
+ {"id":"1","bullian":"1","sendIP" : "172.17.0.5","recvip":"172.17.0.3","githubID":"skyshiri","content":"Plantext Message"}
+- Key 전송 example  
+ {"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
+- Deauthentication example  
+ {"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
+```
 
 ### OnionRouting
 - 메시지는 최대 5단계의 random path로 전송
@@ -47,7 +49,8 @@ $ : 현재 사용자의 명령 대기
 ```
 $ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
 $ curl -fsSL https://get.docker.com/ | sudo sh
-$ cd 2018s-onion-team3  
+$ cd 2018s-onion-team3
+$ cd testkey  
 $ gpg --armor --export [githubID] > [githubID].pub
 $ gpg --export-secret-keys -a [githubID] > [githubID].key
 ```
@@ -105,18 +108,18 @@ Your passphrase :[YOUR passphrase]
                              │                            │                             
                              │                            │                             
                              │                            │                             
-                             └────────────────────────────┘                             
+                             └────────────────────────────┘
+```
+```
 Her                                                            
 
 
 Me: hi
-
 skyshiri: Hello  
-
 Me: I am sejin  
-
-2dvorak: I am 2dvorak
+2dvorak: I am seungyeop
 ```
+
 - Talk
   - 채팅을 종료하고 싶다면 ESC키를 누른다.
 ```
