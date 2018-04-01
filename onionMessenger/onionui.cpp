@@ -22,6 +22,14 @@ unsigned int curInputLine = 1;
 string chat = "";
 string typing = "";
 bool end_flag = true;
+/*struct strCmp {
+    bool operator() (const string& lhs, const string& rhs) const {
+        return lhs < rhs;
+    }
+};*/
+bool strCmp(const string& rhs, const string& lhs) {
+    return lhs < rhs;
+}
 
 namespace oniui{
     OnionUI::OnionUI(){}
@@ -61,14 +69,16 @@ namespace oniui{
                 unsigned int highlight = 1;
                 unsigned int choice = 0;
                 int c;
-                unsigned int listLen = nodeMap->size();
+                unsigned int listLen = chatRoomMap->size();
                 initscr();
                 clear();
                 noecho();
                 //cbreak();
                 raw();
                 getmaxyx(stdscr, maxY, maxX);
-
+                //start_color();
+                //init_pair(1, COLOR_BLACK, COLOR_CYAN);
+                //init_pair(2, COLOR_CYAN, COLOR_BLACK);
                 listX = (maxX - LISTWIN_WIDTH) / 2;
                 listY = (maxY - LISTWIN_HEIGHT) / 2;
                 listWin = newwin(LISTWIN_HEIGHT, LISTWIN_WIDTH, listY, listX);
@@ -77,44 +87,150 @@ namespace oniui{
                 //scrollok(listWin, true);
                 wrefresh(listWin);
                 curY = LISTWIN_HEIGHT - 2;
+                std::set<string, bool(*)(const string &lhs, const string &rhs)> myGroup(&strCmp);
                 while(1) {
                     int x, y, i = 0;
                     x = 2;
                     y = 1;
                     wclear(listWin);
                     box(listWin, 0, 0);
+
                     chatRoomIter = chatRoomMap->begin();
                     for(int j = 0; chatRoomIter != chatRoomMap->end() && j < (LISTWIN_HEIGHT - 2) ; j++)
                     {
 
                         if(highlight == j + 1 + (curY - (LISTWIN_HEIGHT - 2))) // Highlight the present choice
-                        {	wattron(listWin, A_REVERSE);
+                        {
+
                             githubID = string(chatRoomIter->first);
-                            //mvwprintw(listWin, y, x - 1, " ");
-                            if(githubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
-                                mvwprintw(listWin, y, x, "%s..", githubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                            if(myGroup.find(githubID) != myGroup.end()) {
+                                mvwprintw(listWin, y, x - 1, "+");
+                                wattron(listWin, A_REVERSE | A_UNDERLINE);
+                                //mvwprintw(listWin, y, x - 1, " ");
+                                if(githubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3 ) {
+                                    mvwprintw(listWin, y, x, "%s..", githubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                                } else {
+                                    mvwprintw(listWin, y, x, "%s", githubID.c_str());
+                                }
+                                wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                                if(get<2>(*(chatRoomIter->second)) > 0) {
+                                    string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                    mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                                }
+                                wattroff(listWin, A_REVERSE | A_UNDERLINE);
+                            } else if(githubID.at(0) == '#') {
+                                wattron(listWin, A_REVERSE);
+                                mvwprintw(listWin, y, x, "[G]");
+                                unsigned int width = 3;
+                                set<string> tmpSet;
+                                unsigned long start = 1, end = 0;
+                                while((unsigned long)(end = githubID.find('#', start)) != string::npos) {
+                                    string tmpGithubID = githubID.substr(start, end - start);
+                                    if(tmpGithubID.compare(g_km->ReturnGithubID()) == 0) {
+                                        start = end + 1;
+                                        continue;
+                                    }
+                                    tmpSet.insert(tmpGithubID);
+                                    start = end + 1;
+                                }
+                                set<string>::iterator it = tmpSet.begin();
+                                wprintw(listWin, it->c_str());
+                                width += it->length();
+                                it++;
+                                for(;it != tmpSet.end();it++) {
+                                    if(width + it->length() + 2< LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                        wprintw(listWin, ", ");
+                                        wprintw(listWin, it->c_str());
+                                        width += it->length() + 2;
+                                    } else {
+                                        wprintw(listWin, "..");
+                                        break;
+                                    }
+                                }
+                                wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                                if(get<2>(*(chatRoomIter->second)) > 0) {
+                                    string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                    mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                                }
+                                wattroff(listWin, A_REVERSE);
                             } else {
-                                mvwprintw(listWin, y, x, "%s", githubID.c_str());
+                                wattron(listWin, A_REVERSE);
+                                //mvwprintw(listWin, y, x - 1, " ");
+                                if(githubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                    mvwprintw(listWin, y, x, "%s..", githubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                                } else {
+                                    mvwprintw(listWin, y, x, "%s", githubID.c_str());
+                                }
+                                wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                                if(get<2>(*(chatRoomIter->second)) > 0) {
+                                    string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                    mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                                }
+                                wattroff(listWin, A_REVERSE);
                             }
-                            wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
-                            if(get<2>(*(chatRoomIter->second)) > 0) {
-                                string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
-                                mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
-                            }
-                            wattroff(listWin, A_REVERSE);
                         }
                         else {
                             string tmpGithubID = string(chatRoomIter->first);
-                            if(githubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
-                                mvwprintw(listWin, y, x, "%s..", tmpGithubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
-                            } else {
-                                mvwprintw(listWin, y, x, "%s", tmpGithubID.c_str());
+                            if(myGroup.find(tmpGithubID) != myGroup.end()) {
+                                mvwprintw(listWin, y, x - 1, "+");
+                                wattron(listWin,A_UNDERLINE);
+                                if(tmpGithubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                    mvwprintw(listWin, y, x, "%s..", tmpGithubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                                } else {
+                                    mvwprintw(listWin, y, x, "%s", tmpGithubID.c_str());
+                                }
+                                wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                                if(get<2>(*(chatRoomIter->second)) > 0) {
+                                    string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                    mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                                }
+                                wattroff(listWin, A_UNDERLINE);
+                            } else if(tmpGithubID.at(0) == '#') {
+                                mvwprintw(listWin, y, x, "[G]");
+                                unsigned int width = 3;
+                                set<string> tmpSet;
+                                unsigned long start = 1, end = 0;
+                                while((unsigned long)(end = tmpGithubID.find('#', start)) != string::npos) {
+                                    string tmpGithubID2 = tmpGithubID.substr(start, end - start);
+                                    if(tmpGithubID2.compare(g_km->ReturnGithubID()) == 0) {
+                                        start = end + 1;
+                                        continue;
+                                    }
+                                    tmpSet.insert(tmpGithubID2);
+                                    start = end + 1;
+                                }
+                                set<string>::iterator it = tmpSet.begin();
+                                wprintw(listWin, it->c_str());
+                                width += it->length();
+                                it++;
+                                for(;it != tmpSet.end();it++) {
+                                    if(width + it->length() + 2< LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                        wprintw(listWin, ", ");
+                                        wprintw(listWin, it->c_str());
+                                        width += it->length() + 2;
+                                    } else {
+                                        wprintw(listWin, "..");
+                                        break;
+                                    }
+                                }
+                                wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                                if(get<2>(*(chatRoomIter->second)) > 0) {
+                                    string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                    mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                                }
+                            }else {
+                                if(tmpGithubID.length() > LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
+                                    mvwprintw(listWin, y, x, "%s..", tmpGithubID.substr(0,LISTWIN_WIDTH - 2 - 5 - 6 - 3 - 2).c_str());
+                                } else {
+                                    mvwprintw(listWin, y, x, "%s", tmpGithubID.c_str());
+                                }
+                                wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
+                                if(get<2>(*(chatRoomIter->second)) > 0) {
+                                    string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
+                                    mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
+                                }
                             }
-                            wprintw(listWin, " (%d) ", get<0>(*(chatRoomIter->second))->size() - get<1>(*(chatRoomIter->second)));
-                            if(get<2>(*(chatRoomIter->second)) > 0) {
-                                string timeStr = string(ctime(&get<2>(*(chatRoomIter->second))));
-                                mvwprintw(listWin, y, LISTWIN_WIDTH - 7, timeStr.substr(11,5).c_str());
-                            }
+
                         }
                         i++;
                         ++y;
@@ -163,6 +279,26 @@ namespace oniui{
                         choice = listLen + 1;
                         break;
                     }
+                    case '+':
+                    {
+                        if(githubID.at(0) == '#') continue;
+                        if(myGroup.find(githubID) != myGroup.end()) {
+                            myGroup.erase(githubID);
+                        } else {
+                            myGroup.insert(githubID);
+                        }
+                        continue;
+                    }
+                    case 330:
+                    {
+                        chatRoomIter = chatRoomMap->find(githubID);
+                        if(chatRoomIter != chatRoomMap->end()) {
+                            delete(get<0>(*(chatRoomIter->second)));
+                            delete(chatRoomIter->second);
+                            chatRoomMap->erase(githubID);
+                        }
+                        continue;
+                    }
                     default:
                     {
                         refresh();
@@ -180,10 +316,25 @@ namespace oniui{
                     noecho();
                     wrefresh(chatWin);
                     end_flag = true;
-                    std::thread t1(OnionUI::UIRecvThread, chatWin, githubID, maxY, maxX);
-                    std::thread t2(OnionUI::UISendThread, chatWin, githubID, maxY, maxX);
-                    t1.join();
-                    if(t2.joinable()) t2.join();
+                    if(myGroup.size() >0) {
+                        string groupChatID = "#";
+                        myGroup.insert(g_km->ReturnGithubID());
+                        std::set<string, bool(*)(const string &lhs, const string &rhs)>::iterator it = myGroup.begin();
+                        for(;it != myGroup.end(); it++) {
+                            groupChatID.append(*it);
+                            groupChatID.append("#");
+                        }
+                        groupChatID.append("--");
+                        std::thread t1(OnionUI::UIRecvThread, chatWin, groupChatID, maxY, maxX);
+                        std::thread t2(OnionUI::UISendThread, chatWin, groupChatID, maxY, maxX);
+                        t1.join();
+                        if(t2.joinable()) t2.join();
+                    } else {
+                        std::thread t1(OnionUI::UIRecvThread, chatWin, githubID, maxY, maxX);
+                        std::thread t2(OnionUI::UISendThread, chatWin, githubID, maxY, maxX);
+                        t1.join();
+                        if(t2.joinable()) t2.join();
+                    }
                     wclear(chatWin);
                     wrefresh(chatWin);
                     delwin(chatWin);
@@ -256,8 +407,38 @@ namespace oniui{
         }
 
         wclear(win);
-        mvwprintw(win, 0, 0, "ChatRoom with ");
-        wprintw(win, githubID.c_str());
+        if(githubID.at(0) == '#') {
+            mvwprintw(win, 0, 0, "GroupChat with ");
+            set<string> tmpSet;
+            unsigned int width = 0;
+            unsigned long start = 1, end = 0;
+            while((unsigned long)(end = githubID.find('#', start)) != string::npos) {
+                string tmpGithubID = githubID.substr(start, end - start);
+                if(tmpGithubID.compare(g_km->ReturnGithubID()) == 0) {
+                    start = end + 1;
+                    continue;
+                }
+                tmpSet.insert(tmpGithubID);
+                start = end + 1;
+            }
+            set<string>::iterator it = tmpSet.begin();
+            wprintw(win, it->c_str());
+            width += it->length();
+            it++;
+            for(;it != tmpSet.end();it++) {
+                if(width + it->length() + 2< maxX) {
+                    wprintw(win, ", ");
+                    wprintw(win, it->c_str());
+                    width += it->length() + 2;
+                } else {
+                    wprintw(win, "..");
+                    break;
+                }
+            }
+        } else {
+            mvwprintw(win, 0, 0, "ChatRoom with ");
+            wprintw(win, githubID.c_str());
+        }
         mvwprintw(win, LOGO_HEIGHT, 0, chat.c_str());
         mvwprintw(win, maxY - curInputLine, 0, ">");
         wprintw(win, typing.c_str());
@@ -438,7 +619,7 @@ namespace oniui{
                 k_mutex.unlock();
                 break; //return;
             } else if(input == 10) {    // ENTER
-                if(nodeMap->find(githubID) == nodeMap->end()) { // opponent disconnected
+                if(nodeMap->find(githubID) == nodeMap->end() && githubID.at(0) != '#') { // opponent disconnected
                     k_mutex.lock();
                     mvwprintw(win, maxY - curInputLine -1, 0, "!A SUMMONER HAS DISCONNECTED");
                     for(unsigned int i = 0 ; i < maxX*curInputLine + maxX - string("!A SUMMONER HAS DISCONNECTED").length(); i++) {
@@ -473,17 +654,18 @@ namespace oniui{
 
                 k_mutex.unlock();
 
-                if(githubID.at(0) == '-') {
+                if(githubID.at(0) == '#') {
                     int start = 1, end = 0;
-                    while(githubID.find('=', start) != string::npos) {
-                        end = githubID.find('=', start);
-                        if(nodeMap->find(githubID.substr(start, end)) == nodeMap->end()) {
+                    while(githubID.find('#', start) != string::npos) {
+                        end = githubID.find('#', start);
+                        string tmpGithubID = githubID.substr(start, end - start);
+                        if(nodeMap->find(tmpGithubID) == nodeMap->end()) {
                             start = end + 1;
                             continue;
                         }
-                        string tmp_ip = g_km->Findip(githubID.substr(start, end));
-                        msg->SetMessage(g_km->ReturnGithubID(), tmp_ip, typing);
-                        msg->EncMessage(githubID);
+                        string tmp_ip = g_km->Findip(tmpGithubID);
+                        msg->SetMessage(githubID, tmp_ip, typing);
+                        msg->EncMessage(tmpGithubID);
                         msg->SendMessage();
                         start = end + 1;
                     }
@@ -560,6 +742,7 @@ namespace oniui{
     }
 
     void OnionUI::Init(){
+        std::system("clear");
         cout << onionlogo;
     }
 
