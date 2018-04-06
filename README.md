@@ -67,6 +67,8 @@ $ gpg --export-secret-keys -a [githubID] > [githubID].key
 ### Usages
 - ./startMessenger.sh를 터미널 창에 입력하고, ID와 passphrase를 입력하면
 메신저에 접속된다.
+- 디버깅을 위한 testkey pw 제공 : githubA/githubAPW, githubB/githubBPW ... 
+
 ```
 #./startMessenger.sh
 Your Github ID :[YOUR id]
