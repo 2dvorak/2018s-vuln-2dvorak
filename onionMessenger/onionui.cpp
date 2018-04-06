@@ -135,13 +135,15 @@ namespace oniui{
                                     start = end + 1;
                                 }
                                 set<string>::iterator it = tmpSet.begin();
-                                wprintw(listWin, it->c_str());
+                                // XXX: FSB
+                                wprintw(listWin, "%s", it->c_str());
                                 width += it->length();
                                 it++;
                                 for(;it != tmpSet.end();it++) {
                                     if(width + it->length() + 2< LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
                                         wprintw(listWin, ", ");
-                                        wprintw(listWin, it->c_str());
+                                        // XXX: FSB
+                                        wprintw(listWin, "%s", it->c_str());
                                         width += it->length() + 2;
                                     } else {
                                         wprintw(listWin, "..");
@@ -201,13 +203,15 @@ namespace oniui{
                                     start = end + 1;
                                 }
                                 set<string>::iterator it = tmpSet.begin();
-                                wprintw(listWin, it->c_str());
+                                // XXX: FSB
+                                wprintw(listWin, "%s", it->c_str());
                                 width += it->length();
                                 it++;
                                 for(;it != tmpSet.end();it++) {
                                     if(width + it->length() + 2< LISTWIN_WIDTH - 2 - 5 - 6 - 3) {
                                         wprintw(listWin, ", ");
-                                        wprintw(listWin, it->c_str());
+                                        // XXX: FSB
+                                        wprintw(listWin, "%s", it->c_str());
                                         width += it->length() + 2;
                                     } else {
                                         wprintw(listWin, "..");
@@ -423,13 +427,15 @@ namespace oniui{
                 start = end + 1;
             }
             set<string>::iterator it = tmpSet.begin();
-            wprintw(win, it->c_str());
+            // XXX: FSB
+            wprintw(win, "%s", it->c_str());
             width += it->length();
             it++;
             for(;it != tmpSet.end();it++) {
                 if(width + it->length() + 2< maxX) {
                     wprintw(win, ", ");
-                    wprintw(win, it->c_str());
+                    // XXX: FSB
+                    wprintw(win, "%s", it->c_str());
                     width += it->length() + 2;
                 } else {
                     wprintw(win, "..");
@@ -438,11 +444,15 @@ namespace oniui{
             }
         } else {
             mvwprintw(win, 0, 0, "ChatRoom with ");
-            wprintw(win, githubID.c_str());
+
+            // XXX: FSB
+            wprintw(win, "%s", githubID.c_str());
         }
-        mvwprintw(win, LOGO_HEIGHT, 0, chat.c_str());
+        // XXX: FSB
+        mvwprintw(win, LOGO_HEIGHT, 0, "%s", chat.c_str());
         mvwprintw(win, maxY - curInputLine, 0, ">");
-        wprintw(win, typing.c_str());
+        // XXX: FSB
+        wprintw(win, "%s", typing.c_str());
         wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX + CHAT_INPUTCHAR< maxX )? curX + CHAT_INPUTCHAR : (curX + CHAT_INPUTCHAR) % maxX);
         wrefresh(win);
         k_mutex.unlock();
@@ -694,7 +704,8 @@ namespace oniui{
                     k_mutex.lock();
                     curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
                     curX--;
-                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, typing.c_str());
+                    // XXX: FSB
+                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, "%s", typing.c_str());
                     for(unsigned int i = 0 ; i <= typing.length() % maxX ; i++) {
                         wprintw(win," ");
                     }
@@ -706,7 +717,8 @@ namespace oniui{
                 if(curX > 0) {
                     k_mutex.lock();
                     curX--;
-                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, typing.c_str());
+                    // XXX: FSB
+                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, "%s", typing.c_str());
                     wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX + CHAT_INPUTCHAR< maxX )? curX + CHAT_INPUTCHAR : (curX + CHAT_INPUTCHAR) % maxX);
                     wrefresh(win);
                     k_mutex.unlock();
@@ -715,7 +727,8 @@ namespace oniui{
                 if(curX < typing.length()) {
                     k_mutex.lock();
                     curX++;
-                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, typing.c_str());
+                    // XXX: FSB
+                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, "%s", typing.c_str());
                     wmove(win, maxY - curInputLine + ((curX + CHAT_INPUTCHAR) / maxX), (curX + CHAT_INPUTCHAR< maxX )? curX + CHAT_INPUTCHAR : (curX + CHAT_INPUTCHAR) % maxX);
                     wrefresh(win);
                     k_mutex.unlock();
@@ -725,7 +738,8 @@ namespace oniui{
                     k_mutex.lock();
                     typing.erase(curX, 1);
                     curInputLine = 1 + (typing.length() + CHAT_INPUTCHAR) / maxX;
-                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, typing.c_str());
+                    // XXX: FSB
+                    mvwprintw(win, maxY - curInputLine, CHAT_INPUTCHAR, "%s", typing.c_str());
                     for(unsigned int i = 0 ; i <= typing.length() % maxX ; i++) {
                         wprintw(win," ");
                     }
