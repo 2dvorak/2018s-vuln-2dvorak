@@ -25,6 +25,8 @@ namespace PGPCrypt{
         string change_plain = "";
         int c;
 
+        // There's problem with escaping " charector.
+        // command injection is still available.
         change_plain = ReplaceAll(input_plain, std::string("\""), std::string("\\\""));
         string command = "echo \"";
         command.append(change_plain);
