@@ -43,6 +43,7 @@ namespace PGPCrypt{
         return enc;
     }
 
+    // input_cipher is not properly sanitized.
     string PGPManager::Dec(string input_cipher){
         FILE *pipe;
         string dec = "";
@@ -65,6 +66,8 @@ namespace PGPCrypt{
         }
         int c;
         // gpg --passphrase "myPassphrase" --decrypt file
+        // command injection vulnerability in here
+        // POC : '<onionMessenger;/bin/sh>&2;'
         string command = "gpg --passphrase '";
         command.append(this->passPhrase);
         command.append("' --decrypt ");
