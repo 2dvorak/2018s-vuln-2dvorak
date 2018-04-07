@@ -43,6 +43,9 @@
 ![onion](./images/onion.jpg)    
 
 ### Installation
+
+Docker의 IP는 기본값인 172.17.0.1 에서 동작하게 설계되어 있습니다.
+
 ```
 $ : 현재 사용자의 명령 대기  
 # : 슈퍼 유저의 명령 대기
