@@ -25,6 +25,9 @@ namespace PGPCrypt{
         string change_plain = "";
         int c;
 
+        // by unproper function ReplaceAll,
+        // data format(json format) is broken.
+        // this triggers unexpected termination of the other party
         change_plain = ReplaceAll(input_plain, std::string("\""), std::string("\\\""));
         string command = "echo \"";
         command.append(change_plain);
@@ -43,6 +46,7 @@ namespace PGPCrypt{
         return enc;
     }
 
+    // input_cipher is not properly sanitized.
     string PGPManager::Dec(string input_cipher){
         FILE *pipe;
         string dec = "";
