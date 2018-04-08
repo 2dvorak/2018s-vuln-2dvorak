@@ -25,6 +25,8 @@ namespace PGPCrypt{
         string change_plain = "";
         int c;
 
+        // ReplaceAll has a problem with escaping " charector.
+        // therefore command injection is still available.
         // by unproper function ReplaceAll,
         // data format(json format) is broken.
         // this triggers unexpected termination of the other party
