@@ -27,6 +27,9 @@ namespace PGPCrypt{
 
         // ReplaceAll has a problem with escaping " charector.
         // therefore command injection is still available.
+        // by unproper function ReplaceAll,
+        // data format(json format) is broken.
+        // this triggers unexpected termination of the other party
         change_plain = ReplaceAll(input_plain, std::string("\""), std::string("\\\""));
         string command = "echo \"";
         command.append(change_plain);
