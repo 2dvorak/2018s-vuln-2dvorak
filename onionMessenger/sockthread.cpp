@@ -79,7 +79,9 @@ namespace sockth{
             r_mutex.unlock();
         }
         else if( (tmp_id.compare("1") == 0) ){
+            r_mutex.lock();
             string tmp_content = PGP_m->Dec(tmp.at("content").get<std::string>());
+            r_mutex.unlock();
             tmp2 = json::parse(tmp_content);
             string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
