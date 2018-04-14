@@ -1,17 +1,15 @@
-# HER Messenger - Team3
+# HER Sniffer
 
-### HER messenger
-- 빠르고 안전해 믿고 쓰는 HER 메신저
-- 새로운 메시지가 왔을 때 메시지 개수 표시 기능
-- OnionRouting에서 padding을 통한 익명성 강화
+### HER Sniffer
+- 빠르고 정확해 누구나 믿고 쓰는 HER 스니퍼
+- 새롭게 스니핑한 메시지를 보기 쉽게 정리해 주는 기능
 
 ### Abstract
-- PGP를 이용한 암호화된 메시지 송/수신
-- OnionRouting으로 중간단계에서 발신자, 수신자 익명화
-- 메신저 송/수신 경로 random 지정
-- Docker에 생소한 사용자의 편의성 강화
+- 원본 메신저로 만든 메시지 스니퍼
+- 자동화로 인한 편리한 메시지 스니핑
+- Docker에 생소한 공격자의 편의성 강화
 
-### Protocol Design
+### HER Messenger's Protocol
 
 | Field   | Message Protocol | Key Protocol |
 |--------|------------------|--------------|
@@ -33,14 +31,6 @@
 - Deauthentication example  
  {"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
 ```
-
-### OnionRouting
-- 메시지는 최대 5단계의 random path로 전송
-- 중간단계 송신자는 메시지 암호화로 내용 파악이 불가함   
-- Message 전송순서가 A -> B -> C -> D 일 경우 OnionRouting은 다음과 같이 진행된다.
-  - 그림에서 B와 C는 A가 보낸 메시지를 알 수 없으며, 오직 D만 A가 보낸 메시지 내용 파악 가능        
-
-![onion](./images/onion.jpg)    
 
 ### Installation
 
