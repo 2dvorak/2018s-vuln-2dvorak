@@ -124,7 +124,11 @@ namespace newkey{
         string tmp_pubkey = tmp.at("pubkey").get<std::string>();
         if(IsExist(tmp_githubID) == false){
             tmpInfo = new Nodeinfo(tmp_ip, tmp_fpr, tmp_pubkey);
-            PGP_m->ImportPub(tmp_pubkey, tmp_fpr);
+            if(!(PGP_m->ImportPub(tmp_pubkey, tmp_fpr))) {
+                //debug
+                cout << "malformed fpr and pubkey" << endl;
+                return;
+            }
             AddMap(tmp_githubID, tmpInfo);
             this->SendKeyAlive(tmp_ip);
         }

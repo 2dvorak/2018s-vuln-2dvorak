@@ -50,16 +50,18 @@ namespace newmsg{
         this->jason["recvip"] = toip;
         this->jason["sendip"] = "";
         this->jason["content"] = contents;
-        struct timeval tp;
-        gettimeofday(&tp, NULL);
-        unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
-        srand(ms);
-        string randData = "";
-        unsigned int lenData = rand() % 4096;
-        for(unsigned int i = 0 ; i < lenData; i++) {
-            randData.append(1,rand()%26 + 'a');
+        if(!DEBUG) {
+            struct timeval tp;
+            gettimeofday(&tp, NULL);
+            unsigned long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+            srand(ms);
+            string randData = "";
+            unsigned int lenData = rand() % 4096;
+            for(unsigned int i = 0 ; i < lenData; i++) {
+                randData.append(1,rand()%26 + 'a');
+            }
+            this->jason["padding"] = randData;
         }
-        this->jason["padding"] = randData;
     }
 
     void Message::EncMessage(string githubID){
@@ -70,12 +72,13 @@ namespace newmsg{
         std::mt19937 generator(rd());
         std::shuffle(v.begin(), v.end(), generator);
 
-        string tmp_content = PGP_m->Enc(this->jason.dump(), nodeMap->find(githubID)->second->fpr);
+        string tmp_content = PGP_m->Enc(this->jason.dump(), githubID);
         SetBridge(g_km->Findip(githubID), tmp_content);
-        for(int i = 0; (i < cnt) && (i<5); i++){
+        // for(int i = 0; (i < cnt) && (i<5); i++){
+        for(int i = 0; i < cnt; i++){
             string tmp_githubID = v.back();
             v.pop_back();
-            string tmp2_content = PGP_m->Enc(this->jason.dump(), nodeMap->find(tmp_githubID)->second->fpr);
+            string tmp2_content = PGP_m->Enc(this->jason.dump(), tmp_githubID);
             SetBridge(g_km->Findip(tmp_githubID), tmp2_content);
         }
 
