@@ -19,7 +19,7 @@ namespace PGPCrypt{
         return str;
     }
 
-    string PGPManager::Enc(string input_plain, string recipientID){
+    string PGPManager::Enc(string input_plain, string recipientFpr){
         FILE *pipe;
         string enc = "";
         string change_plain = "";
@@ -34,7 +34,7 @@ namespace PGPCrypt{
         string command = "echo \"";
         command.append(change_plain);
         command.append("\" | gpg --encrypt --armor --yes --trust-model always -r ");
-        command.append(recipientID);
+        command.append(recipientFpr);
         command.append(" 2>&1");
         pipe = popen(command.c_str(), "r");
         if( pipe == NULL) {
