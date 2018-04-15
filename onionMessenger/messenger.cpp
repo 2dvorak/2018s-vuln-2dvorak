@@ -32,9 +32,9 @@ namespace newmsger{
         }
         chatRoomMap = new unordered_map<string, tuple<vector<string>*, unsigned int, time_t>*>;
         g_km = new Keymanager(githubID);
-        g_km->SendKeyAlive();
         PGP_m = new PGPManager();
         PGP_m->ImportKeys(githubID);
+        g_km->SendKeyAlive();
     }
 
     Messenger::~Messenger(){
