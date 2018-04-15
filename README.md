@@ -1,20 +1,66 @@
 # SEHer Messenger - IS521 Activity 5
 
-### SEHer messenger : Security Enhanced Her Messenger
+### SEHer Messenger : Security Enhanced Her Messenger
 - 더욱 안전해 더더욱 믿고 쓰는 SEHer 메신저
 - 새로운 메시지가 왔을 때 메시지 개수 표시 기능
 - OnionRouting에서 padding을 통한 익명성 강화
 
 ### Abstract
-- PGP를 이용한 암호화된 메시지 송/수신
-- PGP 암호화 시 Fingerprint를 사용해 키 충돌 방지
-- OnionRouting으로 중간단계에서 발신자, 수신자 익명화
-- 메신저 송/수신 경로 random 지정
-- Docker에 생소한 사용자의 편의성 강화
+- GnuPG 암호화 시 Fingerprint를 사용해 키 충돌 방지
+- GnuPG Fingerprint 소개
+- Fingerprint 검증 시 Logic Error
+- 해당 Logic Error를 악용하면, stealthy sniffing 가능
 
-## Security-Enhanced
+### New Features for SEHer
 - 암호화시 Fingerprint 사용 : Short Key ID(8자) 사용으로 인한 충돌 방지
-- Pubkey와 Fingerprint 검증
+- Pubkey와 Fingerprint 검증 : 검증되지 않은 사용자 거절
+
+### GnuPG Fingerprint
+GnuPG에서 모든 Key들은 Fingerprint를 부여받는다. Fingerprint는 20바이트이고, 따라서 Hex 값을 출력하면 40바이트가 된다. GnuPG를 사용한 Encryption 시 수신자의 이름, 이메일 이외에도 Fingerprint를 사용할 수 있다(-r, --recipient 옵션). 뿐만 아니라 Fingerprint의 일부 값을 따온 Long Key Id와 Short Key ID도 사용할 수 있다. Fingerprint, Long Key Id, Short Key ID간의 관계는 다음과 같다.
+```
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 byte(40 byte)
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ C 5 D 8 0 4 C 8 E 5 A 6 C 8 4 7 6 6 C 1 A 8 3 B 9 1 E 0 7 6 0 0 D 9 5 9 5 B 4 8
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+|<------------------------------------------------------------------ 40 byte -->| : Fingerprint
+                                                |<------------------ 16 byte -->| : Long Key ID
+                                                                |<--  8 byte -->| : Short Key ID
+```
+
+### Vulnerabilities
+- Logic Error 1
+GnuPG를 사용해 Encryption 하는 코드에서 사용되는 커맨드는 다음과 같다.
+```
+"gpg --encrypt --armor --yes --trust-model always -r " + recipientFpr(40 byte)
+```
+각각의 사용자는 Key Protocol을 통해 Fingerprint를 교환하며, 이 때 Fingerprint의 길이가 40인지 검증하게 된다. 이를 통해 악의적인 공격자가 Key Protocol을 조작해서 자신의 Fingerprint도 끼워넣는 다음과 같은 공격을 방지할 수 있다.
+```
+"gpg --encrypt --armor --yes --trust-model always -r " + recipientFpr(40 byte) + " -r " + attackerFpr(40 byte)
+```
+하지만 이 로직은 GnuPG가 Encryption 시 Key ID도 정상적인 인자로 처리한다는 사실을 간과하고 있다. 따라서, 공격자는 정상적인 Fingerprint를 잘라서 Long Key ID를 얻어내고, 자신의 Public Key에 대한 Long Key ID와 함께 이어붙여서 40자 이내로 페이로드를 만들 수 있다.
+```
+"gpg --encrypt --armor --yes --trust-model always -r " + recipientKeyID(16 byte) + " -r " + attackerKeyID(16 byte)
+```
+따라서 메신저의 Encryption 관련 코드는 GnuPG의 동작을 제대로 이해하지 못한 것으로 인한 Logic Error를 가지고 있다.
+
+- Logic Error 2
+Key Protocol에서 다른 사용자의 Public Key와 함께 Fingerprint를 받으면, 서로 검증을 하게 된다.
+메신저는 먼저 Public Key를 import한다
+```
+gpg --import pubkey
+```
+해당 커맨드는 popen을 통해 실행되고, 실행 결과를 fgetc()함수를 통해 받아오기 때문에, 다음과 같은 실행 결과를 얻을 수 있다.
+```
+gpg: key D9595B48: public key "githubB" imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+```
+여기서 GnuPG가 새로이 import한 Public Key의 Short Key ID만 출력해주기 때문에, 메신저는 해당 내용을 가지고 Fingerprint를 검증하기 위해 Fingerprint의 마지막 8 byte만 사용한다.
+```
+Imported Public Key's Short Key ID(8 byte) == Received Fingerprint(40 byte)'s substring(32 ~ 40)?
+```
+하지만 공격자가 악의적인 Fingerprint를 만들 때, 정상적인 Short Key ID만 마지막 8바이트에 위치시킨다면 해당 검증을 우회할 수 있다. 나머지 32바이트를 사용하여 공격자는 자신의 Long Key ID 또는 Short Key ID를 넣을 수 있다.
 
 ### Protocol Design
 
@@ -28,45 +74,23 @@
 | content| 암호화된 메시지 | sender Public Key |
 | fpr | - | Public Key's Fingerprint |
 
-- 메시지를 JSON 형식으로 만들어 전송  
-```
-- 전송 중간 단계 메시지 example  
- {"id":"1", "bullian":"0","sendIP" : "", "recvip":"172.17.0.3","githubID":"","content":"<Encrypted Message>"}
-- 전송 마지막 단계 메시지 example  
- {"id":"1","bullian":"1","sendIP" : "172.17.0.5","recvip":"172.17.0.3","githubID":"skyshiri","content":"Plantext Message"}
-- Key 전송 example  
+- 변경된 Key 전송 scheme
+```  
  {"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "fpr" : "<PGP Public key Fingerprint", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
-- Deauthentication example  
- {"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
 ```
-
-### OnionRouting
-- 메시지는 최대한의 random path로 전송
-- 중간단계 송신자는 메시지 암호화로 내용 파악이 불가함   
-- Message 전송순서가 A -> B -> C -> D 일 경우 OnionRouting은 다음과 같이 진행된다.
-  - 그림에서 B와 C는 A가 보낸 메시지를 알 수 없으며, 오직 D만 A가 보낸 메시지 내용 파악 가능        
-
-![onion](./images/onion.jpg)    
 
 ### Installation
-
-Docker의 IP는 기본값인 172.17.0.1 에서 동작하게 설계되어 있습니다.
-
+- 프로그램 다운로드 및 Docker 설치
 ```
-$ : 현재 사용자의 명령 대기  
-# : 슈퍼 유저의 명령 대기
-```
-- 프로그램 파일 설치
-```
-$ git clone https://github.com/KAIST-IS521/2018s-onion-team3.git
+$ git clone https://github.com/KAIST-IS521/2018s-vuln-2dvorak.git
 $ curl -fsSL https://get.docker.com/ | sudo sh
-$ cd 2018s-onion-team3
 ```
 - Put [Your ID].key, [Your ID].pub in testkey directory
 ```
-$ cd testkey  
+$ cd 2018s-vuln-2dvorak/testkey  
 $ gpg --armor --export [githubID] > [githubID].pub
 $ gpg --export-secret-keys -a [githubID] > [githubID].key
+$ cd ..
 ```
 - Docker 설정
 ```
@@ -74,10 +98,9 @@ $ gpg --export-secret-keys -a [githubID] > [githubID].key
 ```
 
 ### Usages
-- ./startMessenger.sh를 터미널 창에 입력하고, ID와 passphrase를 입력하면
-메신저에 접속된다.
+SEHer 메신저
+- startMessenger.sh 실행 후 ID와 passphrase 입력
 - 디버깅을 위한 testkey pw 제공 : githubA/githubAPW, githubB/githubBPW ... 
-
 ```
 #./startMessenger.sh
 Your Github ID :[YOUR id]
@@ -91,65 +114,6 @@ Your passphrase :[YOUR passphrase]
 1. List
 2. Talk
 3. Exit
-```
-
-- List
-  - 숫자 '1'을 터미널 창에 입력하면 채팅할 수 있는 상대방의 ID와 IP를 볼 수 있는 리스트가 나온다.
-```
-> 1
- =====================
-2dvorak : 172.17.0.2
- =====================
-
-1. List
-2. Talk
-3. Exit
->
-```
-- Talk
-  - 숫자 '2'를 터미널 창에 입력하면 채팅이 가능한 리스트를 확인할 수 있다.
-  - 리스트에서 채팅할 대상자 ID를 화살표로 선택하고 엔터키를 누르면, 채팅이 가능하다.
-```
-> 2
-                             ┌────────────────────────────┐                             
-                             │ skyshiri                   |
-                             │ githubB                    |     
-                             │ 2dvorak                    │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             │                            │                             
-                             └────────────────────────────┘
-```
-```
-Her                                                            
-
-
-Me: hi
-skyshiri: Hello  
-Me: I am sejin  
-2dvorak: I am seungyeop
-```
-
-- Talk
-  - 채팅을 종료하고 싶다면 ESC키를 누른다.
-```
-1. List
-2. Talk
-3. Exit
->
-```
-
-- Exit
-  - 숫자 '3'을 터미널 창에 입력하면 프로그램이 종료된다.
-```
-> 3
-Good Bye!
-f0b151349c7c
-skyshiri@ubuntu:~/team3$
-
 ```
 
 ### Environment
