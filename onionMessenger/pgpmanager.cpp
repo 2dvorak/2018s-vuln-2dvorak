@@ -107,7 +107,7 @@ namespace PGPCrypt{
         return dec;
     }
 
-    void PGPManager::ImportPub(string pub){
+    void PGPManager::ImportPub(string pub, string fpr){
         FILE *pipe;
         string randomFile = "";
         int c;
@@ -209,7 +209,7 @@ namespace PGPCrypt{
         }
     }
 
-    string getFpr() {
+    string PGPManager::getFpr() {
         return this->fpr;
     }
 

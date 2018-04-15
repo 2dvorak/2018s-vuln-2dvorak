@@ -12,7 +12,7 @@ namespace PGPCrypt{
         virtual ~PGPManager();
         string Enc(string input_plain, string recipientID);
         string Dec(string input_cipher);
-        void ImportPub(string pub);
+        void ImportPub(string pub, string fpr);
         void ImportKeys(string githubID);
         string getFpr();
         void SetTTYEcho(bool enable);
