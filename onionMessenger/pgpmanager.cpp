@@ -88,8 +88,9 @@ namespace PGPCrypt{
             dec.push_back(c);
         }
         fclose(pipe);
-        //debugging
-        cout << dec << endl;
+        if(DEBUG) {
+            cout << dec << endl;
+        }
         // maybe regex better?
         int index = 0;
         //index = dec.find("\"\n");
@@ -140,15 +141,16 @@ namespace PGPCrypt{
         pipe = popen(command.c_str(), "r");
         if( pipe == NULL) {
             perror("popen failed\n");
-            return;
+            exit(0);
         }
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
 
         string output_substr = output.substr(9, 8);
-        //debug
-        cout << output_substr << endl;
+        if(DEBUG) {
+            cout << output_substr << endl;
+        }
         if(!VerifyFprAndPubkey(fpr, output_substr)) {
             return false;
         }
@@ -199,8 +201,9 @@ namespace PGPCrypt{
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
-        //for debugging
-        cout << output << endl;
+        if(DEBUG) {
+            cout << output << endl;
+        }
         output = "";
         command = "gpg --fingerprint " + githubID + " | head -n2 | tail -n1 | tail -c51 | tr -d \" \"";
         pipe = popen(command.c_str(), "r");
@@ -213,9 +216,11 @@ namespace PGPCrypt{
         }
         fclose(pipe);
         string fpr = string(output);
-        this->fpr = fpr;
-        //for debugging
-        cout << "[debug] fpr : " << fpr << endl;
+        this->fpr = fpr.substr(0, 40);
+        if(DEBUG) {
+            cout << "[debug] fpr : " << fpr << endl;
+            cout << "[debug] fpr.length() : " << to_string(fpr.length()) << endl;
+        }
         // secret key import don't care about passphrase.why?
         /*if(output.find("failed") != std::string::npos || output.find("error") != std::string::npos || output.find("not") != std::string::npos) {
             //cout << output << endl;
