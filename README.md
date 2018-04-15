@@ -3,7 +3,7 @@
 ### SEHer Messenger : Security Enhanced Her Messenger
 - 더욱 안전해 더더욱 믿고 쓰는 SEHer 메신저
 - Fingerprint를 사용한 암호화로 안전성 강화
-- Fingerprint 검증으로 안전성 두번 강화
+- Fingerprint 검증으로 위조 공격 방지
 
 ### Abstract
 - GnuPG 암호화 시 Fingerprint를 사용해 키 충돌 방지
