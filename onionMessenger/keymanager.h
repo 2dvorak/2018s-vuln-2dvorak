@@ -35,6 +35,7 @@ namespace newkey{
         void RecvKeyAlive(string jsonStr);
         void RecvKeyDie(string jsonStr);
         void SendKeyAlive();
+        void SendKeyAlive(string);
         void SendKeyDie();
         void SendKey(string ip);
 
@@ -51,9 +52,10 @@ namespace newkey{
 
     class Nodeinfo{
     public:
-        Nodeinfo(string, string);
+        Nodeinfo(string, string, string);
         virtual ~Nodeinfo();
         string ip;
+        string fpr;
         string pubkey;
     private:
         // Node info IP & Pubkey

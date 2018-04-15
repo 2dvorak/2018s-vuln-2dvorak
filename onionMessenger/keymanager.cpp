@@ -125,7 +125,7 @@ namespace newkey{
         if(IsExist(tmp_githubID) == false){
             tmpInfo = new Nodeinfo(tmp_ip, tmp_fpr, tmp_pubkey);
             PGP_m->ImportPub(tmp_pubkey, tmp_fpr);
-            AddMap(tmp_githubID, tmp_fpr, tmpInfo);
+            AddMap(tmp_githubID, tmpInfo);
             this->SendKeyAlive(tmp_ip);
         }
     }
@@ -154,7 +154,6 @@ namespace newkey{
 
     // overload SendKeyAlive for specifying target
     void Keymanager::SendKeyAlive(string targetIP){
-        char buffer[5];
         this->myJSON->setBullian("1");
         this->myJSON->setIP(targetIP);
         this->myJSON->setFpr(PGP_m->getFpr());
