@@ -36,12 +36,12 @@ namespace oniui{
     OnionUI::~OnionUI(){}
 
     static char *onionlogo = (char *)"\
-███████╗███████╗██╗  ██╗███████╗██████╗ \n\
-██╔════╝██╔════╝██║  ██║██╔════╝██╔══██╗\n\
-███████╗█████╗  ███████║█████╗  ██████╔╝\n\
-╚════██║██╔══╝  ██╔══██║██╔══╝  ██╔══██╗\n\
-███████║███████╗██║  ██║███████╗██║  ██║\n\
-╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝";
+  _____  ______  _    _             \n\
+ / ____||  ____|| |  | |            \n\
+| (___  | |__   | |__| |  ___  _ __ \n\
+ \\___ \\ |  __|  |  __  | / _ \\| '__|\n\
+ ____) || |____ | |  | ||  __/| |   \n\
+|_____/ |______||_|  |_| \\___||_|   ";
 
     static char *onionmemu = (char *)"\n1. List\n2. Talk\n3. Exit\n> ";
 
@@ -356,13 +356,25 @@ namespace oniui{
                 exit(1);
             }
             break;
+            case '0':
+            {
+                DEBUG = !DEBUG;
+                if(DEBUG) {
+                    cout << "True" << endl;
+                } else {
+                    cout << "False" << endl;
+                }
+            }
+            break;
             default:
                 continue;
             }
         }
     }
 
-    void OnionUI::PrintChat(WINDOW* win, string githubID, unsigned int maxY, unsigned int maxX) {
+    void OnionUI::PrintChat(WINDOW* win, string githubID, unsigned int argMaxY, unsigned int argMaxX) {
+        unsigned int maxX = argMaxX, maxY = argMaxY;
+        getmaxyx(win, maxY, maxX);
         k_mutex.lock();
         chatRoomIter = chatRoomMap->find(githubID);
         /*if(chatRoomIter == chatRoomMap->end()) {
@@ -758,7 +770,7 @@ namespace oniui{
 
     void OnionUI::Init(){
 	// as @khsdo95 commented, system function with relative function is vulnerable
-        //std::system("/usr/bin/clear");
+        std::system("/usr/bin/clear");
         cout << onionlogo;
     }
 
