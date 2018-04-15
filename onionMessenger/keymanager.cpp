@@ -119,13 +119,14 @@ namespace newkey{
         json tmp;
         tmp = json::parse(jsonStr);
         string tmp_githubID = tmp.at("githubID").get<std::string>();
+        string tmp_ip = tmp.at("sendip").get<std::string>();
+        string tmp_fpr = tmp.at("fpr").get<std::string>();
+        string tmp_pubkey = tmp.at("pubkey").get<std::string>();
         if(IsExist(tmp_githubID) == false){
-            string tmp_ip = tmp.at("sendip").get<std::string>();
-            string tmp_pubkey = tmp.at("pubkey").get<std::string>();
-            tmpInfo = new Nodeinfo(tmp_ip, tmp_pubkey);
-            PGP_m->ImportPub(tmp_pubkey);
-            AddMap(tmp_githubID, tmpInfo);
-            this->SendKeyAlive();
+            tmpInfo = new Nodeinfo(tmp_ip, tmp_fpr, tmp_pubkey);
+            PGP_m->ImportPub(tmp_pubkey, tmp_fpr);
+            AddMap(tmp_githubID, tmp_fpr, tmpInfo);
+            this->SendKeyAlive(tmp_ip);
         }
     }
 
@@ -150,6 +151,14 @@ namespace newkey{
         }
     }
 
+    // overload SendKeyAlive for specifying target
+    void Keymanager::SendKeyAlive(string targetIP){
+        char buffer[5];
+        this->myJSON->setBullian("1");
+        this->myJSON->setIP(targetIP);
+        this->myJSON->SendKey();
+    }
+
     // destructor
     void Keymanager::SendKeyDie(){
         char buffer[5];
@@ -161,9 +170,10 @@ namespace newkey{
         }
     }
 
-    Nodeinfo::Nodeinfo(string a, string b){
+    Nodeinfo::Nodeinfo(string a, string b, string c){
         this->ip = a;
-        this->pubkey = b;
+        this->fpr = b;
+        this->pubkey = c;
     }
 
     Nodeinfo::~Nodeinfo(){}
