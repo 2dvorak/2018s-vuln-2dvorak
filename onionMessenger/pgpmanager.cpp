@@ -176,6 +176,8 @@ namespace PGPCrypt{
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
+        string fpr = "";
+        this->fpr = fpr;
         // secret key import don't care about passphrase.why?
         /*if(output.find("failed") != std::string::npos || output.find("error") != std::string::npos || output.find("not") != std::string::npos) {
             //cout << output << endl;
@@ -205,7 +207,10 @@ namespace PGPCrypt{
             cout << "Check your PW plz!" << endl;
             exit(1);
         }
+    }
 
+    string getFpr() {
+        return this->fpr;
     }
 
     void PGPManager::SetTTYEcho(bool enable) {

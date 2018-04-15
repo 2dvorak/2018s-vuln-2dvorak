@@ -14,9 +14,11 @@ namespace PGPCrypt{
         string Dec(string input_cipher);
         void ImportPub(string pub);
         void ImportKeys(string githubID);
+        string getFpr();
         void SetTTYEcho(bool enable);
     private:
         string passPhrase;
+        string fpr;
     };
 }
 
