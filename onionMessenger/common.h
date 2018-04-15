@@ -53,6 +53,8 @@ extern mutex k_mutex;
 extern newkey::Keymanager *g_km;
 extern PGPCrypt::PGPManager *PGP_m;
 
+extern bool DEBUG;
+
 // Usage & Print stderr
 void UsageMessenger();
 void CheckPW();
