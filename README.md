@@ -2,8 +2,8 @@
 
 ### SEHer Messenger : Security Enhanced Her Messenger
 - 더욱 안전해 더더욱 믿고 쓰는 SEHer 메신저
-- 새로운 메시지가 왔을 때 메시지 개수 표시 기능
-- OnionRouting에서 padding을 통한 익명성 강화
+- Fingerprint를 사용한 암호화로 안전성 강화
+- Fingerprint 검증으로 안전성 두번 강화
 
 ### Abstract
 - GnuPG 암호화 시 Fingerprint를 사용해 키 충돌 방지
