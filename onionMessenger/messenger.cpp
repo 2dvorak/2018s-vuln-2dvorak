@@ -17,7 +17,7 @@ namespace newmsger{
         // std::system("clear");
         // Use absolute path rather than relative path with system function
         // It can be attacked using PATH env variable
-        std::system("/usr/bin/clear");
+        //std::system("/usr/bin/clear");
         CheckIP();
 
         string githubID = "";

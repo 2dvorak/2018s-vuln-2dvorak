@@ -758,7 +758,7 @@ namespace oniui{
 
     void OnionUI::Init(){
 	// as @khsdo95 commented, system function with relative function is vulnerable
-        std::system("/usr/bin/clear");
+        //std::system("/usr/bin/clear");
         cout << onionlogo;
     }
 

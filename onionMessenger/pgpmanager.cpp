@@ -134,6 +134,9 @@ namespace PGPCrypt{
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
+
+        //debug
+        cout << output << endl;
         fclose(pipe);
     }
 
@@ -148,7 +151,10 @@ namespace PGPCrypt{
         cin >> this->passPhrase;
         SetTTYEcho(true);
         cout << endl;
-        string command = "gpg --import ";
+        string command = "";
+
+        // importing secret key will import pubkey too.
+        /*command = "gpg --import ";
         command.append(g_km->ReturnGithubID());
         command.append(".pub 2>&1");
         pipe = popen(command.c_str(), "r");
@@ -160,7 +166,8 @@ namespace PGPCrypt{
             output.push_back(c);
         }
         fclose(pipe);
-        output = "";
+        output = "";*/
+
         // how to do this securely?
         // nope. this anyway prompts passphrase input...
         //command = "echo \"";
@@ -176,17 +183,30 @@ namespace PGPCrypt{
         while( (c = fgetc(pipe)) != EOF ) {
             output.push_back(c);
         }
-        string fpr = "";
+        //for debugging
+        cout << output << endl;
+        output = "";
+        command = "gpg --fingerprint " + githubID + " | head -n2 | tail -n1 | tail -c51 | tr -d \" \"";
+        pipe = popen(command.c_str(), "r");
+        if( pipe == NULL) {
+            perror("popen failed\n");
+            return;
+        }
+        while( (c = fgetc(pipe)) != EOF ) {
+            output.push_back(c);
+        }
+        fclose(pipe);
+        string fpr = string(output);
         this->fpr = fpr;
+        //for debugging
+        cout << "[debug] fpr : " << fpr << endl;
         // secret key import don't care about passphrase.why?
         /*if(output.find("failed") != std::string::npos || output.find("error") != std::string::npos || output.find("not") != std::string::npos) {
             //cout << output << endl;
             cout << "Please check your passphrase" << endl;
             exit(1);
         }*/
-        //for debugging
-        //cout << output << endl;
-        fclose(pipe);
+
         // for debugging purpose only
         //        output = "";
         //        command = "gpg --list-secret-keys 2>&1";
