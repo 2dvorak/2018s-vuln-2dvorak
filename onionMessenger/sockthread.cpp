@@ -99,16 +99,15 @@ namespace sockth{
                 //map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator itTemp = it;
                 time_t now = time(NULL) + 32400;    // korean time zone
                 if(it == chatRoomMap->end()) {
-                    vector<string>* newChatRoom = new std::vector<string>();
-                    // how about implementing something like g_km->AddMap();?
-
-                    // always insert to begin.
-                    // ACTUALLY, ALWAYS INSERT TO END, THEN ITERATE BACKWARDS.
-                    newChatRoom->push_back(senderGithubID + ": " + tmp2_content);
                     if(tmp2_sender.at(0) == '#') {
+                        vector<string>* newChatRoom = new std::vector<string>();
+                        newChatRoom->push_back(senderGithubID + ": " + tmp2_content);
                         chatRoomMap->insert(chatRoomMap->begin(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
                     } else {
-                        chatRoomMap->insert(chatRoomMap->end(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
+                        //chatRoomMap->insert(chatRoomMap->end(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
+                        // drop message if not in map
+                        r_mutex.unlock();
+                        return -1;
                     }
                 } else {
                     get<0>(*(it->second))->push_back(senderGithubID + ": " + tmp2_content);

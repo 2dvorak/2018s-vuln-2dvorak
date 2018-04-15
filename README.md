@@ -1,15 +1,20 @@
-# HER Messenger - Team3
+# SEHer Messenger - IS521 Activity 5
 
-### HER messenger
-- 빠르고 안전해 믿고 쓰는 HER 메신저
+### SEHer messenger : Security Enhanced Her Messenger
+- 더욱 안전해 더더욱 믿고 쓰는 SEHer 메신저
 - 새로운 메시지가 왔을 때 메시지 개수 표시 기능
 - OnionRouting에서 padding을 통한 익명성 강화
 
 ### Abstract
 - PGP를 이용한 암호화된 메시지 송/수신
+- PGP 암호화 시 Fingerprint를 사용해 키 충돌 방지
 - OnionRouting으로 중간단계에서 발신자, 수신자 익명화
 - 메신저 송/수신 경로 random 지정
 - Docker에 생소한 사용자의 편의성 강화
+
+## Security-Enhanced
+- 암호화시 Fingerprint 사용 : Short Key ID(8자) 사용으로 인한 충돌 방지
+- Pubkey와 Fingerprint 검증
 
 ### Protocol Design
 
@@ -21,6 +26,7 @@
 | recvIP | receiver IP     | receiver IP             |
 | githubID | sender id(마지막 메시지)  | sender id |
 | content| 암호화된 메시지 | sender Public Key |
+| fpr | - | Public Key's Fingerprint |
 
 - 메시지를 JSON 형식으로 만들어 전송  
 ```
@@ -29,13 +35,13 @@
 - 전송 마지막 단계 메시지 example  
  {"id":"1","bullian":"1","sendIP" : "172.17.0.5","recvip":"172.17.0.3","githubID":"skyshiri","content":"Plantext Message"}
 - Key 전송 example  
- {"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
+ {"id":"0", "bullian":"1","sendIP" : "172.17.0.4", "fpr" : "<PGP Public key Fingerprint", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
 - Deauthentication example  
  {"id":"0", "bullian":"0","sendIP" : "172.17.0.4", "recvip":"172.17.0.3","githubID":"skyshiri","content":"<PGP Public key>"}
 ```
 
 ### OnionRouting
-- 메시지는 최대 5단계의 random path로 전송
+- 메시지는 최대한의 random path로 전송
 - 중간단계 송신자는 메시지 암호화로 내용 파악이 불가함   
 - Message 전송순서가 A -> B -> C -> D 일 경우 OnionRouting은 다음과 같이 진행된다.
   - 그림에서 B와 C는 A가 보낸 메시지를 알 수 없으며, 오직 D만 A가 보낸 메시지 내용 파악 가능        
@@ -76,12 +82,12 @@ $ gpg --export-secret-keys -a [githubID] > [githubID].key
 #./startMessenger.sh
 Your Github ID :[YOUR id]
 Your passphrase :[YOUR passphrase]
-██╗  ██╗███████╗██████╗
-██║  ██║██╔════╝██╔══██╗
-███████║█████╗  ██████╔╝
-██╔══██║██╔══╝  ██╔══██╗
-██║  ██║███████╗██║  ██║
-╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+  _____  ______  _    _             
+ / ____||  ____|| |  | |            
+| (___  | |__   | |__| |  ___  _ __ 
+ \___ \ |  __|  |  __  | / _ \| '__|
+ ____) || |____ | |  | ||  __/| |   
+|_____/ |______||_|  |_| \___||_|   
 1. List
 2. Talk
 3. Exit
@@ -147,24 +153,11 @@ skyshiri@ubuntu:~/team3$
 ```
 
 ### Environment
-- Git issue와 milestone을 사용하여 편한 의사소통 및 협업 가능
+- Git issue와 milestone을 사용하여 계획적인 프로젝트 진행
 - JSON을 사용하여 빠르고 편한 파싱 및 헤더 구성
 - ncurses를 이용한 보기 좋은 TUI환경 구성
 - Qt Creator를 사용하여 Makefile의 자동 생성 및 편한 개발환경 구축
 
-
-### Team member
-
-| Team member     | Position | Assignment |
-|:---------------:|:--------:|------------|
-|  SeongIl Wi     |    TA    | Advice |
-|  DongHyeon Oh   |   팀장   |HER messenger 개발 총괄|
-|  SeungYeop Lee  |   팀원   |HER messenger 개발|
-|  NakJun Choi    |   팀원   |PITCHME.md 작성, 홍보영상 편집, Presentation|
-|  SeJin Jeong    |   팀원   |Sockthread.cpp 함수 개발, README.md 작성 |
-
-### Insight
-![insight](./images/insight.png)
-
 ### Reference
  - https://github.com/nlohmann/json
+ - https://github.com/KAIST-IS521/2018s-onion-team3
