@@ -30,6 +30,10 @@ namespace newmsg{
         this->jason["bullian"] = bullian;
     }
 
+    void Message::setFpr(string fpr) {
+        this->jason["fpr"] = fpr;
+    }
+
     void Message::SetMessage(string githubID, string toip, string contents){
         this->jason["id"] = "1";
         this->jason["bullian"] = "1";

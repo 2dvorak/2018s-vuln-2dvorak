@@ -21,6 +21,7 @@ namespace newmsg{
         void RecvKey();
 
         // json setting
+        void setFpr(string);
         void setBullian(string);
         void setIP(string);
         string getIP();
