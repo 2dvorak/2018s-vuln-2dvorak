@@ -88,6 +88,8 @@ namespace PGPCrypt{
             dec.push_back(c);
         }
         fclose(pipe);
+        //debugging
+        cout << dec << endl;
         // maybe regex better?
         int index = 0;
         //index = dec.find("\"\n");
@@ -107,12 +109,21 @@ namespace PGPCrypt{
         return dec;
     }
 
-    void PGPManager::ImportPub(string pub, string fpr){
+    bool PGPManager::ImportPub(string pub, string fpr){
         FILE *pipe;
         string randomFile = "";
         int c;
         string output = "";
         struct timeval time;
+
+        // logic error 1
+        // keyid can also be used for encryption
+        // keyid length can be 8 or 16
+        // thus malformed fpr can lead to privacy breach
+        if(fpr.length() != 40) {
+            return false;
+        }
+
         gettimeofday(&time,NULL);
         srand((time.tv_sec*1000)+(time.tv_usec/1000));
         for(int i = 0 ; i < 10 ; i++) {
@@ -135,9 +146,14 @@ namespace PGPCrypt{
             output.push_back(c);
         }
 
+        string output_substr = output.substr(9, 8);
         //debug
-        cout << output << endl;
+        cout << output_substr << endl;
+        if(!VerifyFprAndPubkey(fpr, output_substr)) {
+            return false;
+        }
         fclose(pipe);
+        return true;
     }
 
     void PGPManager::ImportKeys(string githubID) {
@@ -231,6 +247,20 @@ namespace PGPCrypt{
 
     string PGPManager::getFpr() {
         return this->fpr;
+    }
+
+    bool PGPManager::VerifyFprAndPubkey(string recvedFpr, string importedKeyID) {
+        // logic error 2
+        // should compare entire fingerprint to fingerprint
+        // comparing keyid with fingerprint can be bypassed
+
+        // compare short key id and fingerprint
+        // short key id length : 8
+        // fingerprint length : 40
+        if(importedKeyID.compare(recvedFpr.substr(32,8)) != 0) {
+            return false;
+        }
+        return true;
     }
 
     void PGPManager::SetTTYEcho(bool enable) {
