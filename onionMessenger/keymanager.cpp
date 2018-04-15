@@ -143,6 +143,7 @@ namespace newkey{
     void Keymanager::SendKeyAlive(){
         char buffer[5];
         this->myJSON->setBullian("1");
+        this->myJSON->setFpr(PGP_m->getFpr());
         for( int ii = 0x00; ii < 10;ii++){
             sprintf(buffer, "%d",ii);
             this->myJSON->setIP(string("172.17.0.") + string(buffer));
@@ -156,6 +157,7 @@ namespace newkey{
         char buffer[5];
         this->myJSON->setBullian("1");
         this->myJSON->setIP(targetIP);
+        this->myJSON->setFpr(PGP_m->getFpr());
         this->myJSON->SendKey();
     }
 
