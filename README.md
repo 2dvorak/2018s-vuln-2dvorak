@@ -99,7 +99,7 @@ $ cd ..
 # ./AutoDocker.sh
 ```
 
-### Usages
+### Usage
 SEHer 메신저
 - startMessenger.sh 실행 후 ID와 passphrase 입력
 - 디버깅을 위한 testkey pw 제공 : githubA/githubAPW, githubB/githubBPW ... 
@@ -117,6 +117,8 @@ Your passphrase :[YOUR passphrase]
 2. Talk
 3. Exit
 ```
+snipHer 스니퍼
+- https://github.com/KAIST-IS521/2018s-onion-team3/exploit
 
 ### Environment
 - Git issue와 milestone을 사용하여 계획적인 프로젝트 진행
