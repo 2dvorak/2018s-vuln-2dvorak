@@ -34,6 +34,7 @@ namespace newkey{
         // GetKey, PutKey Socket
         void RecvKeyAlive(string jsonStr);
         void RecvKeyDie(string jsonStr);
+        void RecvKeyDieForever(string jsonStr);
         void SendKeyAlive();
         void SendKeyAlive(string);
         void SendKeyDie();

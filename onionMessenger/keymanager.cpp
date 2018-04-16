@@ -109,7 +109,11 @@ namespace newkey{
         cout << " ===================== " << endl;
         for( nodeIter = nodeMap->begin(); nodeIter != nodeMap->end(); nodeIter++){
             i++;
-            cout << nodeIter->first << " : " << nodeIter->second->ip << endl;
+            cout << nodeIter->first << " : " << nodeIter->second->ip;
+            if(DEBUG || DEMO) {
+                cout << endl << "fpr : " << nodeIter->second->fpr;
+            }
+            cout << endl;
         }
         cout << " ===================== " << endl;
     }
@@ -125,12 +129,26 @@ namespace newkey{
         if(IsExist(tmp_githubID) == false){
             tmpInfo = new Nodeinfo(tmp_ip, tmp_fpr, tmp_pubkey);
             if(!(PGP_m->ImportPub(tmp_pubkey, tmp_fpr))) {
-                //debug
-                cout << "malformed fpr and pubkey" << endl;
+                if(DEBUG) {
+                    cout << "malformed fpr and pubkey from " + tmp_githubID + "(" + tmp_ip + ")" << endl;
+                }
                 return;
             }
             AddMap(tmp_githubID, tmpInfo);
             this->SendKeyAlive(tmp_ip);
+        } else {
+            nodeIter = nodeMap->find(tmp_githubID);
+            if(nodeIter != nodeMap->end()) {
+                if(!(PGP_m->ImportPub(tmp_pubkey, tmp_fpr))) {
+                    if(DEBUG) {
+                        cout << "malformed fpr and pubkey from " + tmp_githubID + "(" + tmp_ip + ")" << endl;
+                    }
+                    return;
+                }
+                nodeIter->second->ip = tmp_ip;
+                nodeIter->second->fpr = tmp_fpr;
+                nodeIter->second->pubkey = tmp_pubkey;
+            }
         }
     }
 
@@ -140,6 +158,17 @@ namespace newkey{
         string tmp_githubID = tmp.at("githubID").get<std::string>();
         if(IsExist(tmp_githubID) == true){
             DelMap(tmp_githubID);
+        }
+    }
+
+    void Keymanager::RecvKeyDieForever(string jsonStr){
+        json tmp;
+        tmp = json::parse(jsonStr);
+        string tmp_githubID = tmp.at("githubID").get<std::string>();
+        if(IsExist(tmp_githubID) == true){
+            DelMap(tmp_githubID);
+            chatRoomIter = chatRoomMap->find(tmp_githubID);
+            if(chatRoomIter != chatRoomMap->end()) chatRoomMap->erase(chatRoomIter);
         }
     }
 
