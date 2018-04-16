@@ -14,18 +14,12 @@ using namespace PGPCrypt;
 namespace newmsger{
 
     Messenger::Messenger(){
-        // std::system("clear");
-        // Use absolute path rather than relative path with system function
-        // It can be attacked using PATH env variable
         std::system("/usr/bin/clear");
         CheckIP();
 
         string githubID = "";
         cout << "Your Github ID :";
         cin >> githubID;
-        // check if valid githubID
-        // NO COMMAND INJECTION ALLOWED EVER
-        // "Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen" - Github
         if( CheckIDInvalid(githubID) ) {
             cout << "Invalid Github ID!" << endl;
             exit(1);
@@ -42,18 +36,11 @@ namespace newmsger{
     }
 
     void Messenger::Main(){
-        // create 3 threads
-        // 1. recv new node info / node exit notification
-        // 2. recv messages
-        // 3. handle user input / print output to screen
-
         sockth = new Sockthread();
-        sleep(1); // wait for recvThread to be created. let's not send before recv
+        sleep(1);
         std::thread recvThread = sockth->RecvMessageThread();
         std::thread sendThread = sockth->SendMessageThread();
         std::thread *main = new std::thread(OnionUI::MainUI);
-        // for now, no additional executions are left so we should
-        // wait for the thread to return
         main->join();
     }
 

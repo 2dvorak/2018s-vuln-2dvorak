@@ -20,7 +20,7 @@ GnuPG에서 모든 Key들은 Fingerprint를 부여받는다. Fingerprint는 20�
 ```
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 byte(40 byte)
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- C 5 D 8 0 4 C 8 E 5 A 6 C 8 4 7 6 6 C 1 A 8 3 B 9 1 E 0 7 6 0 0 D 9 5 9 5 B 4 8
+|C|5|D|8|0|4|C|8|E|5|A|6|C|8|4|7|6|6|C|1|A|8|3|B|9|1|E|0|7|6|0|0|D|9|5|9|5|B|4|8|
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                                               |               |               |
 |                                               |               |<--  8 byte -->| : Short Key ID
@@ -118,7 +118,7 @@ Your passphrase :[YOUR passphrase]
 3. Exit
 ```
 snipHer 스니퍼
-- https://github.com/KAIST-IS521/2018s-onion-team3/exploit
+- https://github.com/KAIST-IS521/2018s-vuln-2dvorak/exploit
 
 ### Environment
 - Git issue와 milestone을 사용하여 계획적인 프로젝트 진행

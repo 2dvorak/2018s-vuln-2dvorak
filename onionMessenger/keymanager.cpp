@@ -11,8 +11,6 @@ namespace newkey{
     Keymanager::Keymanager(string githubID)
     {
         this->githubID = githubID;
-        // get pub key file
-        // TODO? get .pub from .key
         ifstream openFile1( (githubID+".pub").data() );
         if( openFile1.is_open()){
             openFile1.seekg(0, ios::end);
@@ -36,12 +34,9 @@ namespace newkey{
 
     }
 
-    // manage node
     void Keymanager::AddMap(string githubID, Nodeinfo* IPnPubKey){
-        // vector init
         vector<string>* newChatRoom = new std::vector<string>();
         chatRoomMap->insert(chatRoomMap->end(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(githubID, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, 0)));
-        //map addition
         nodeMap->insert(unordered_map<string, Nodeinfo*>::value_type(githubID, IPnPubKey));
     }
 
@@ -118,7 +113,6 @@ namespace newkey{
         cout << " ===================== " << endl;
     }
 
-    // manage node from packet
     void Keymanager::RecvKeyAlive(string jsonStr){
         json tmp;
         tmp = json::parse(jsonStr);
@@ -172,7 +166,6 @@ namespace newkey{
         }
     }
 
-    // init
     void Keymanager::SendKeyAlive(){
         char buffer[5];
         this->myJSON->setBullian("1");
@@ -193,7 +186,6 @@ namespace newkey{
         this->myJSON->SendKey();
     }
 
-    // destructor
     void Keymanager::SendKeyDie(){
         char buffer[5];
         this->myJSON->setBullian("0");

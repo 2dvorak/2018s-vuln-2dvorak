@@ -10,14 +10,8 @@ namespace sockth{
     Sockthread::~Sockthread(){}
 
     int Sockthread::SendAll(int sockFd, string msgStr) {
-        // get message from buffer
-        // getMesg();
-        // get recv ip addr
-        // getIp();
-
         int n;
         struct sockaddr_in servAddr;
-        //const char* msg = msgStr.c_str();
         int bufSize = 4096;
         json tmp;
         tmp = json::parse(msgStr);
@@ -56,7 +50,6 @@ namespace sockth{
         }
         close(sockFd);
         if(msgStr.find("}") == string::npos) {
-            // error or rogue message?
             return -1;
         } else {
             msgStr = msgStr.substr(0, msgStr.find("\"}") + 2);
@@ -92,10 +85,7 @@ namespace sockth{
             tmp2 = json::parse(tmp_content);
             string tmp2_bullian = tmp2.at("bullian").get<std::string>();
             if( tmp2_bullian.compare("1") == 0){ // my message
-                //std::unique_lock<std::mutex> lck(r_mutex);
                 r_mutex.lock();
-                //original enqueue
-                //qRecvMsg.push(tmp_content);
                 string tmp2_sender = tmp2.at("githubID").get<std::string>();
                 string senderGithubID = string(tmp2_sender);
                 if(tmp2_sender.at(0) == '#' ) {
@@ -103,7 +93,6 @@ namespace sockth{
                 }
                 string tmp2_content = tmp2.at("content").get<std::string>();
                 unordered_map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator it = chatRoomMap->find(tmp2_sender);
-                //map<string,tuple<vector<string>*,unsigned int,time_t>*>::iterator itTemp = it;
                 time_t now = time(NULL) + 32400;    // korean time zone
                 if(it == chatRoomMap->end()) {
                     if(tmp2_sender.at(0) == '#') {
@@ -111,7 +100,6 @@ namespace sockth{
                         newChatRoom->push_back(senderGithubID + ": " + tmp2_content);
                         chatRoomMap->insert(chatRoomMap->begin(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
                     } else {
-                        //chatRoomMap->insert(chatRoomMap->end(), pair<string, tuple<vector<string>*,unsigned int,time_t>*>(tmp2_sender, new tuple<vector<string>*,unsigned int,time_t>(newChatRoom, 0, now)));
                         // drop message if not in map
                         r_mutex.unlock();
                         return -1;
@@ -120,12 +108,10 @@ namespace sockth{
                     get<0>(*(it->second))->push_back(senderGithubID + ": " + tmp2_content);
                     get<2>(*(it->second)) = now;
                     pair<string, tuple<vector<string>*,unsigned int,time_t>*> newEntry(*it);
-                    //chatRoomMap->erase(it);
                     chatRoomMap->erase(tmp2_sender);
                     chatRoomMap->insert(chatRoomMap->begin(), newEntry);
                 }
                 r_mutex.unlock();
-                //r_cv.notify_one();
             }
             else if( tmp2_bullian.compare("0") == 0){ // not my message
                 s_mutex.lock();
@@ -133,8 +119,6 @@ namespace sockth{
                 s_mutex.unlock();
             }
         }
-
-        //close(sockFd);
         return 0;
     }
 
@@ -142,9 +126,6 @@ namespace sockth{
         int sockFd, newSockFd;
         socklen_t clientLen;
         struct sockaddr_in servAddr, cliAddr;
-
-        // create socket
-        // socket(int domain, int type, int protocol)
         sockFd = socket(AF_INET, SOCK_STREAM, 0);
         if(sockFd < 0) {
             perror("Error Opening Socket");
@@ -153,7 +134,7 @@ namespace sockth{
 
         memset((char*) &servAddr, '\x00', sizeof(servAddr));
         servAddr.sin_family = AF_INET;
-        servAddr.sin_port = htons(9987); // port number
+        servAddr.sin_port = htons(9987);
         servAddr.sin_addr.s_addr = INADDR_ANY;
         if (bind(sockFd, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
             perror("ERROR on binding");
@@ -182,7 +163,6 @@ namespace sockth{
 
     int Sockthread::CreateSendSocket() {
         while(1){
-            // check msg queue
             while(qSendMsg.empty() == 1) ;
             int sockFd;
 
