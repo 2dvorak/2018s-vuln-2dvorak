@@ -19,6 +19,7 @@ newkey::Keymanager *g_km;
 PGPCrypt::PGPManager *PGP_m;
 
 bool DEBUG = false;
+bool DEMO = false;
 
 void UsageMessenger(){
     cout << "Usage: ./onionMessenger [GithubID] [passPhrase]" << endl;

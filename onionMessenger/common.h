@@ -54,6 +54,7 @@ extern newkey::Keymanager *g_km;
 extern PGPCrypt::PGPManager *PGP_m;
 
 extern bool DEBUG;
+extern bool DEMO;
 
 // Usage & Print stderr
 void UsageMessenger();
