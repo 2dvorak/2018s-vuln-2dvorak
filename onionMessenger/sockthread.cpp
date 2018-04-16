@@ -62,7 +62,9 @@ namespace sockth{
             msgStr = msgStr.substr(0, msgStr.find("\"}") + 2);
 
         }
-        //cout << msgStr << endl;
+        if(DEBUG) {
+            cout << msgStr << endl;
+        }
         json tmp;
         json tmp2;
         tmp = json::parse(msgStr);
@@ -76,6 +78,11 @@ namespace sockth{
         else if( (tmp_id.compare("0") == 0) && tmp_bullian.compare("0") == 0){ // key die
             r_mutex.lock();
             g_km->RecvKeyDie(msgStr);
+            r_mutex.unlock();
+        }
+        else if((tmp_id.compare("0") == 0) && tmp_bullian.compare("-1") == 0) { // key die forever
+            r_mutex.lock();
+            g_km->RecvKeyDieForever(msgStr);
             r_mutex.unlock();
         }
         else if( (tmp_id.compare("1") == 0) ){

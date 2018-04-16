@@ -72,13 +72,13 @@ namespace newmsg{
         std::mt19937 generator(rd());
         std::shuffle(v.begin(), v.end(), generator);
 
-        string tmp_content = PGP_m->Enc(this->jason.dump(), githubID);
+        string tmp_content = PGP_m->Enc(this->jason.dump(), nodeMap->find(githubID)->second->fpr);
         SetBridge(g_km->Findip(githubID), tmp_content);
         // for(int i = 0; (i < cnt) && (i<5); i++){
         for(int i = 0; i < cnt; i++){
             string tmp_githubID = v.back();
             v.pop_back();
-            string tmp2_content = PGP_m->Enc(this->jason.dump(), tmp_githubID);
+            string tmp2_content = PGP_m->Enc(this->jason.dump(), nodeMap->find(tmp_githubID)->second->fpr);
             SetBridge(g_km->Findip(tmp_githubID), tmp2_content);
         }
 

@@ -358,11 +358,11 @@ namespace oniui{
             break;
             case '0':
             {
-                DEBUG = !DEBUG;
-                if(DEBUG) {
-                    cout << "True" << endl;
+                DEMO = !DEMO;
+                if(DEMO) {
+                    cout << "Demo Mode On" << endl;
                 } else {
-                    cout << "False" << endl;
+                    cout << "Demo Mode Off" << endl;
                 }
             }
             break;

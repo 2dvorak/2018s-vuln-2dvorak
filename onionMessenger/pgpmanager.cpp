@@ -122,6 +122,9 @@ namespace PGPCrypt{
         // keyid length can be 8 or 16
         // thus malformed fpr can lead to privacy breach
         if(fpr.length() != 40) {
+            if(DEBUG) {
+                cout << "received length(" + to_string(fpr.length()) + ") malformed fpr/pubkey : " + fpr << endl;
+            }
             return false;
         }
 
@@ -262,9 +265,14 @@ namespace PGPCrypt{
         // compare short key id and fingerprint
         // short key id length : 8
         // fingerprint length : 40
+        if(DEBUG) {
+            cout << "recvedFpr.substr(32,8) : " << recvedFpr.substr(32,8) << endl;
+            cout << "importedKeyID : " << importedKeyID << endl;
+        }
+        /*
         if(importedKeyID.compare(recvedFpr.substr(32,8)) != 0) {
             return false;
-        }
+        }*/
         return true;
     }
 
