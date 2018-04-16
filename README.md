@@ -1,5 +1,7 @@
 # SEHer Messenger - IS521 Activity 5
 
+![demo_snipHer](image/snipHer.gif)
+
 ### SEHer Messenger : Security Enhanced Her Messenger
 - 더욱 안전해 더더욱 믿고 쓰는 SEHer 메신저
 - Fingerprint를 사용한 암호화로 안전성 강화
