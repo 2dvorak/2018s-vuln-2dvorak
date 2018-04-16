@@ -120,7 +120,7 @@ Your passphrase :[YOUR passphrase]
 3. Exit
 ```
 snipHer 스니퍼
-- https://github.com/KAIST-IS521/2018s-vuln-2dvorak/exploit
+- https://github.com/KAIST-IS521/2018s-vuln-2dvorak/tree/master/exploit
 
 ### Environment
 - Git issue와 milestone을 사용하여 계획적인 프로젝트 진행
