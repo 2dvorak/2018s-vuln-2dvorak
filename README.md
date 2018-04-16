@@ -33,7 +33,7 @@ GnuPG에서 모든 Key들은 Fingerprint를 부여받는다. Fingerprint는 20�
 ```
 
 ### Vulnerabilities
-- Logic Error 1
+- Logic Error 1  
 GnuPG를 사용해 Encryption 하는 코드에서 사용되는 커맨드는 다음과 같다.
 ```
 "gpg --encrypt --armor --yes --trust-model always -r " + recipientFpr(40 byte)
@@ -48,8 +48,8 @@ GnuPG를 사용해 Encryption 하는 코드에서 사용되는 커맨드는 다�
 ```
 따라서 메신저의 Encryption 관련 코드는 GnuPG의 동작을 제대로 이해하지 못한 것으로 인한 Logic Error를 가지고 있다.
 
-- Logic Error 2
-Key Protocol에서 다른 사용자의 Public Key와 함께 Fingerprint를 받으면, 서로 검증을 하게 된다.
+- Logic Error 2  
+Key Protocol에서 다른 사용자의 Public Key와 함께 Fingerprint를 받으면, 서로 검증을 하게 된다.  
 메신저는 먼저 Public Key를 import한다
 ```
 gpg --import pubkey
