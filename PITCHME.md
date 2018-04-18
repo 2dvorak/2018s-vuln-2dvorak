@@ -6,14 +6,14 @@
 ---
 
 ### Her Messenger is back
-![Her](image/Her.jpg)
+![Her](image/Her.png)
 
 Note: We have a good news today. Team 3's Her Messenger is Back!!
 ---
 
 ### ..with More Security!!
 
-![SEHer](image/SEHer.jpg)
+![SEHer](image/SEHer.png)
 
 - Security Enhanced Her Messenger
 
@@ -33,7 +33,7 @@ Note: SEHer uses fingerprint instead of key id or recipient's name in encryption
 
 ### Fingerprint?
 
-![Fpr](image/fingerprint.jpg)
+![Fpr](image/fingerprint.png)
 
 Note: What is fingerprint? As some of you may know, fingerprint is a 20 byte unique ID for a pgp key. Key id is a portion of the fingerprint. There are two kinds of key id, long key id and short key id.
 ---
@@ -163,14 +163,14 @@ Note: To compare key id with fingerprint, SEHer will use only a portion of the f
 <h4>Compare Key ID vs. Fingerprint</h4>
 </div>
 
-![compare](image/compare.jpg)
+![compare](image/compare.png)
 
 Note: So SEHer messenger verifies key and fingerprint like this
 ---
 
 ### But What If...??
 
-![misscompare](image/misscompare.jpg)
+![misscompare](image/misscompare.png)
 Note: But what if??
 ---
 
