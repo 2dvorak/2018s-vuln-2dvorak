@@ -46,6 +46,15 @@
 
 ---
 
+### snipHer
+- Automated Sniffing
+- Stealthy Sniffing
+- Anonymous Sniffing
+
+#### how?
+
+---
+
 ### SEHer's Encryption Scheme
 
 ```
@@ -60,7 +69,7 @@ $ gpg --encrypt -r "recipient's FPR" -r "attacker's FPR"
 
 ---
 
-![happened](image/happend.png)
+![happened](image/happen.png)
 
 ---
 
