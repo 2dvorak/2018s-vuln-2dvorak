@@ -11,7 +11,6 @@
 ---
 
 ### ..with More Security!!
-#### SEHer Messenger
 
 ![SEHer](image/SEHer.jpg)
 
@@ -51,20 +50,20 @@
 - Stealthy Sniffing
 - Anonymous Sniffing  
 
-#### <p>how?
+#### <p>how is it possible?
 
 ---
 
 ### SEHer's Encryption Scheme
 
 ```
-$ gpg --encrypt -r "recipient's FPR"
+$ gpg --encrypt -r "recipient"
 ```
 ---
 
 ### But What If?
 ```
-$ gpg --encrypt -r "recipient's FPR" -r "attacker's FPR"
+$ gpg --encrypt -r "recipient" -r "attacker"
 ```
 
 ---
@@ -101,7 +100,7 @@ if(fpr.length() != 40) {
 
 ```c++
 if(!VerifyFprAndPubkey(fpr, keyid)) {
-    return false; \
+    return false;
 }
 ```
 
@@ -157,9 +156,24 @@ return true;
 
 ---
 
+![happened](image/happen.png)
+
+---
+
 ### Verify Received Key Protocol
 
 Really sent by the "Sender" ??
+
+```json
+{
+	Type : Key Protocol
+	Sender : Seungyeop Lee
+	Public Key : 177CM
+	Fingerprint : BEEFBEEF...(40 byte)
+}
+```
+
+@[2]
 
 ---
 
@@ -173,16 +187,28 @@ Really sent by the "Sender" ??
 
 - gpg also accepts "Key ID" for --recipient
 - SEHer does not verify entire Fingerprint
+- SEHer doen't care about the **real** sender
 
 ---
 
-### snipHer
+### Attack
 
 공격자의 Key ID를 사용자들의 Fingerprint에 주입
+공격자는 Onion Routing 중간에서 메시지 복호화 가능
 
 ---
 
-### snipHer
+### Attack
+* Automated
+ * 기존 사용자들 뿐만 아니라 새로운 사용자들의 Fingerprint도 변조
+* Stealthy
+ * 공격자도 Onion Routing에서 relay 기능은 충실히 수행
+* Anonymous
+ * 공격자가 실제 사용하는 키 대신 dummy 키 사용
+
+---
+
+### SEHer
 
 ![step1](image/step1.png)
 
@@ -200,6 +226,18 @@ Really sent by the "Sender" ??
 
 ---
 
+### Demo
+
++++
+
+### Demo Backup Slides..
+
++++
+
+### Demo Backup Slides..
+
+---
+
 ### snipHer
 
 ![step4](image/step4.png)
@@ -207,7 +245,6 @@ Really sent by the "Sender" ??
 ---
 
 ### Demo
-
 
 +++
 
