@@ -60,7 +60,7 @@ $ gpg --encrypt -r "recipient's FPR" -r "attacker's FPR"
 
 ---
 
-![happened](image/happend.jpg)
+![happened](image/happend.png)
 
 ---
 
@@ -156,7 +156,7 @@ Really sent by the "Sender" ??
 
 ### ...Oops!
 
-![maan](image/maan.jpg)
+![maan](image/maan.png)
 
 ---
 
@@ -175,25 +175,25 @@ Really sent by the "Sender" ??
 
 ### snipHer
 
-![step1](image/step1.jpg)
+![step1](image/step1.png)
 
 ---
 
 ### snipHer
 
-![step2](image/step2.jpg)
+![step2](image/step2.png)
 
 ---
 
 ### snipHer
 
-![step3](image/step3.jpg)
+![step3](image/step3.png)
 
 ---
 
 ### snipHer
 
-![step4](image/step4.jpg)
+![step4](image/step4.png)
 
 ---
 
