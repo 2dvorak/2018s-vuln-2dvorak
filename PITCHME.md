@@ -12,11 +12,12 @@ Note: We have a good news today. Team 3's Her Messenger is Back!!
 ---
 
 ### ..with More Security!!
-
 ![SEHer](image/SEHer.PNG)
 
-- Security Enhanced Her Messenger
+---
 
+### SEHer Messenger
+- Security Enhanced Her Messenger
 - 더욱 안전해 더더욱 믿고 쓰는 SEHer 메신저
 
 Note: With More Security. Security Enhanced Her Messenger, or SEHer Messenger is released.
@@ -155,7 +156,7 @@ if(importedKeyID.compare(recvedFpr.substr(32,8)) != 0) {
 return true;
 ```
 
-Note: To compare key id with fingerprint, SEHer will use only a portion of the fingerprint. This is the point of SEHer's logic error 
+Note: To compare key id with fingerprint, SEHer will use only a portion of the fingerprint. Only the last 8 bytes. This is the point of SEHer's logic error 
 ---
 
 ### Fingerprint match Public Key?
@@ -216,10 +217,10 @@ Note: So the logic errors are in public key and finperprint exchanging scheme
 - 공격자 소유의 Key ID를 사용자들의 Fingerprint에 주입
 - 공격자는 Onion Routing 중간에서 메시지 복호화 가능
 
-Note:
+Note: So the attacker will 'inject' his/her key id into other user's fingerprint.
 ---
 
-### Attack
+### snipHer
 * Automated Sniffing
  * 기존 사용자들 뿐만 아니라 새로운 사용자들의 Fingerprint도 변조
 * Stealthy Sniffing
@@ -227,24 +228,28 @@ Note:
 * Anonymous Sniffing
  * 공격자가 실제 사용하는 키 대신 dummy 키 사용
 
+Note: snipHer allows automated sniffing. It automatically injects not only the user's that are already online at the time the attacker logs in but also the newly login users. And it allows stealthy sniffing, as it keep forwarding the messages to the destination while sniffing. Lastly, attacker can remain anonymous as snipHer uses a dummy PGP key.
 ---
 
 ### SEHer
 
 ![step1](image/step1.png)
 
+Note: Let me explain the workflow of snipHer. You can see some users in SEHer messenger network, enjoying "secure" messaging.
 ---
 
 ### snipHer
 
 ![step2](image/step2.png)
 
+Note: Then the attacker comes in. The attacker will distribute forged fingerprints for all other users.
 ---
 
 ### snipHer
 
 ![step3](image/step3.png)
 
+Note: So all the users start encrypting the messages not only with the random path user's key but also the dummy key sent by the attacker.
 ---
 
 ### Demo
@@ -253,9 +258,6 @@ Note:
 
 ### Demo Backup Slides..
 
-+++
-
-### Demo Backup Slides..
 
 ---
 
