@@ -111,9 +111,7 @@ gpg:               imported: 1  (RSA: 1)
 ```
 
 @[2]
-<div style="text-align:left;">
-Returns "Short Key ID"
-</div>
+#### Returns "Short Key ID"
 
 ---
 
