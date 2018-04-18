@@ -47,7 +47,7 @@ Note: You were able to enjoy Secure Messaging with SEHer Messenger!
 ---
 
 ### ...not anymore.
-![snipHer](image/snipHer.jpg)
+![snipHer](image/snipHer.png)
 
 Note: But not anymore.
 ---
