@@ -49,9 +49,9 @@
 ### snipHer
 - Automated Sniffing
 - Stealthy Sniffing
-- Anonymous Sniffing
+- Anonymous Sniffing  
 
-#### how?
+#### <p>how?
 
 ---
 
